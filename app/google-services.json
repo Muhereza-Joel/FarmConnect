@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "212489844477",
+    "project_id": "farmconnect-74cd0",
+    "storage_bucket": "farmconnect-74cd0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:212489844477:android:a8ca8a94e4f123213cb094",
+        "android_client_info": {
+          "package_name": "com.moels.farmconnect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "212489844477-as716o27verm3q22e1qn4108dru8jmef.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moels.farmconnect",
+            "certificate_hash": "a19eb52ffc6fe752517c8d18b9b7e3abae9cd51f"
+          }
+        },
+        {
+          "client_id": "212489844477-vsu7oq4cph6udse08us468f834smrhsk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0s7mt4FwvvOeW_y-7EffDr_kA8q6Yv_w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "212489844477-vsu7oq4cph6udse08us468f834smrhsk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
