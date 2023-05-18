@@ -4,9 +4,17 @@ public class Product {
 
     private Product(){}
 
-    private String productID, productName, quantity, price, owner, date, time;
+    private String productID, productName, quantity, price, owner, date, time, status;
 
-    public Product(String productID, String productName, String quantity, String price, String owner, String date, String time) {
+    public Product(String productID,
+                   String productName,
+                   String quantity,
+                   String price,
+                   String owner,
+                   String date,
+                   String time,
+                   String status
+    ) {
         this.productID = productID;
         this.productName = productName;
         this.quantity = quantity;
@@ -14,6 +22,7 @@ public class Product {
         this.owner = owner;
         this.date = date;
         this.time = time;
+        this.status = status;
     }
 
     public String getProductID() {
@@ -42,5 +51,9 @@ public class Product {
 
     public String getTime() {
         return time;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }
