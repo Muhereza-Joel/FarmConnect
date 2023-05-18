@@ -67,7 +67,7 @@
                 android:textStyle="italic|normal" />
 
             <TextView
-                android:id="@+id/create_date_text_view"
+                android:id="@+id/status_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="right"
