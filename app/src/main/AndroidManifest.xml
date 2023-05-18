@@ -24,10 +24,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="31">
+        <service
+            android:name=".services.ZoneUploadService"
+            android:enabled="true"
+            android:exported="true"></service>
+
         <activity
             android:name=".activities.ProductsInAzoneActivity"
             android:exported="false"
-            android:parentActivityName=".activities.MainActivity"/>
+            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.WelcomeActivity"
             android:exported="false" />
