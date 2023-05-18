@@ -58,4 +58,7 @@ public class Product {
     public String getStatus() {
         return status;
     }
+    public String getZoneID() {
+        return zoneID;
+    }
 }
