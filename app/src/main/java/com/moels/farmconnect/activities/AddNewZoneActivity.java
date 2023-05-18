@@ -19,6 +19,9 @@ import com.moels.farmconnect.R;
 import com.moels.farmconnect.utility_classes.UI;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class AddNewZoneActivity extends AppCompatActivity {
 
     private Toolbar addNewZoneActivityToolbar;
@@ -78,9 +81,27 @@ public class AddNewZoneActivity extends AppCompatActivity {
         contentValues.put("products", products);
         contentValues.put("description", description);
         contentValues.put("uploaded", "false");
+        contentValues.put("owner", "0776579631"); //TODO get currently authenticated phone number
+        contentValues.put("createDate", getCurrentDate());
+        contentValues.put("createTime", getCurrentTime());
+        contentValues.put("status", "active");
 
         sqLiteDatabase.insert("zones", null, contentValues);
         return true;
+    }
+
+    private String getCurrentDate(){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        String formattedDate = dateFormat.format(calendar.getTime());
+        return formattedDate;
+    }
+
+    private String getCurrentTime(){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat timeFormat = new SimpleDateFormat("h:mma");
+        String formattedTime = timeFormat.format(calendar.getTime());
+        return formattedTime;
     }
 
     public void clearEditTexts(){
