@@ -16,13 +16,31 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String query = "CREATE TABLE zones(_id INTEGER PRIMARY KEY AUTOINCREMENT, zoneName TEXT, location TEXT, products TEXT, description TEXT, uploaded TEXT)";
+        String query = "CREATE TABLE zones(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "zoneName TEXT, " +
+                        "location TEXT, " +
+                        "products TEXT, " +
+                        "description TEXT, " +
+                        "uploaded TEXT)";
+
         db.execSQL(query);
-        Log.d("FarmConnect","Zones Database Created");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (oldVersion < newVersion){
+            db.execSQL("DROP TABLE IF EXISTS zones");
+            db.execSQL("CREATE TABLE zones(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        "zoneName TEXT, " +
+                        "location TEXT, " +
+                        "products TEXT, " +
+                        "description TEXT, " +
+                        "uploaded TEXT, " +
+                        "owner TEXT, " +
+                        "createDate TEXT, " +
+                        "createTime TEXT, " +
+                        "status TEXT )");
+        }
 
     }
 }

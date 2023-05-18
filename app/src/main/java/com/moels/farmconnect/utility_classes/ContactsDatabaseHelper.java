@@ -32,7 +32,6 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
                     "username TEXT," +
                     "phoneNumber TEXT)");
         }
-        Log.d("FarmConnect", "Contacts table dropped");
 
     }
 }
