@@ -4,7 +4,7 @@ public class Product {
 
     private Product(){}
 
-    private String productID, productName, quantity, price, owner, date, time, status;
+    private String productID, productName, quantity, price, owner, date, time, status, zoneID;
 
     public Product(String productID,
                    String productName,
@@ -13,7 +13,8 @@ public class Product {
                    String owner,
                    String date,
                    String time,
-                   String status
+                   String status,
+                   String zoneID
     ) {
         this.productID = productID;
         this.productName = productName;
@@ -23,6 +24,7 @@ public class Product {
         this.date = date;
         this.time = time;
         this.status = status;
+        this.zoneID = zoneID;
     }
 
     public String getProductID() {
