@@ -76,29 +76,32 @@ public class AddNewZoneActivity extends AppCompatActivity {
         String products = productsToCollectEditText.getText().toString();
         String description = descriptionEditText.getText().toString();
 
-        validateTextViews(zoneName, location, products, description);
+        boolean zoneCreated = false;
+        boolean validated = validateTextViews(zoneName, location, products, description);
+        if (validated != false){
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("zoneName", zoneName);
+            contentValues.put("location", location);
+            contentValues.put("products", products);
+            contentValues.put("description", description);
+            contentValues.put("uploaded", "false");
+            contentValues.put("owner", "0776579631"); //TODO get currently authenticated phone number
+            contentValues.put("createDate", getCurrentDate());
+            contentValues.put("createTime", getCurrentTime());
+            contentValues.put("status", "active");
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("zoneName", zoneName);
-        contentValues.put("location", location);
-        contentValues.put("products", products);
-        contentValues.put("description", description);
-        contentValues.put("uploaded", "false");
-        contentValues.put("owner", "0776579631"); //TODO get currently authenticated phone number
-        contentValues.put("createDate", getCurrentDate());
-        contentValues.put("createTime", getCurrentTime());
-        contentValues.put("status", "active");
-
-        sqLiteDatabase.insert("zones", null, contentValues);
-        return true;
+            sqLiteDatabase.insert("zones", null, contentValues);
+            zoneCreated = true;
+        }
+        return zoneCreated;
     }
 
-    private void validateTextViews(String zoneName, String zoneLocation, String products, String description){
+    private boolean validateTextViews(String zoneName, String zoneLocation, String products, String description){
         if (TextUtils.isEmpty(zoneName) || TextUtils.isEmpty(zoneLocation) || TextUtils.isEmpty(products) || TextUtils.isEmpty(description)){
             UI.displayToast(getApplicationContext(), "All fields are required");
-            return;
+            return false;
         }
-
+        return false;
     }
     private String getCurrentDate(){
         Calendar calendar = Calendar.getInstance();
