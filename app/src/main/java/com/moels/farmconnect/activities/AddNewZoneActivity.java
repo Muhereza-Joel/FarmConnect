@@ -28,7 +28,6 @@ public class AddNewZoneActivity extends AppCompatActivity {
     private Toolbar addNewZoneActivityToolbar;
     private EditText zoneNameEditText, locationEditText, productsToCollectEditText, descriptionEditText;
     private ZonesDatabaseHelper zonesDatabaseHelper;
-
     SQLiteDatabase sqLiteDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

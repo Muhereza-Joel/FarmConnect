@@ -1,5 +1,6 @@
 package com.moels.farmconnect.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -10,6 +11,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -18,6 +20,8 @@ import com.moels.farmconnect.R;
 import com.moels.farmconnect.utility_classes.UI;
 
 public class ProductsInAzoneActivity extends AppCompatActivity {
+
+    private static final int EDIT_ZONE_REQUEST_CODE = 1;
     private Toolbar toolbar;
     private TextView productsLabelTextView;
 
@@ -59,7 +63,7 @@ public class ProductsInAzoneActivity extends AppCompatActivity {
         if (id == R.id.edit_zone) {
             Intent intent = new Intent(ProductsInAzoneActivity.this, EditZoneActivity.class);
             intent.putExtra("zoneID", getIntent().getStringExtra("zoneID"));
-            startActivity(intent);
+            startActivityForResult(intent, EDIT_ZONE_REQUEST_CODE);
         }
 
         if (id == R.id.delete_zone){
@@ -67,6 +71,16 @@ public class ProductsInAzoneActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == EDIT_ZONE_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            String updatedZoneName = data.getStringExtra("updatedZoneName");
+            getSupportActionBar().setTitle(updatedZoneName);
+        }
     }
 
     private void initUI(){
