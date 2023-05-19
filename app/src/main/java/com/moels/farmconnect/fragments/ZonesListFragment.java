@@ -66,6 +66,7 @@ public class ZonesListFragment extends Fragment {
             public void onClick(int position) {
                 Intent intent = new Intent(getContext(), ProductsInAzoneActivity.class);
                 intent.putExtra("zoneName", zoneCardItems.get(position).getZoneName());
+                intent.putExtra("zoneID", zoneCardItems.get(position).get_id());
                 startActivity(intent);
             }
         });

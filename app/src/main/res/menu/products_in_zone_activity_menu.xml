@@ -9,24 +9,24 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/Zone_Details"
+        android:id="@+id/zone_details"
         android:orderInCategory="100"
         android:title="Zone Details"
-        android:tooltipText="Help"
+        android:tooltipText="Zone Details"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/edit_zone"
         android:orderInCategory="101"
         android:title="Edit Zone"
-        android:tooltipText="Settings"
+        android:tooltipText="Edit Zone"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/delete_zone"
         android:orderInCategory="102"
         android:title="Delete Zone"
-        android:tooltipText="Help"
+        android:tooltipText="Delete Zone"
         app:showAsAction="never" />
 
 
