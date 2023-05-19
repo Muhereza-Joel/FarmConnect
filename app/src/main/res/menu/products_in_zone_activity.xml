@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/search_icon"
+        android:icon="@drawable/baseline_search_24"
+        android:title="Search"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/Zone_Details"
+        android:orderInCategory="100"
+        android:title="Zone Details"
+        android:tooltipText="Help"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/edit_zone"
+        android:orderInCategory="101"
+        android:title="Edit Zone"
+        android:tooltipText="Settings"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/delete_zone"
+        android:orderInCategory="102"
+        android:title="Delete Zone"
+        android:tooltipText="Help"
+        app:showAsAction="never" />
+
+
+</menu>

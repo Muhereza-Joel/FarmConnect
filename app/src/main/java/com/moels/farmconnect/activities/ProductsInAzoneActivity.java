@@ -3,6 +3,7 @@ package com.moels.farmconnect.activities;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -31,6 +32,13 @@ public class ProductsInAzoneActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, getIntent().getStringExtra("zoneName"), true);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.products_in_zone_activity, menu);
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     private void initUI(){
