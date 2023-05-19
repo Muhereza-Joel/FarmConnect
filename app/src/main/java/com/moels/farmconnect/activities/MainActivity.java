@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity{
         if (savedInstanceState != null) {
             int currentlySelectedTab = savedInstanceState.getInt("currentlySelectedTab");
             tabLayout.selectTab(tabLayout.getTabAt(currentlySelectedTab));
-            Log.d("Saved Bundle Called", "Saved Bundle Loaded");
         }
 
         Drawable icon = toolbar.getOverflowIcon();

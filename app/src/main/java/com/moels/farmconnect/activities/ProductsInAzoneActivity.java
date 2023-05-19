@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -17,14 +18,16 @@ import com.moels.farmconnect.R;
 import com.moels.farmconnect.utility_classes.UI;
 
 public class ProductsInAzoneActivity extends AppCompatActivity {
-    Toolbar toolbar;
-    TextView productsLabelTextView;
+    private Toolbar toolbar;
+    private TextView productsLabelTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_products_in_azone);
         initUI();
+        setSupportActionBar(toolbar);
+        UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, getIntent().getStringExtra("zoneName"), true);
 
         Drawable icon = toolbar.getOverflowIcon();
         if (icon != null){
@@ -33,9 +36,6 @@ public class ProductsInAzoneActivity extends AppCompatActivity {
                 toolbar.setOverflowIcon(icon);
             }
         }
-
-        setSupportActionBar(toolbar);
-        UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, getIntent().getStringExtra("zoneName"), true);
 
     }
 

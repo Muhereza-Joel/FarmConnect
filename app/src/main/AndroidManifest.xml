@@ -41,6 +41,7 @@
         <activity
             android:name=".activities.ProductsInAzoneActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.WelcomeActivity"

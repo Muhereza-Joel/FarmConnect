@@ -33,11 +33,11 @@ import com.moels.farmconnect.utility_classes.UI;
 import java.util.concurrent.TimeUnit;
 
 public class InitializeAuthenticationActivity extends AppCompatActivity {
-    EditText phoneNumberToAuthenticate;
-    Button sendOneTimePasswordButton;
-    ProgressBar progressBar;
-    PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = null;
-    FirebaseAuth mAuth;
+    private EditText phoneNumberToAuthenticate;
+    private Button sendOneTimePasswordButton;
+    private ProgressBar progressBar;
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = null;
+    private FirebaseAuth mAuth;
     private static final int PERMISSION_REQUEST_CODE = 123;
     private boolean allPermissionsGranted;
 
