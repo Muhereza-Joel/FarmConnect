@@ -17,16 +17,105 @@ tools:context=".activities.ZoneDetailsActivity">
         layout="@layout/toolbar" />
 
     <TextView
-        android:id="@+id/products_label"
+        android:id="@+id/zone_name_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="No products posted yet"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/products_in_a_zone_activity_toolbar"/>
+        android:layout_below="@id/products_in_a_zone_activity_toolbar"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Zone Name"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/zone_name_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/zone_name_text_view"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/edit_text_border"
+        android:hint="Zone Name"
+        android:inputType="none"
+        android:maxLength="40"
+        android:padding="10dp" />
+
+    <TextView
+        android:id="@+id/location_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/zone_name_edit_text"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Location"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/location_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/location_text_view"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/edit_text_border"
+        android:hint="Location such district,village"
+        android:inputType="none"
+        android:maxLength="40"
+        android:padding="10dp" />
+
+    <TextView
+        android:id="@+id/products_to_collect_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/location_edit_text"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Products To Collect"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/products_to_collect_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/products_to_collect_text_view"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/edit_text_border"
+        android:hint="Products To Collect"
+        android:maxLength="40"
+        android:inputType="none"
+        android:padding="10dp" />
+
+    <TextView
+        android:id="@+id/description_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/products_to_collect_edit_text"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Zone Name"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/description_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_below="@id/description_text_view"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/edit_text_border"
+        android:gravity="top"
+        android:hint="Description"
+        android:inputType="none"
+        android:lines="8"
+        android:padding="10dp" />
 
 </RelativeLayout>
 

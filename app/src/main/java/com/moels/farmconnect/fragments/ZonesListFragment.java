@@ -29,7 +29,6 @@ public class ZonesListFragment extends Fragment {
     private ZoneListRecyclerViewAdapter zoneListRecyclerViewAdapter;
     private ZonesDatabaseHelper zonesDatabaseHelper;
     private SQLiteDatabase sqLiteDatabase;
-
     private List<ZoneCardItem> zoneCardItems;
 
 
