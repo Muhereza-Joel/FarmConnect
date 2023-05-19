@@ -59,11 +59,14 @@ public class AddNewZoneActivity extends AppCompatActivity {
 
         if(id == R.id.save_zone_btn){
             View parentView = findViewById(R.id.parent);
-            boolean zoneCreated = addZoneToDatabase();
 
-            if(zoneCreated == true) {
-                clearEditTexts();
-                UI.displaySnackBar(getApplicationContext(), parentView, "Collection Zone Created!!");
+            boolean validated = validateTextViews();
+            if (validated == true){
+                boolean zoneCreated = addZoneToDatabase();
+                if(zoneCreated == true) {
+                    clearEditTexts();
+                    UI.displaySnackBar(getApplicationContext(), parentView, "Collection Zone Created!!");
+                }
             }
         }
 
@@ -76,32 +79,32 @@ public class AddNewZoneActivity extends AppCompatActivity {
         String products = productsToCollectEditText.getText().toString();
         String description = descriptionEditText.getText().toString();
 
-        boolean zoneCreated = false;
-        boolean validated = validateTextViews(zoneName, location, products, description);
-        if (validated != false){
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("zoneName", zoneName);
-            contentValues.put("location", location);
-            contentValues.put("products", products);
-            contentValues.put("description", description);
-            contentValues.put("uploaded", "false");
-            contentValues.put("owner", "0776579631"); //TODO get currently authenticated phone number
-            contentValues.put("createDate", getCurrentDate());
-            contentValues.put("createTime", getCurrentTime());
-            contentValues.put("status", "active");
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("zoneName", zoneName);
+        contentValues.put("location", location);
+        contentValues.put("products", products);
+        contentValues.put("description", description);
+        contentValues.put("uploaded", "false");
+        contentValues.put("owner", "0776579631"); //TODO get currently authenticated phone number
+        contentValues.put("createDate", getCurrentDate());
+        contentValues.put("createTime", getCurrentTime());
+        contentValues.put("status", "active");
 
-            sqLiteDatabase.insert("zones", null, contentValues);
-            zoneCreated = true;
-        }
-        return zoneCreated;
+        sqLiteDatabase.insert("zones", null, contentValues);
+
+        return true;
     }
 
-    private boolean validateTextViews(String zoneName, String zoneLocation, String products, String description){
-        if (TextUtils.isEmpty(zoneName) || TextUtils.isEmpty(zoneLocation) || TextUtils.isEmpty(products) || TextUtils.isEmpty(description)){
+    private boolean validateTextViews(){
+        boolean validated = true;
+        if (TextUtils.isEmpty(zoneNameEditText.getText().toString())
+                || TextUtils.isEmpty(locationEditText.getText().toString())
+                || TextUtils.isEmpty(productsToCollectEditText.getText().toString())
+                || TextUtils.isEmpty(descriptionEditText.getText().toString())){
             UI.displayToast(getApplicationContext(), "All fields are required");
-            return false;
+            validated = false;
         }
-        return false;
+        return validated;
     }
     private String getCurrentDate(){
         Calendar calendar = Calendar.getInstance();
