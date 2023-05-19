@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -75,6 +76,8 @@ public class AddNewZoneActivity extends AppCompatActivity {
         String products = productsToCollectEditText.getText().toString();
         String description = descriptionEditText.getText().toString();
 
+        validateTextViews(zoneName, location, products, description);
+
         ContentValues contentValues = new ContentValues();
         contentValues.put("zoneName", zoneName);
         contentValues.put("location", location);
@@ -90,6 +93,13 @@ public class AddNewZoneActivity extends AppCompatActivity {
         return true;
     }
 
+    private void validateTextViews(String zoneName, String zoneLocation, String products, String description){
+        if (TextUtils.isEmpty(zoneName) || TextUtils.isEmpty(zoneLocation) || TextUtils.isEmpty(products) || TextUtils.isEmpty(description)){
+            UI.displayToast(getApplicationContext(), "All fields are required");
+            return;
+        }
+
+    }
     private String getCurrentDate(){
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
