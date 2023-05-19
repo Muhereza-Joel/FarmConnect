@@ -74,16 +74,19 @@ public class ZonesListFragment extends Fragment {
 
     private List<ZoneCardItem> getZonesFromDatabase(){
         List<ZoneCardItem> listOfZoneCardItems = new ArrayList<>();
-        String [] columnsToPick = {"_id","zoneName", "location"};
+        String [] columnsToPick = {"_id","zoneName", "location", "createTime", "status"};
         Cursor cursor = sqLiteDatabase.query("zones", columnsToPick, null, null, null, null, null);
 
         if (cursor.moveToNext()) {
             do {
+                @SuppressLint("Range") String _id = cursor.getString(cursor.getColumnIndex("_id"));
                 @SuppressLint("Range") String zoneName = cursor.getString(cursor.getColumnIndex("zoneName"));
                 @SuppressLint("Range") String location = cursor.getString(cursor.getColumnIndex("location"));
+                @SuppressLint("Range") String createTime = cursor.getString(cursor.getColumnIndex("createTime"));
+                @SuppressLint("Range") String status = cursor.getString(cursor.getColumnIndex("status"));
 
                 if (!TextUtils.isEmpty(zoneName) || !TextUtils.isEmpty(location)) {
-                    ZoneCardItem zoneCardItem = new ZoneCardItem(zoneName, location);
+                    ZoneCardItem zoneCardItem = new ZoneCardItem(_id, zoneName, location, createTime, status);
                     listOfZoneCardItems.add(zoneCardItem);
                 }
             } while (cursor.moveToNext());

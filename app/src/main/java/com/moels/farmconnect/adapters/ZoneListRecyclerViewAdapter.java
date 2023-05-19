@@ -46,8 +46,11 @@ public class ZoneListRecyclerViewAdapter extends RecyclerView.Adapter<ZoneListRe
         });
 
         ZoneCardItem zoneCardItem = itemList.get(position);
+        holder._idTextView.setText(zoneCardItem.get_id());
         holder.zoneNameTextView.setText(zoneCardItem.getZoneName());
         holder.zoneLocationTextView.setText(zoneCardItem.getLocation());
+        holder.createTimeTextView.setText(zoneCardItem.getCreateTime());
+        holder.statusTextView.setText(zoneCardItem.getStatus());
     }
 
     @Override
@@ -61,7 +64,7 @@ public class ZoneListRecyclerViewAdapter extends RecyclerView.Adapter<ZoneListRe
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
         ImageView zoneLogoImageView;
-        TextView zoneNameTextView, zoneLocationTextView;
+        TextView zoneNameTextView, zoneLocationTextView, createTimeTextView, statusTextView, _idTextView;
         CardView zoneListItemCardView;
 
         public ViewHolder(@NonNull View itemView) {
@@ -71,6 +74,9 @@ public class ZoneListRecyclerViewAdapter extends RecyclerView.Adapter<ZoneListRe
             zoneNameTextView = itemView.findViewById(R.id.zone_name_text_view);
             zoneLocationTextView = itemView.findViewById(R.id.zone_location_text_view);
             zoneListItemCardView = itemView.findViewById(R.id.zone_list_item_card_view);
+            createTimeTextView = itemView.findViewById(R.id.create_time_text_view);
+            statusTextView = itemView.findViewById(R.id.status_text_view);
+            _idTextView = itemView.findViewById(R.id.zone_id);
         }
     }
 

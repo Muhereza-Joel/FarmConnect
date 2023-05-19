@@ -78,6 +78,14 @@
                 android:textSize="16sp"
                 android:textStyle="italic|bold" />
 
+            <TextView
+                android:id="@+id/zone_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLength="20"
+                android:visibility="gone"
+                android:text="" />
+
         </LinearLayout>
 
 
