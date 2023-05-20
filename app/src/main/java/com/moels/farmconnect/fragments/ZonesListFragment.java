@@ -1,6 +1,7 @@
 package com.moels.farmconnect.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.activities.MainActivity;
 import com.moels.farmconnect.activities.ProductsInAzoneActivity;
 import com.moels.farmconnect.adapters.ZoneListRecyclerViewAdapter;
 import com.moels.farmconnect.models.ZoneCardItem;
@@ -25,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ZonesListFragment extends Fragment {
+
+    private static final int DELETE_REQUEST_CODE = 2;
     private RecyclerView zonesListRecyclerView;
     private ZoneListRecyclerViewAdapter zoneListRecyclerViewAdapter;
     private ZonesDatabaseHelper zonesDatabaseHelper;
@@ -66,10 +70,19 @@ public class ZonesListFragment extends Fragment {
                 Intent intent = new Intent(getContext(), ProductsInAzoneActivity.class);
                 intent.putExtra("zoneName", zoneCardItems.get(position).getZoneName());
                 intent.putExtra("zoneID", zoneCardItems.get(position).get_id());
-                startActivity(intent);
+                startActivityForResult(intent, DELETE_REQUEST_CODE);
             }
         });
         zoneListRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == DELETE_REQUEST_CODE && requestCode == Activity.RESULT_OK){
+            new MainActivity().tabLayout.getTabAt(2).select();
+        }
     }
 
     private List<ZoneCardItem> getZonesFromDatabase(){

@@ -1,6 +1,7 @@
 package com.moels.farmconnect.activities;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -8,6 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,6 +20,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.dialogs.DeleteDialog;
 import com.moels.farmconnect.utility_classes.UI;
 
 public class ProductsInAzoneActivity extends AppCompatActivity {
@@ -46,8 +50,34 @@ public class ProductsInAzoneActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.products_in_zone_activity_menu, menu);
-
+        configureSearchView(menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private void configureSearchView(Menu menu){
+        MenuItem menuItem = menu.findItem(R.id.search_icon);
+        SearchView searchView = (SearchView)menuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                return false;
+            }
+        });
+        searchView.setSubmitButtonEnabled(false);
+        searchView.setIconifiedByDefault(true);
+        searchView.onActionViewExpanded();
+
     }
 
     @Override
@@ -67,7 +97,9 @@ public class ProductsInAzoneActivity extends AppCompatActivity {
         }
 
         if (id == R.id.delete_zone){
-            //TODO create logic to delete zone from database
+            DeleteDialog deleteDialog = new DeleteDialog();
+            deleteDialog.show(getSupportFragmentManager(), "sample");
+
         }
 
         return super.onOptionsItemSelected(item);

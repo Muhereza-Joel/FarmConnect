@@ -32,7 +32,7 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity{
 
-    private TabLayout tabLayout;
+    public TabLayout tabLayout;
     private ViewPager viewPager;
     private FloatingActionButton startNewChatFloatingActionButton, addNewZoneFloatingActionButton, startNewCallFloatingActionButton;
     private Toolbar toolbar;

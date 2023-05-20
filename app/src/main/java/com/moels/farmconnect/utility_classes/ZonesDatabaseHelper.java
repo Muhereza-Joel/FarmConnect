@@ -10,6 +10,8 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "FarmConnectZonesDatabase";
     private static final int DATABASE_VERSION = 2;
 
+    private SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
+
     public ZonesDatabaseHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
 
@@ -42,5 +44,9 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
                         "status TEXT )");
         }
 
+    }
+
+    public void deleteZoneFromDatabase(String _id){
+        sqLiteDatabase.delete("zones", "_id = ?", new String[] {_id});
     }
 }
