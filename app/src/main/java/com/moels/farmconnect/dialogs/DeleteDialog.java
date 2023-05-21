@@ -17,6 +17,7 @@ import androidx.fragment.app.DialogFragment;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.activities.MainActivity;
 import com.moels.farmconnect.activities.ProductsInAzoneActivity;
+import com.moels.farmconnect.services.DeleteZoneService;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
 public class DeleteDialog extends DialogFragment implements DialogInterface.OnClickListener {
@@ -43,6 +44,10 @@ public class DeleteDialog extends DialogFragment implements DialogInterface.OnCl
          Intent resultIntent = new Intent();
          getActivity().setResult(Activity.RESULT_OK, resultIntent);
          getActivity().finish();
+
+         Intent deleteZoneService = new Intent(getActivity(), DeleteZoneService.class);
+         deleteZoneService.putExtra("zoneID", _id);
+         getActivity().startService(deleteZoneService);
     }
 
     @Override

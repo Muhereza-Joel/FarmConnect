@@ -24,14 +24,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="31">
+        <service
+            android:name=".services.DeleteZoneService"
+            android:enabled="true"
+            android:exported="true"></service>
+
         <activity
             android:name=".activities.ZoneDetailsActivity"
             android:exported="false"
-            android:parentActivityName=".activities.ProductsInAzoneActivity"/>
+            android:parentActivityName=".activities.ProductsInAzoneActivity" />
         <activity
             android:name=".activities.EditZoneActivity"
             android:exported="false"
-            android:parentActivityName=".activities.ProductsInAzoneActivity"/>
+            android:parentActivityName=".activities.ProductsInAzoneActivity" />
 
         <service
             android:name=".services.ZoneUploadService"
