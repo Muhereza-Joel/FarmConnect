@@ -119,6 +119,5 @@ public class ZoneUploadService extends Service {
     public void onDestroy() {
         super.onDestroy();
         handler.removeCallbacks(runnable);
-        database.close();
     }
 }
