@@ -104,6 +104,7 @@ public class EditZoneActivity extends AppCompatActivity {
 
             } while (cursor.moveToNext());
         }
+        cursor.close();
     }
 
     private boolean validateTextViews(){

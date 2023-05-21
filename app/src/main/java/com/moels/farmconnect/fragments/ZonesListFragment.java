@@ -104,6 +104,7 @@ public class ZonesListFragment extends Fragment {
                 }
             } while (cursor.moveToNext());
         }
+        cursor.close();
         return listOfZoneCardItems;
     }
 

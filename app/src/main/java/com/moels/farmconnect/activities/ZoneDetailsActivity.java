@@ -79,5 +79,6 @@ public class ZoneDetailsActivity extends AppCompatActivity {
 
             } while (cursor.moveToNext());
         }
+        cursor.close();
     }
 }

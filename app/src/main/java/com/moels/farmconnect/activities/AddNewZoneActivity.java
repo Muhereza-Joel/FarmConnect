@@ -1,6 +1,7 @@
 package com.moels.farmconnect.activities;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.services.ZoneUploadService;
 import com.moels.farmconnect.utility_classes.UI;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
@@ -65,6 +67,8 @@ public class AddNewZoneActivity extends AppCompatActivity {
                 if(zoneCreated == true) {
                     clearEditTexts();
                     UI.displaySnackBar(getApplicationContext(), parentView, "Collection Zone Created!!");
+                    Intent uploadZoneService = new Intent(AddNewZoneActivity.this, ZoneUploadService.class);
+                    startService(uploadZoneService);
                 }
             }
         }

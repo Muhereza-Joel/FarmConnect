@@ -8,8 +8,17 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.moels.farmconnect.models.Zone;
+import com.moels.farmconnect.utility_classes.UI;
+
 public class ZoneUploadService extends Service {
-    private static final int POLL_INTERVAL = 60000; // Interval in milliseconds (e.g., 1 minute)
+    private static final int POLL_INTERVAL = 2000; // Execute after 2 seconds
     private Handler handler;
     private Runnable runnable;
     private SQLiteDatabase database;
@@ -18,7 +27,7 @@ public class ZoneUploadService extends Service {
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
-        database = openOrCreateDatabase("FarmConnectZonesDatabase.db", MODE_PRIVATE, null);
+        database = openOrCreateDatabase("FarmConnectZonesDatabase", MODE_PRIVATE, null);
     }
 
 
@@ -40,41 +49,65 @@ public class ZoneUploadService extends Service {
     }
 
     private void checkForNewZones() {
-        // Query the SQLite database for new zones
         Cursor cursor = database.rawQuery("SELECT * FROM zones WHERE uploaded = 'false'", null);
+
         if (cursor.moveToFirst()) {
             do {
-                // Retrieve zone data
-                @SuppressLint("Range") int id = cursor.getInt(cursor.getColumnIndex("_id"));
+                @SuppressLint("Range") String id = cursor.getString(cursor.getColumnIndex("_id"));
                 @SuppressLint("Range") String zoneName = cursor.getString(cursor.getColumnIndex("zoneName"));
                 @SuppressLint("Range") String location = cursor.getString(cursor.getColumnIndex("location"));
                 @SuppressLint("Range") String productsToCollect = cursor.getString(cursor.getColumnIndex("products"));
                 @SuppressLint("Range") String description = cursor.getString(cursor.getColumnIndex("description"));
+                @SuppressLint("Range") String owner = cursor.getString(cursor.getColumnIndex("owner"));
+                @SuppressLint("Range") String createDate = cursor.getString(cursor.getColumnIndex("createDate"));
+                @SuppressLint("Range") String createTime = cursor.getString(cursor.getColumnIndex("createTime"));
+                @SuppressLint("Range") String status = cursor.getString(cursor.getColumnIndex("status"));
 
-                // Upload zone data to Firebase Realtime Database
-                boolean uploadStatus = uploadZoneDataToFirebase(id, zoneName, location, productsToCollect, description);
+                String products = " ";
+                uploadZoneDataToFirebase(id, zoneName, location, productsToCollect, description, owner, createDate, createTime, status, products);
 
-                // Update the "uploaded" column in SQLite and Firebase
-                if (uploadStatus == true) {
-                    updateZoneUploadedStatus(id);
-                }
             } while (cursor.moveToNext());
         }
         cursor.close();
     }
 
-    private boolean uploadZoneDataToFirebase(int id, String zoneName, String location, String productsToCollect, String description) {
-        // TODO: Implement the code to upload zone data to Firebase Realtime Database
-        // You can use Firebase SDK methods to accomplish this
-        // Example: FirebaseDatabase.getInstance().getReference().child("zones").child(String.valueOf(id)).setValue(...)
+    private boolean uploadZoneDataToFirebase(
+            String id, String zoneName, String location, String productsToCollect,
+            String description, String owner, String createDate, String createTime, String status, String products) {
 
-        return true;
+            String phoneNumber = "0787203675";  // Replace with the desired phone number
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+            Zone zone = new Zone(id, zoneName, location, productsToCollect, description, owner, createDate, createTime, status, products);
+
+            databaseReference.child("zones").child(phoneNumber).child(id).setValue(zone)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        updateZoneUploadedStatus(id);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        UI.displayToast(getApplicationContext(), "Network Error Occurred");
+                    }
+                });
+
+            return true;
     }
 
-    private void updateZoneUploadedStatus(int id) {
-        // Update "uploaded" column in SQLite
+    private void updateZoneUploadedStatus(String id) {
         database.execSQL("UPDATE zones SET uploaded = 'true' WHERE _id = " + id);
 
+        // Check if the last zone is uploaded and stop the service
+        Cursor cursor = database.rawQuery("SELECT COUNT(*) FROM zones WHERE uploaded = 'false'", null);
+        if (cursor.moveToFirst()) {
+            int count = cursor.getInt(0);
+            if (count == 0) {
+                stopSelf();  // Stop the service if the last zone is uploaded
+                cursor.close();
+            }
+        }
     }
 
     @Override

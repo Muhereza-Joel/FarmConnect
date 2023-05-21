@@ -1,11 +1,10 @@
 package com.moels.farmconnect.models;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Zone {
     private String zoneID, zoneName, zoneLocation, productsToCollect, description, owner, date, time, status;
-
-    private ArrayList<Product> products;
+    private String products;
 
     public Zone(){}
 
@@ -17,7 +16,8 @@ public class Zone {
                 String owner,
                 String date,
                 String time,
-                String status
+                String status,
+                String products
     ) {
         this.zoneID = zoneID;
         this.zoneName = zoneName;
@@ -28,6 +28,7 @@ public class Zone {
         this.date = date;
         this.time = time;
         this.status = status;
+        this.products = products;
     }
 
     public String getZoneID() {
@@ -64,5 +65,9 @@ public class Zone {
 
     public String getStatus() {
         return status;
+    }
+
+    public String getProducts() {
+        return products;
     }
 }

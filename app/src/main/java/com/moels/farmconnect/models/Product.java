@@ -2,9 +2,9 @@ package com.moels.farmconnect.models;
 
 public class Product {
 
-    private Product(){}
+    public Product(){}
 
-    private String productID, productName, quantity, price, owner, date, time, status, zoneID;
+    public String productID, productName, quantity, price, owner, date, time, status, zoneID;
 
     public Product(String productID,
                    String productName,
