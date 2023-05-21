@@ -15,12 +15,14 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.services.UpdateZoneService;
 import com.moels.farmconnect.utility_classes.UI;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
@@ -140,7 +142,18 @@ public class EditZoneActivity extends AppCompatActivity {
 
         String _id = getIntent().getStringExtra("zoneID");
         sqLiteDatabase.update("zones", contentValues, "_id = ?", new String[] {_id});
+        startServiceToUpdateZoneInFirebase(_id, zoneName, location, products, description);
 
         return true;
+    }
+
+    private void startServiceToUpdateZoneInFirebase(String _id, String zoneName, String zoneLocation, String productsToCollect, String description){
+        Intent updateZoneService = new Intent(EditZoneActivity.this, UpdateZoneService.class);
+        updateZoneService.putExtra("zoneID", _id);
+        updateZoneService.putExtra("zoneName", zoneName);
+        updateZoneService.putExtra("location", zoneLocation);
+        updateZoneService.putExtra("productsToCollect", productsToCollect);
+        updateZoneService.putExtra("description", description);
+        startService(updateZoneService);
     }
 }

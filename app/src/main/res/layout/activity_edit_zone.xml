@@ -98,7 +98,7 @@ tools:context=".activities.EditZoneActivity">
         android:layout_below="@id/products_to_collect_edit_text"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:text="Zone Name"
+        android:text="Description"
         android:textSize="20sp"
         android:textStyle="bold" />
 

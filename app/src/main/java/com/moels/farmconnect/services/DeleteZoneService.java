@@ -18,7 +18,7 @@ public class DeleteZoneService extends Service {
    private Handler handler;
    private Runnable runnable;
    private SQLiteDatabase database;
-
+    //TODO Set deleted flag to true in case the delete process fails
 
     @Override
     public void onCreate() {
@@ -38,7 +38,7 @@ public class DeleteZoneService extends Service {
         runnable = new Runnable() {
             @Override
             public void run() {
-                String phoneNumber = "0776579631";  // Replace with the desired phone number
+                String phoneNumber = "0776579631";  //TODO Replace with the desired phone number
 
                 DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
                 databaseRef.child("zones").child(phoneNumber).child(_id).removeValue()
@@ -70,6 +70,6 @@ public class DeleteZoneService extends Service {
     public void onDestroy() {
         super.onDestroy();
         handler.removeCallbacks(runnable);
-        database.close();
+        database.close(); //Close database since there is process that needs to access it again
     }
 }
