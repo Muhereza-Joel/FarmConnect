@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity{
     private ViewPagerAdapter viewPagerAdapter;
     private SharedPreferences myAppPreferences;
     private boolean buyerAccountChosen;
-    boolean farmerAccountChosen;
+    private boolean farmerAccountChosen;
     private Bundle bundle  = new Bundle();;
 
     @Override
