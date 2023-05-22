@@ -25,7 +25,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.adapters.ViewPagerAdapter;
 import com.moels.farmconnect.fragments.ChatListFragment;
-import com.moels.farmconnect.fragments.BuyerZonesListFragment;
+import com.moels.farmconnect.fragments.ZonesListFragment;
 import com.moels.farmconnect.utility_classes.UI;
 
 import java.util.Objects;
@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity{
 
         if (buyerAccountChosen == true) {
             viewPagerAdapter.addFragment(new ChatListFragment(), "Chats");
-            viewPagerAdapter.addFragment(new BuyerZonesListFragment(), "Zones");
+            viewPagerAdapter.addFragment(new ZonesListFragment(), "Zones");
             viewPagerAdapter.addFragment(new ChatListFragment(), "Calls");
 
             editor.putBoolean("buyerAccountTypeChosen", true);
@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity{
 
         } else if(farmerAccountChosen == true) {
             viewPagerAdapter.addFragment(new ChatListFragment(), "Chats");
-            viewPagerAdapter.addFragment(new BuyerZonesListFragment(), "Zones");
+            viewPagerAdapter.addFragment(new ZonesListFragment(), "Zones");
             viewPagerAdapter.addFragment(new ChatListFragment(), "Calls");
 
             editor.putBoolean("farmerAccountTypeChosen", true);
