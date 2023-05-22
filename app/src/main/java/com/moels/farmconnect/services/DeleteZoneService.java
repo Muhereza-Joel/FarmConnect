@@ -38,7 +38,7 @@ public class DeleteZoneService extends Service {
         runnable = new Runnable() {
             @Override
             public void run() {
-                String phoneNumber = "0776579631";  //TODO Replace with the desired phone number
+                String phoneNumber = "0787203675";  //TODO Replace with the desired phone number
 
                 DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
                 databaseRef.child("zones").child(phoneNumber).child(_id).removeValue()

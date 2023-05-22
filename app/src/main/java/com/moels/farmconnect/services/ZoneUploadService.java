@@ -75,7 +75,7 @@ public class ZoneUploadService extends Service {
             String id, String zoneName, String location, String productsToCollect,
             String description, String owner, String createDate, String createTime, String status, String products) {
 
-            String phoneNumber = owner;  // authenticated phone number
+            String phoneNumber = "0787203675";  // TODO authenticated phone number
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
             Zone zone = new Zone(id, zoneName, location, productsToCollect, description, owner, createDate, createTime, status, products);
 

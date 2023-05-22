@@ -50,7 +50,7 @@ public class UpdateZoneService extends Service {
         runnable = new Runnable() {
             @Override
             public void run() {
-                String phoneNumber = "0776579631";  // TODO Replace the phone number with the authenticated number
+                String phoneNumber = "0787203675";  // TODO Replace the phone number with the authenticated number
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
                 Map<String, Object> updatedZone = new HashMap<>();
