@@ -15,9 +15,11 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String query = "CREATE TABLE contacts (_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, phoneNumber TEXT)";
-        db.execSQL(query);
-        Log.d("FarmConnect","Contacts Database Created");
+        db.execSQL("CREATE TABLE contacts (" +
+                "_id INTEGER PRIMARY KEY," +
+                "username TEXT," +
+                "phoneNumber TEXT)");
+
     }
 
     @Override

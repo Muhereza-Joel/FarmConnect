@@ -39,7 +39,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.dialogs.ProgressDialog;
 import com.moels.farmconnect.models.User;
+import com.moels.farmconnect.services.FetchContactsService;
 import com.moels.farmconnect.utility_classes.UI;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -47,6 +49,8 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import kotlin.jvm.internal.PackageReference;
 
 public class CreateProfileActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -77,6 +81,8 @@ public class CreateProfileActivity extends AppCompatActivity {
             Drawable image = getDrawable(R.drawable.avatar2);
             Glide.with(this).load(image).circleCrop().into(profilePicImageView);
         }
+
+//        new ProgressDialog().show(getSupportFragmentManager(), "sample");
 
         phoneNumber.setText(getIntent().getStringExtra("phoneNumber"));
 
@@ -195,47 +201,56 @@ public class CreateProfileActivity extends AppCompatActivity {
 
 
             User user = new User(fullName,gender, authenticatedPhoneNumber, birthDate, selectedValue, dataList);
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-            DatabaseReference profileReference = databaseReference.child("profiles");
+
             SharedPreferences myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = myAppPreferences.edit();
 
-            profileReference.push().setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void unused) {
-                    UI.displayToast(getApplicationContext(), "Profile Data Uploaded");
-                    Log.d("On Success", "Uploaded data to firebase realtime database");
-                    editor.putBoolean("profileCreated", true);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    UI.displayToast(getApplicationContext(), "Failed to create your profile");
-                    Log.d("On Failure", "Failed to upload data to firebase realtime database");
+            uploadProfileData(editor, user);
+            saveChosenAccount(editor);
+            startMainActivity();
 
-                }
-            });
-
-
-            if (buyerRadioButton.isChecked() == true){
-                editor.putBoolean("buyerAccountTypeChosen", true);
-                editor.putBoolean("farmerAccountTypeChosen", false);
-                editor.apply();
-            }
-
-            if (farmerRadioButton.isChecked() == true){
-                editor.putBoolean("farmerAccountTypeChosen", true);
-                editor.putBoolean("buyerAccountTypeChosen", false);
-                editor.apply();
-            }
-
-            Intent intent = new Intent(CreateProfileActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    private void uploadProfileData(SharedPreferences.Editor editor, User user){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference profileReference = databaseReference.child("profiles");
+        profileReference.push().setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                UI.displayToast(getApplicationContext(), "Profile Data Uploaded");
+                Log.d("On Success", "Uploaded data to firebase realtime database");
+                editor.putBoolean("profileCreated", true);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                UI.displayToast(getApplicationContext(), "Failed to create your profile");
+                Log.d("On Failure", "Failed to upload data to firebase realtime database");
+
+            }
+        });
+    }
+
+    private void saveChosenAccount(SharedPreferences.Editor editor){
+        if (buyerRadioButton.isChecked() == true){
+            editor.putBoolean("buyerAccountTypeChosen", true);
+            editor.putBoolean("farmerAccountTypeChosen", false);
+            editor.apply();
+        }
+
+        if (farmerRadioButton.isChecked() == true){
+            editor.putBoolean("farmerAccountTypeChosen", true);
+            editor.putBoolean("buyerAccountTypeChosen", false);
+            editor.apply();
+        }
+    }
+    private void startMainActivity(){
+        Intent intent = new Intent(CreateProfileActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void initUI(){

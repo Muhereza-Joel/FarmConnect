@@ -27,6 +27,7 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.services.FetchContactsService;
 import com.moels.farmconnect.utility_classes.UI;
 
 import java.util.concurrent.TimeUnit;
@@ -87,12 +88,16 @@ public class AuthenticateUserActivity extends AppCompatActivity {
                                             SharedPreferences myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
                                             SharedPreferences.Editor editor = myAppPreferences.edit();
                                             editor.putBoolean("phoneNumberAuthenticated", true);
+                                            editor.putString("authenticatedPhoneNumber", getIntent().getStringExtra("phoneNumber"));
                                             editor.apply();
 
                                             Intent createProfileActivity = new Intent(getApplicationContext(), CreateProfileActivity.class);
                                             createProfileActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                             createProfileActivity.putExtra("phoneNumber", getIntent().getStringExtra("phoneNumber"));
                                             startActivity(createProfileActivity);
+
+//                                            Intent fetchContactsService = new Intent(getApplicationContext(), FetchContactsService.class);
+//                                            startService(fetchContactsService);
                                             }
 
                                             else {

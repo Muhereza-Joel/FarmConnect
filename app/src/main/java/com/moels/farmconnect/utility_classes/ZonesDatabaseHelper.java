@@ -18,14 +18,16 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String query = "CREATE TABLE zones(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        "zoneName TEXT, " +
-                        "location TEXT, " +
-                        "products TEXT, " +
-                        "description TEXT, " +
-                        "uploaded TEXT)";
-
-        db.execSQL(query);
+        db.execSQL("CREATE TABLE zones(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "zoneName TEXT, " +
+                "location TEXT, " +
+                "products TEXT, " +
+                "description TEXT, " +
+                "uploaded TEXT, " +
+                "owner TEXT, " +
+                "createDate TEXT, " +
+                "createTime TEXT, " +
+                "status TEXT )");
     }
 
     @Override
