@@ -28,17 +28,25 @@ public class SplashScreenActivity extends AppCompatActivity {
 
                 SharedPreferences myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
                 boolean userAuthenticated = myAppPreferences.getBoolean("phoneNumberAuthenticated", false);
+                boolean profileCreated = myAppPreferences.getBoolean("profileCreated", false);
 
                 if (userAuthenticated == true) {
-                    Intent createProfileActivity = new Intent(SplashScreenActivity.this, MainActivity.class);
-                    startActivity(createProfileActivity);
-                    finish();
+
+                    if (profileCreated == true) {
+                        Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Intent intent = new Intent(SplashScreenActivity.this, CreateProfileActivity.class);
+                        intent.putExtra("phoneNumber", myAppPreferences.getString("authenticatedPhoneNumber", "123456789"));
+                        startActivity(intent);
+                    }
 
                 }
 
                 if (userAuthenticated == false){
-                    Intent sendOneTimePasswordActivity = new Intent(SplashScreenActivity.this, WelcomeActivity.class);
-                    startActivity(sendOneTimePasswordActivity);
+                    Intent intent = new Intent(SplashScreenActivity.this, WelcomeActivity.class);
+                    startActivity(intent);
                     finish();
                 }
 
