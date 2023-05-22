@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.moels.farmconnect.fragments.ChatListFragment;
-import com.moels.farmconnect.fragments.ZonesListFragment;
+import com.moels.farmconnect.fragments.BuyerZonesListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return new ChatListFragment();
             case 1:
-                return new ZonesListFragment();
+                return new BuyerZonesListFragment();
             case 2:
                 return new ChatListFragment();
             default:

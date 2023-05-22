@@ -26,7 +26,7 @@ import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ZonesListFragment extends Fragment {
+public class BuyerZonesListFragment extends Fragment {
 
     private static final int DELETE_REQUEST_CODE = 2;
     private RecyclerView zonesListRecyclerView;
