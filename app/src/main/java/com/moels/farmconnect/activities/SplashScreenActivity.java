@@ -34,7 +34,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 if (userAuthenticated == true) {
 
                     if (profileCreated == true) {
-                        Intent intent = new Intent(SplashScreenActivity.this, FinishSetUpActivity.class);
+                        Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
                     } else {
