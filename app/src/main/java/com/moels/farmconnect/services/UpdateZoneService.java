@@ -70,7 +70,7 @@ public class UpdateZoneService extends Service {
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-
+                                //TODO handle updates which failed
                             }
                         });
 
