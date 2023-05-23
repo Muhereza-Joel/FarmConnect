@@ -7,7 +7,7 @@
     android:background="@color/colorPrimary"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".activities.FinishSetUpActivity">
+    tools:context=".activities.FinalizeSetupOfZonesActivity">
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -32,7 +32,7 @@
         android:id="@+id/textViewProgress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Your Contact list..."
+        android:text="Your Collection zones..."
         android:textAlignment="center"
         android:textColor="@color/colorWhite"
         android:textSize="20sp"

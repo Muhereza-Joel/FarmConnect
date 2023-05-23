@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -59,13 +60,25 @@ public class FinishSetUpActivity extends AppCompatActivity implements FetchConta
 
     @Override
     public void onContactsFetchComplete() {
-        Intent intent = new Intent(FinishSetUpActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
+        SharedPreferences myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
+        boolean farmerAccountChosen = myAppPreferences.getBoolean("farmerAccountTypeChosen", false);
+        if (farmerAccountChosen == true){
+            Intent intent = new Intent(FinishSetUpActivity.this, FinalizeSetupOfZonesActivity.class);
+            startActivity(intent);
+            if (bound) {
+                unbindService(serviceConnection);
+                bound = false;
+            }
+            finish();
 
-        if (bound) {
-            unbindService(serviceConnection);
-            bound = false;
+        } else {
+            Intent intent = new Intent(FinishSetUpActivity.this, MainActivity.class);
+            startActivity(intent);
+            if (bound) {
+                unbindService(serviceConnection);
+                bound = false;
+            }
+            finish();
         }
         stopService(new Intent(FinishSetUpActivity.this, FetchContactsService.class));
     }

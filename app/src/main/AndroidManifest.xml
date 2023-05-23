@@ -24,6 +24,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="31">
+        <service
+            android:name=".services.FarmerAccountZonesFetchService"
+            android:enabled="true"
+            android:exported="false"></service>
+
+        <activity
+            android:name=".activities.FinalizeSetupOfZonesActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.FinishSetUpActivity"
             android:exported="false" />
