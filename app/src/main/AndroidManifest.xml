@@ -31,15 +31,15 @@
         <service
             android:name=".services.FetchContactsService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="false" />
         <service
             android:name=".services.UpdateZoneService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="false" />
         <service
             android:name=".services.DeleteZoneService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="false" />
 
         <activity
             android:name=".activities.ZoneDetailsActivity"
@@ -53,7 +53,7 @@
         <service
             android:name=".services.ZoneUploadService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="false" />
 
         <activity
             android:name=".activities.ProductsInAzoneActivity"
