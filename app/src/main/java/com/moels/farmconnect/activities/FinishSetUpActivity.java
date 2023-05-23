@@ -60,26 +60,13 @@ public class FinishSetUpActivity extends AppCompatActivity implements FetchConta
 
     @Override
     public void onContactsFetchComplete() {
-        SharedPreferences myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
-        boolean farmerAccountChosen = myAppPreferences.getBoolean("farmerAccountTypeChosen", false);
-        if (farmerAccountChosen == true){
-            Intent intent = new Intent(FinishSetUpActivity.this, FinalizeSetupOfZonesActivity.class);
-            startActivity(intent);
-            if (bound) {
-                unbindService(serviceConnection);
-                bound = false;
-            }
-            finish();
-
-        } else {
-            Intent intent = new Intent(FinishSetUpActivity.this, MainActivity.class);
-            startActivity(intent);
-            if (bound) {
-                unbindService(serviceConnection);
-                bound = false;
-            }
-            finish();
+        Intent intent = new Intent(FinishSetUpActivity.this, MainActivity.class);
+        startActivity(intent);
+        if (bound) {
+            unbindService(serviceConnection);
+            bound = false;
         }
+        finish();
         stopService(new Intent(FinishSetUpActivity.this, FetchContactsService.class));
     }
 }

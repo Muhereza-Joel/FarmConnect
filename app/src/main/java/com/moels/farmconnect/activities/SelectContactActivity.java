@@ -2,10 +2,12 @@ package com.moels.farmconnect.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -13,6 +15,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
@@ -39,13 +42,16 @@ import com.google.firebase.database.ValueEventListener;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.adapters.ContactListRecyclerViewAdapter;
 import com.moels.farmconnect.models.ContactCardItem;
+import com.moels.farmconnect.services.FetchContactsService;
 import com.moels.farmconnect.utility_classes.ContactsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.UI;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectContactActivity extends AppCompatActivity {
+public class SelectContactActivity extends AppCompatActivity implements FetchContactsService.ContactsFetchListener{
+    private FetchContactsService fetchContactsService;
+    private boolean bound = false;
     ProgressBar progressBar;
     private static final int REQUEST_PERMISSION_CODE = 100;
     private Toolbar callActivityToolBar;
@@ -57,6 +63,21 @@ public class SelectContactActivity extends AppCompatActivity {
     private SQLiteDatabase sqLiteDatabase;
     SharedPreferences myAppPreferences;
     SharedPreferences.Editor editor;
+
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            FetchContactsService.FetchContactsServiceBinder fetchContactsServiceBinder = (FetchContactsService.FetchContactsServiceBinder) binder;
+            fetchContactsService = fetchContactsServiceBinder.getFetchContactsService();
+            fetchContactsService.setContactsFetchListener(SelectContactActivity.this);
+            bound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            bound = false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,14 +100,8 @@ public class SelectContactActivity extends AppCompatActivity {
         boolean contactListFetched = myAppPreferences.getBoolean("contactListFetched", false);
 
 
-        if (contactListFetched == false){
-            UI.show(progressBar);
-            queryFirebaseForMatchingPhoneNumbers(getAllContactsOnPhone());
-            editor.putBoolean("contactListFetched", true);
-            editor.apply();
-        } else {
+        if (contactListFetched == true){
             getContactsFromDatabase();
-            UI.hide(progressBar);
         }
 
 
@@ -112,7 +127,9 @@ public class SelectContactActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.refresh_contacts_btn){
             UI.show(progressBar);
-            queryFirebaseForMatchingPhoneNumbers(getAllContactsOnPhone());
+            Intent intent = new Intent(this, FetchContactsService.class);
+            startService(intent);
+            bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -142,55 +159,6 @@ public class SelectContactActivity extends AppCompatActivity {
         }, REQUEST_PERMISSION_CODE);
     }
 
-    private void queryFirebaseForMatchingPhoneNumbers(List<String> phoneBookList) {
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("profiles");
-        Query query = usersRef.orderByChild("phoneNumber");
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (String phoneNumber : phoneBookList) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        String key = dataSnapshot.getKey();
-                        String firebasePhoneNumber = snapshot.child("phoneNumber").getValue(String.class);
-                        String firebaseUsername = snapshot.child("name").getValue(String.class);
-
-                        if (phoneNumber.equals(firebasePhoneNumber)) {
-                            Log.d("Firebase Phone Number", firebasePhoneNumber);
-                            insertContactToDatabase(firebaseUsername, firebasePhoneNumber);
-                            break; // move on to next phone number in phoneBookList
-                        }
-                        else Log.d("Firebase", "No Match Of Contacts Found");
-                    }
-
-                }
-                UI.hide(progressBar);
-                getContactsFromDatabase();
-                UI.displayToast(getApplicationContext(), "Contact List Updated");
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                UI.displayToast(getApplicationContext(), databaseError.getMessage());
-                UI.hide(progressBar);
-                editor.putBoolean("contactListFetched", false);
-                editor.apply();
-                Log.e("Firebase", "Error: " + databaseError.getMessage());
-            }
-        });
-    }
-    private void insertContactToDatabase(String username, String phoneNumber){
-        String query = "SELECT * FROM contacts WHERE phoneNumber = ?";
-        Cursor cursor = sqLiteDatabase.rawQuery(query, new String[]{phoneNumber});
-        if (cursor.getCount() > 0){
-            Log.d("FarmConnect", "Phone Number Exists In Database Already");
-        } else {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("username", username);
-            contentValues.put("phoneNumber", phoneNumber);
-            sqLiteDatabase.insert("contacts", null, contentValues);
-            Log.d("FarmConnect", "Contact Inserted");
-        }
-    }
     private void getContactsFromDatabase(){
         ContactCardItem contactCardItem;
         contactsList = new ArrayList<>();
@@ -221,31 +189,16 @@ public class SelectContactActivity extends AppCompatActivity {
 
     }
 
-    @SuppressLint("Range")
-    private List<String> getAllContactsOnPhone(){
-        List<String> listOfContactsOnPhone = new ArrayList<>();
-        ContentResolver contentResolver = getContentResolver();
 
-        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-        String[] projection = { ContactsContract.CommonDataKinds.Phone.NUMBER };
-        String selection = null;
-        String[] selectionArgs = null;
-        String sortOrder = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC";
-
-        Cursor cursor = contentResolver.query(uri, projection, selection, selectionArgs, sortOrder);
-
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                String phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                listOfContactsOnPhone.add(phoneNumber);
-                Log.d("Phone Number", phoneNumber);
-            }
-            cursor.close();
-            // Use the phone numbers retrieved from the ContentProvider
-        } else {
-            // Handle the case where the cursor is null
+    @Override
+    public void onContactsFetchComplete() {
+        if (bound) {
+            unbindService(serviceConnection);
+            bound = false;
         }
-
-        return listOfContactsOnPhone;
+        UI.hide(progressBar);
+        getContactsFromDatabase();
+        UI.displayToast(getApplicationContext(), "Contact List Updated");
+        stopService(new Intent(SelectContactActivity.this, FetchContactsService.class));
     }
 }

@@ -16,6 +16,8 @@ import android.os.IBinder;
 import android.provider.ContactsContract;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -56,12 +58,10 @@ public class FetchContactsService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        boolean contactListFetched = myAppPreferences.getBoolean("contactListFetched", false);
-        if (contactListFetched == false){
             queryFirebaseForMatchingPhoneNumbers(getAllContactsOnPhone());
             editor.putBoolean("contactListFetched", true);
             editor.apply();
-        }
+
         return START_STICKY;
     }
 
@@ -92,45 +92,58 @@ public class FetchContactsService extends Service {
 
     private void queryFirebaseForMatchingPhoneNumbers(List<String> phoneBookList) {
         runnable = new Runnable() {
-            @Override
+                        @Override
             public void run() {
-                DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("profiles");
-                Query query = usersRef.orderByChild("phoneNumber");
-                query.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (String phoneNumber : phoneBookList) {
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                String key = dataSnapshot.getKey();
-                                String firebasePhoneNumber = snapshot.child("phoneNumber").getValue(String.class);
-                                String firebaseUsername = snapshot.child("name").getValue(String.class);
-                                if (phoneNumber.equals(firebasePhoneNumber)) {
-                                    Log.d("Firebase Phone Number", firebasePhoneNumber);
-                                    insertContactToDatabase(firebaseUsername, firebasePhoneNumber);
-                                    break; // move on to next phone number in phoneBookList
-                                }
-                                else Log.d("Firebase", "No Match Of Contacts Found");
-                            }
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("profiles");
+        Query query = usersRef.orderByChild("phoneNumber");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (String phoneNumber : phoneBookList) {
+                    boolean isMatchFound = false; // Flag to track if a match is found for a phone number
 
-                        }
+                    // Clean phone number by removing non-digit characters
+                    String cleanedPhoneNumber = phoneNumber.replaceAll("[^0-9]", "");
 
-                        if (contactsFetchListener != null){
-                            contactsFetchListener.onContactsFetchComplete();
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String key = snapshot.getKey();
+                        String firebasePhoneNumber = snapshot.child("phoneNumber").getValue(String.class);
+                        String cleanedFirebasePhoneNumber = firebasePhoneNumber.replaceAll("[^0-9]", "");
+
+                        // Compare phone numbers without country codes
+                        if (cleanedPhoneNumber.endsWith(cleanedFirebasePhoneNumber)
+                                || cleanedFirebasePhoneNumber.endsWith(cleanedPhoneNumber)) {
+                            Log.d("Firebase Phone Number", firebasePhoneNumber);
+                            insertContactToDatabase(snapshot.child("name").getValue(String.class), firebasePhoneNumber);
+                            isMatchFound = true; // Set the flag to true if a match is found
+                            break; // Exit the inner loop
                         }
-                        stopSelf();
                     }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        editor.putBoolean("contactListFetched", false);
-                        editor.apply();
-                        Log.e("Firebase", "Error: " + databaseError.getMessage());
-                        stopSelf();
+
+                    if (!isMatchFound) {
+                        Log.d("Firebase", "No Match Of Contacts Found");
                     }
-                });
+                }
+                contactsFetchListener.onContactsFetchComplete();
+                stopSelf();
             }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                editor.putBoolean("contactListFetched", false);
+                        editor.apply();
+                        Log.e("Firebase", "Error: " + error.getMessage());
+                        stopSelf();
+            }
+
+            // Other overridden methods of ValueEventListener
+
+        });
+                        }
         };
         handler.postDelayed(runnable, POLL_INTERVAL);
     }
+
 
     private List<String> getAllContactsOnPhone(){
         List<String> listOfContactsOnPhone = new ArrayList<>();
