@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.ContactsContract;
@@ -22,6 +23,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.moels.farmconnect.activities.CreateProfileActivity;
+import com.moels.farmconnect.activities.FinishSetUpActivity;
+import com.moels.farmconnect.activities.MainActivity;
 import com.moels.farmconnect.dialogs.ProgressDialog;
 import com.moels.farmconnect.utility_classes.ContactsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.UI;
@@ -38,7 +41,8 @@ public class FetchContactsService extends Service {
     private Runnable runnable;
     private SQLiteDatabase sqLiteDatabase;
     private ContactsDatabaseHelper contactsDatabaseHelper;
-    private ProgressDialog progressDialog;
+    private final IBinder binder = new FetchContactsServiceBinder();
+    private ContactsFetchListener contactsFetchListener;
 
     @Override
     public void onCreate() {
@@ -59,6 +63,31 @@ public class FetchContactsService extends Service {
             editor.apply();
         }
         return START_STICKY;
+    }
+
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return binder;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    public class FetchContactsServiceBinder extends Binder {
+        public FetchContactsService getFetchContactsService(){
+            return FetchContactsService.this;
+        }
+    }
+
+    public void setContactsFetchListener(ContactsFetchListener contactsFetchListener){
+        this.contactsFetchListener = contactsFetchListener;
+    }
+
+    public interface ContactsFetchListener{
+        public void onContactsFetchComplete();
     }
 
     private void queryFirebaseForMatchingPhoneNumbers(List<String> phoneBookList) {
@@ -84,14 +113,18 @@ public class FetchContactsService extends Service {
                             }
 
                         }
-                        stopSelf();
 
+                        if (contactsFetchListener != null){
+                            contactsFetchListener.onContactsFetchComplete();
+                        }
+                        stopSelf();
                     }
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                         editor.putBoolean("contactListFetched", false);
                         editor.apply();
                         Log.e("Firebase", "Error: " + databaseError.getMessage());
+                        stopSelf();
                     }
                 });
             }
@@ -140,14 +173,7 @@ public class FetchContactsService extends Service {
         }
     }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
-    }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
+
+
 }

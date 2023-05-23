@@ -39,9 +39,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.dialogs.ProgressDialog;
 import com.moels.farmconnect.models.User;
-import com.moels.farmconnect.services.FetchContactsService;
 import com.moels.farmconnect.utility_classes.UI;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -49,8 +47,6 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import kotlin.jvm.internal.PackageReference;
 
 public class CreateProfileActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -207,7 +203,7 @@ public class CreateProfileActivity extends AppCompatActivity {
 
             uploadProfileData(editor, user);
             saveChosenAccount(editor);
-            startMainActivity();
+            startFinishSetUpActivity();
 
             return true;
         }
@@ -223,6 +219,7 @@ public class CreateProfileActivity extends AppCompatActivity {
                 UI.displayToast(getApplicationContext(), "Profile Data Uploaded");
                 Log.d("On Success", "Uploaded data to firebase realtime database");
                 editor.putBoolean("profileCreated", true);
+                editor.apply();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -247,8 +244,8 @@ public class CreateProfileActivity extends AppCompatActivity {
             editor.apply();
         }
     }
-    private void startMainActivity(){
-        Intent intent = new Intent(CreateProfileActivity.this, MainActivity.class);
+    private void startFinishSetUpActivity(){
+        Intent intent = new Intent(CreateProfileActivity.this, FinishSetUpActivity.class);
         startActivity(intent);
         finish();
     }

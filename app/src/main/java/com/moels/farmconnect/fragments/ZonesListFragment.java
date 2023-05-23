@@ -71,6 +71,8 @@ public class ZonesListFragment extends Fragment {
                 intent.putExtra("zoneName", zoneCardItems.get(position).getZoneName());
                 intent.putExtra("zoneID", zoneCardItems.get(position).get_id());
                 startActivityForResult(intent, DELETE_REQUEST_CODE);
+
+                //TODO launch add product to zone incase farmer account chosen
             }
         });
         zoneListRecyclerViewAdapter.notifyDataSetChanged();
@@ -88,6 +90,8 @@ public class ZonesListFragment extends Fragment {
     private List<ZoneCardItem> getZonesFromDatabase(){
         List<ZoneCardItem> listOfZoneCardItems = new ArrayList<>();
         String [] columnsToPick = {"_id","zoneName", "location", "createTime", "status"};
+
+        //TODO select from farmer zones database if farmer account chosen
         Cursor cursor = sqLiteDatabase.query("zones", columnsToPick, null, null, null, null, null);
 
         if (cursor.moveToNext()) {

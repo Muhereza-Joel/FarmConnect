@@ -96,8 +96,6 @@ public class AuthenticateUserActivity extends AppCompatActivity {
                                             createProfileActivity.putExtra("phoneNumber", getIntent().getStringExtra("phoneNumber"));
                                             startActivity(createProfileActivity);
 
-//                                            Intent fetchContactsService = new Intent(getApplicationContext(), FetchContactsService.class);
-//                                            startService(fetchContactsService);
                                             }
 
                                             else {

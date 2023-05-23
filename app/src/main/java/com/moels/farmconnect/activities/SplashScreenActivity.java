@@ -29,11 +29,12 @@ public class SplashScreenActivity extends AppCompatActivity {
                 SharedPreferences myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
                 boolean userAuthenticated = myAppPreferences.getBoolean("phoneNumberAuthenticated", false);
                 boolean profileCreated = myAppPreferences.getBoolean("profileCreated", false);
+                System.out.println(profileCreated);
 
                 if (userAuthenticated == true) {
 
                     if (profileCreated == true) {
-                        Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+                        Intent intent = new Intent(SplashScreenActivity.this, FinishSetUpActivity.class);
                         startActivity(intent);
                         finish();
                     } else {
@@ -43,6 +44,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                     }
 
                 }
+
 
                 if (userAuthenticated == false){
                     Intent intent = new Intent(SplashScreenActivity.this, WelcomeActivity.class);
