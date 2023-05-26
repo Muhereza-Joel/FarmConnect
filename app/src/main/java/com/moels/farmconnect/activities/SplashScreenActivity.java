@@ -41,6 +41,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                         Intent intent = new Intent(SplashScreenActivity.this, CreateProfileActivity.class);
                         intent.putExtra("phoneNumber", myAppPreferences.getString("authenticatedPhoneNumber", "123456789"));
                         startActivity(intent);
+                        finish();
                     }
 
                 }

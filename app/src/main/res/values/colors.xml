@@ -11,5 +11,5 @@
     <color name="colorBlack">#000000</color>
     <color name="colorDivider">#BDBDBD</color>
     <color name="colorWhite">#FFFFFF</color>
-    <color name="grayWhite">#D3DDD3</color>
+    <color name="grayWhite">#EBFFFFFF</color>
 </resources>

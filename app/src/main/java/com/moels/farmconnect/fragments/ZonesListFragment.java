@@ -2,7 +2,9 @@ package com.moels.farmconnect.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -17,6 +19,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.activities.AddProductToZoneActivity;
+import com.moels.farmconnect.activities.FinalizeSetupOfZonesActivity;
 import com.moels.farmconnect.activities.MainActivity;
 import com.moels.farmconnect.activities.ProductsInAzoneActivity;
 import com.moels.farmconnect.adapters.ZoneListRecyclerViewAdapter;
@@ -67,12 +71,21 @@ public class ZonesListFragment extends Fragment {
         zoneListRecyclerViewAdapter.setListener(new ZoneListRecyclerViewAdapter.Listener() {
             @Override
             public void onClick(int position) {
-                Intent intent = new Intent(getContext(), ProductsInAzoneActivity.class);
-                intent.putExtra("zoneName", zoneCardItems.get(position).getZoneName());
-                intent.putExtra("zoneID", zoneCardItems.get(position).get_id());
-                startActivityForResult(intent, DELETE_REQUEST_CODE);
 
-                //TODO launch add product to zone incase farmer account chosen
+                SharedPreferences myAppPreferences = getActivity().getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
+                if (myAppPreferences.getBoolean("farmerAccountTypeChosen", false) == true){
+                    Intent intent = new Intent(getContext(), AddProductToZoneActivity.class);
+                    intent.putExtra("zoneName", zoneCardItems.get(position).getZoneName());
+                    intent.putExtra("zoneID", zoneCardItems.get(position).get_id());
+                    startActivity(intent);
+
+                } else {
+                    Intent intent = new Intent(getContext(), ProductsInAzoneActivity.class);
+                    intent.putExtra("zoneName", zoneCardItems.get(position).getZoneName());
+                    intent.putExtra("zoneID", zoneCardItems.get(position).get_id());
+                    startActivityForResult(intent, DELETE_REQUEST_CODE);
+                }
+
             }
         });
         zoneListRecyclerViewAdapter.notifyDataSetChanged();

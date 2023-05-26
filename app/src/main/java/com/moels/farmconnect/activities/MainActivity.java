@@ -11,6 +11,8 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initUI();
+        setUpStatusBar();
 
         if (savedInstanceState != null) {
             int currentlySelectedTab = savedInstanceState.getInt("currentlySelectedTab");
@@ -213,6 +216,14 @@ public class MainActivity extends AppCompatActivity{
         addNewZoneFloatingActionButton = findViewById(R.id.add_new_zone_fab);
         startNewCallFloatingActionButton = findViewById(R.id.start_new_call_fab);
 
+    }
+
+    private void setUpStatusBar(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        }
     }
     private void initTabLayout(){
         //Add fragments to the adapter

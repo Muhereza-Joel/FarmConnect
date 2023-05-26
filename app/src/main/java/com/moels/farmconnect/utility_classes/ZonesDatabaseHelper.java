@@ -8,7 +8,7 @@ import android.util.Log;
 public class ZonesDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "FarmConnectZonesDatabase";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     private SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
@@ -19,6 +19,7 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE zones(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "remote_id TEXT, " +
                 "zoneName TEXT, " +
                 "location TEXT, " +
                 "products TEXT, " +
@@ -35,6 +36,7 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
         if (oldVersion < newVersion){
             db.execSQL("DROP TABLE IF EXISTS zones");
             db.execSQL("CREATE TABLE zones(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                       "remote_id TEXT, " +
                         "zoneName TEXT, " +
                         "location TEXT, " +
                         "products TEXT, " +
