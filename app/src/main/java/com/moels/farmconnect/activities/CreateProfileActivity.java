@@ -39,8 +39,12 @@ import androidx.core.content.ContextCompat;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.models.User;
 import com.moels.farmconnect.utility_classes.UI;
@@ -214,26 +218,50 @@ public class CreateProfileActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    private void uploadProfileData(SharedPreferences.Editor editor, User user){
+
+    private void uploadProfileData(SharedPreferences.Editor editor, User user) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         DatabaseReference profileReference = databaseReference.child("profiles");
-        profileReference.push().setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                UI.displayToast(getApplicationContext(), "Profile Data Uploaded");
-                Log.d("On Success", "Uploaded data to firebase realtime database");
-                editor.putBoolean("profileCreated", true);
-                editor.apply();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                UI.displayToast(getApplicationContext(), "Failed to create your profile");
-                Log.d("On Failure", "Failed to upload data to firebase realtime database");
 
+        // Check if the user already exists in the database
+        Query query = profileReference.orderByChild("phoneNumber").equalTo(user.getPhoneNumber());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // User already exists, handle accordingly
+                    UI.displayToast(getApplicationContext(), "Profile already exists");
+                    editor.putBoolean("profileCreated", true);
+                    editor.apply();
+                } else {
+                    // User doesn't exist, proceed with uploading
+                    profileReference.push().setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            UI.displayToast(getApplicationContext(), "Profile Data Uploaded");
+                            Log.d("On Success", "Uploaded data to Firebase Realtime Database");
+                            editor.putBoolean("profileCreated", true);
+                            editor.apply();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            UI.displayToast(getApplicationContext(), "Failed to create your profile");
+                            Log.d("On Failure", "Failed to upload data to Firebase Realtime Database");
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle any errors in the database operation
+                UI.displayToast(getApplicationContext(), "Failed to check profile existence");
+                Log.d("Database Error", databaseError.getMessage());
             }
         });
     }
+
 
     private void saveChosenAccount(SharedPreferences.Editor editor){
         if (buyerRadioButton.isChecked() == true){

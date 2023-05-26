@@ -25,9 +25,13 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="31">
         <service
-            android:name=".services.FarmerAccountZonesFetchService"
+            android:name=".services.BuyerAccountZoneFetchService"
             android:enabled="true"
             android:exported="false"></service>
+        <service
+            android:name=".services.FarmerAccountZonesFetchService"
+            android:enabled="true"
+            android:exported="false" />
 
         <activity
             android:name=".activities.FinalizeSetupOfZonesActivity"
@@ -74,7 +78,7 @@
         <activity
             android:name=".activities.AddProductToZoneActivity"
             android:exported="false"
-            android:parentActivityName=".activities.MainActivity"/>
+            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.AddNewZoneActivity"
             android:exported="false"

@@ -1,15 +1,15 @@
 package com.moels.farmconnect.services;
 
-import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
-import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -28,15 +28,17 @@ import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FarmerAccountZonesFetchService extends Service {
+public class BuyerAccountZoneFetchService extends Service {
     private static final int POLL_INTERVAL = 2000;
     private Handler handler;
     private Runnable runnable;
-    private SQLiteDatabase zonesDatabase, contactsDatabase;
+    private SQLiteDatabase zonesDatabase;
     private ZonesFetchListener zonesFetchListener;
     private final IBinder binder = new ZonesFetchServiceBinder();
     private ContactsDatabaseHelper contactsDatabaseHelper;
     private ZonesDatabaseHelper zonesDatabaseHelper;
+
+    SharedPreferences myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
 
     @Override
     public void onCreate() {
@@ -45,7 +47,6 @@ public class FarmerAccountZonesFetchService extends Service {
         contactsDatabaseHelper = new ContactsDatabaseHelper(getApplicationContext());
         zonesDatabaseHelper = new ZonesDatabaseHelper(getApplicationContext());
         zonesDatabase = zonesDatabaseHelper.getWritableDatabase();
-        contactsDatabase = contactsDatabaseHelper.getReadableDatabase();
     }
 
     @Override
@@ -60,8 +61,8 @@ public class FarmerAccountZonesFetchService extends Service {
     }
 
     public class ZonesFetchServiceBinder extends Binder {
-        public FarmerAccountZonesFetchService getFarmerAccountZonesFetchService(){
-            return FarmerAccountZonesFetchService.this;
+        public BuyerAccountZoneFetchService getBuyerAccountZonesFetchService(){
+            return BuyerAccountZoneFetchService.this;
         }
 
     }
@@ -71,7 +72,7 @@ public class FarmerAccountZonesFetchService extends Service {
     }
 
     public interface ZonesFetchListener{
-        void onFarmerZonesFetchComplete();
+        void onBuyerZonesFetchComplete();
     }
 
     @Override
@@ -83,57 +84,32 @@ public class FarmerAccountZonesFetchService extends Service {
         runnable = new Runnable() {
             @Override
             public void run() {
-                retrieveZonesByPhoneNumbers(getContactsFromDatabase());
+                retrieveZoneByPhoneNumber(myAppPreferences.getString("authenticatedPhoneNumber", "123456789"));
             }
         };
         handler.postDelayed(runnable, POLL_INTERVAL);
     }
 
-    private void retrieveZonesByPhoneNumbers(List<String> phoneNumbers) {
+    private void retrieveZoneByPhoneNumber(String phoneNumber) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        Query query = databaseReference.child("zones").child(phoneNumber);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Zone> zoneList = new ArrayList<>();
 
-        for (String phoneNumber : phoneNumbers) {
-            Query query = databaseReference.child("zones").child(phoneNumber);
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    List<Zone> zoneList = new ArrayList<>();
-
-                    for (DataSnapshot zoneSnapshot : dataSnapshot.getChildren()) {
-                        Zone zone = zoneSnapshot.getValue(Zone.class);
-                        zoneList.add(zone);
-                    }
-                    getDetailsForEveryZone(zoneList);
-
+                for (DataSnapshot zoneSnapshot : dataSnapshot.getChildren()) {
+                    Zone zone = zoneSnapshot.getValue(Zone.class);
+                    zoneList.add(zone);
                 }
+                getDetailsForEveryZone(zoneList);
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    UI.displayToast(getApplicationContext(), "Error retrieving zone data");
-                }
-            });
-        }
-    }
-
-
-    private ArrayList<String> getContactsFromDatabase(){
-        ArrayList<String> contactsList = new ArrayList<>();
-        String [] columnsToPick = {"_id","username", "phoneNumber"};
-        Cursor cursor = contactsDatabase.query("contacts", columnsToPick,
-                null, null, null, null, null);
-
-        if (cursor.moveToFirst()){
-            do {
-                @SuppressLint("Range") String phoneNumber = cursor.getString(cursor.getColumnIndex("phoneNumber"));
-                if (!(TextUtils.isEmpty(phoneNumber))){
-                    contactsList.add(phoneNumber);
-                }
-            } while (cursor.moveToNext());
-        }
-        else {
-            Log.d("FarmConnect", "No Contacts to pick");
-        }
-        return contactsList;
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                UI.displayToast(getApplicationContext(), "Error retrieving zone data");
+            }
+        });
     }
 
     private void getDetailsForEveryZone(List<Zone> zoneList) {
@@ -154,7 +130,7 @@ public class FarmerAccountZonesFetchService extends Service {
 
             }
         }
-        zonesFetchListener.onFarmerZonesFetchComplete();
+        zonesFetchListener.onBuyerZonesFetchComplete();
         stopSelf();
     }
 

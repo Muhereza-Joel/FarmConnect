@@ -7,6 +7,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -14,14 +15,15 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.services.BuyerAccountZoneFetchService;
 import com.moels.farmconnect.services.FarmerAccountZonesFetchService;
-import com.moels.farmconnect.services.FetchContactsService;
 
-public class FinalizeSetupOfZonesActivity extends AppCompatActivity implements FarmerAccountZonesFetchService.ZonesFetchListener {
+public class FinalizeSetupOfZonesActivity extends AppCompatActivity implements FarmerAccountZonesFetchService.ZonesFetchListener, BuyerAccountZoneFetchService.ZonesFetchListener {
     private FarmerAccountZonesFetchService farmerAccountZonesFetchService;
+    private BuyerAccountZoneFetchService buyerAccountZoneFetchService;
     private boolean bound = false;
 
-    private ServiceConnection serviceConnection = new ServiceConnection() {
+    private ServiceConnection farmerServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder binder) {
             FarmerAccountZonesFetchService.ZonesFetchServiceBinder zonesFetchServiceBinder = (FarmerAccountZonesFetchService.ZonesFetchServiceBinder) binder;
@@ -36,12 +38,36 @@ public class FinalizeSetupOfZonesActivity extends AppCompatActivity implements F
         }
     };
 
+    private ServiceConnection buyerServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            BuyerAccountZoneFetchService.ZonesFetchServiceBinder zonesFetchServiceBinder = (BuyerAccountZoneFetchService.ZonesFetchServiceBinder) binder;
+            buyerAccountZoneFetchService = zonesFetchServiceBinder.getBuyerAccountZonesFetchService();
+            buyerAccountZoneFetchService.setZonesFetchListener(FinalizeSetupOfZonesActivity.this);
+            bound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            bound = false;
+        }
+    };
+
     @Override
     protected void onStart() {
         super.onStart();
-        Intent intent = new Intent(this, FarmerAccountZonesFetchService.class);
-        startService(intent);
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("YourSharedPreferencesName", Context.MODE_PRIVATE);
+
+        // Start and bind the corresponding service
+        if (sharedPreferences.getBoolean("buyerAccountTypeChosen", false) == true) {
+            Intent buyerService = new Intent(this, BuyerAccountZoneFetchService.class);
+            startService(buyerService);
+            bindService(buyerService, buyerServiceConnection, Context.BIND_AUTO_CREATE);
+        } else {
+            Intent farmerService = new Intent(this, FarmerAccountZonesFetchService.class);
+            startService(farmerService);
+            bindService(farmerService, farmerServiceConnection, Context.BIND_AUTO_CREATE);
+        }
     }
 
     @Override
@@ -55,19 +81,34 @@ public class FinalizeSetupOfZonesActivity extends AppCompatActivity implements F
     protected void onStop() {
         super.onStop();
         if (bound){
-            unbindService(serviceConnection);
+            unbindService(farmerServiceConnection);
+            unbindService(buyerServiceConnection);
             bound = false;
         }
     }
 
     @Override
-    public void onZonesFetchComplete() {
+    public void onBuyerZonesFetchComplete() {
         Intent intent = new Intent(FinalizeSetupOfZonesActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
 
         if (bound){
-            unbindService(serviceConnection);
+            unbindService(buyerServiceConnection);
+            bound = false;
+        }
+        stopService(new Intent(FinalizeSetupOfZonesActivity.this, BuyerAccountZoneFetchService.class));
+    }
+
+
+    @Override
+    public void onFarmerZonesFetchComplete() {
+        Intent intent = new Intent(FinalizeSetupOfZonesActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+
+        if (bound){
+            unbindService(farmerServiceConnection);
             bound = false;
         }
         stopService(new Intent(FinalizeSetupOfZonesActivity.this, FarmerAccountZonesFetchService.class));
