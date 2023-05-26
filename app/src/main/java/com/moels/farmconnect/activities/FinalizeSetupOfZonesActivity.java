@@ -1,13 +1,17 @@
 package com.moels.farmconnect.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.services.FarmerAccountZonesFetchService;
@@ -44,6 +48,7 @@ public class FinalizeSetupOfZonesActivity extends AppCompatActivity implements F
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_finalize_setup_ofzones);
+        setUpStatusBar();
     }
 
     @Override
@@ -66,5 +71,13 @@ public class FinalizeSetupOfZonesActivity extends AppCompatActivity implements F
             bound = false;
         }
         stopService(new Intent(FinalizeSetupOfZonesActivity.this, FarmerAccountZonesFetchService.class));
+    }
+
+    private void setUpStatusBar(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        }
     }
 }

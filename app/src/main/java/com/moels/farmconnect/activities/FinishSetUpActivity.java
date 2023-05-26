@@ -1,15 +1,19 @@
 package com.moels.farmconnect.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.services.FetchContactsService;
@@ -46,6 +50,7 @@ public class FinishSetUpActivity extends AppCompatActivity implements FetchConta
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_finish_set_up);
+        setUpStatusBar();
     }
 
 
@@ -78,5 +83,13 @@ public class FinishSetUpActivity extends AppCompatActivity implements FetchConta
         }
 
         stopService(new Intent(FinishSetUpActivity.this, FetchContactsService.class));
+    }
+
+    private void setUpStatusBar(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        }
     }
 }

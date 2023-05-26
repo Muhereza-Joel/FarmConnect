@@ -12,12 +12,15 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -65,6 +68,7 @@ public class CreateProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_profile);
         initUI();
+        setUpStatusBar();
         setSupportActionBar(toolbar);
 
         UI.setUpActionBar(getSupportActionBar(),"Create Profile");
@@ -261,5 +265,13 @@ public class CreateProfileActivity extends AppCompatActivity {
         farmerRadioButton = findViewById(R.id.farmer_user_type_radio_button);
         genderSpinner = findViewById(R.id.gender);
         accountTypeRadioGroup = findViewById(R.id.use_type_radio_group);
+    }
+
+    private void setUpStatusBar(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        }
     }
 }

@@ -1,13 +1,17 @@
 package com.moels.farmconnect.activities;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.moels.farmconnect.R;
@@ -22,6 +26,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         initUI();
+        setUpStatusBar();
 
         String activeChatUsername = getIntent().getStringExtra("activeChatUsername");
         String profilePictureUrl = getIntent().getStringExtra("profilePicture");
@@ -42,6 +47,12 @@ public class ChatActivity extends AppCompatActivity {
         activeChatTextView = findViewById(R.id.active_chat_username);
         backButton = findViewById(R.id.back_button);
     }
-
+    private void setUpStatusBar(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        }
+    }
 
 }
