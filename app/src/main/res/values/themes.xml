@@ -13,6 +13,7 @@
         <item name="android:statusBarColor" tools:targetApi="21">@color/colorPrimary</item>
         <item name="android:windowTranslucentStatus">true</item>
         <!-- Customize your theme here. -->
+        <item name="colorControlNormal">@color/colorWhite</item>
     </style>
 
     <style name="MyTabLayoutStyle" parent="Widget.Design.TabLayout">
@@ -30,5 +31,20 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <item name="android:textColorSecondary">@color/colorWhite</item>
     </style>
+
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <!-- Customize the search icon color -->
+        <item name="searchIcon">@drawable/baseline_search_24</item>
+        <!-- Customize the close icon color -->
+        <item name="closeIcon">@drawable/baseline_search_24</item>
+        <!-- Customize the voice search icon color -->
+        <item name="voiceIcon">@drawable/baseline_search_24</item>
+        <!-- Customize the submit button color -->
+        <!-- Customize the search text color -->
+        <item name="android:textColor">@color/colorWhite</item>
+        <!-- Customize the hint text color -->
+        <item name="android:textColorHint">@color/colorWhite</item>
+    </style>
+
 
 </resources>
