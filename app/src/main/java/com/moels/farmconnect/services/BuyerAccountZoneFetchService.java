@@ -78,6 +78,7 @@ public class BuyerAccountZoneFetchService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        handler.removeCallbacks(runnable);
     }
 
     private void getZonesFromFirebase(){

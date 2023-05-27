@@ -60,9 +60,9 @@ public class ZoneDetailsActivity extends AppCompatActivity {
     }
 
     private void getZoneDetailsFromDatabase(){
-        String _id = getIntent().getStringExtra("zoneID");
-        String [] columnsToPick = {"_id","zoneName", "location", "products", "description"};
-        Cursor cursor = sqLiteDatabase.query("zones", columnsToPick, "_id = ?", new String[]{_id}, null, null, null);
+        String remote_id = getIntent().getStringExtra("zoneID");
+        String [] columnsToPick = {"remote_id","zoneName", "location", "products", "description"};
+        Cursor cursor = sqLiteDatabase.query("zones", columnsToPick, "remote_id = ?", new String[]{remote_id}, null, null, null);
 
         if (cursor.moveToNext()){
             do {

@@ -51,6 +51,6 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void deleteZoneFromDatabase(String _id){
-        sqLiteDatabase.delete("zones", "_id = ?", new String[] {_id});
+        sqLiteDatabase.delete("zones", "remote_id = ?", new String[] {_id});
     }
 }

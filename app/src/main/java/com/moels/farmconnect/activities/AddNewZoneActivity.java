@@ -1,7 +1,9 @@
 package com.moels.farmconnect.activities;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Build;
@@ -28,13 +30,17 @@ import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
+import java.util.UUID;
 
 public class AddNewZoneActivity extends AppCompatActivity {
 
     private Toolbar addNewZoneActivityToolbar;
     private EditText zoneNameEditText, locationEditText, productsToCollectEditText, descriptionEditText;
     private ZonesDatabaseHelper zonesDatabaseHelper;
-    SQLiteDatabase sqLiteDatabase;
+    private SQLiteDatabase sqLiteDatabase;
+    private SharedPreferences myAppPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +48,7 @@ public class AddNewZoneActivity extends AppCompatActivity {
         initUI();
         setUpStatusBar();
 
+        myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
         setSupportActionBar(addNewZoneActivityToolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Add New Zone", true);
 
@@ -88,12 +95,15 @@ public class AddNewZoneActivity extends AppCompatActivity {
         String description = descriptionEditText.getText().toString();
 
         ContentValues contentValues = new ContentValues();
+        String remote_id = generateUniqueID();
+
+        contentValues.put("remote_id", remote_id);
         contentValues.put("zoneName", zoneName);
         contentValues.put("location", location);
         contentValues.put("products", products);
         contentValues.put("description", description);
         contentValues.put("uploaded", "false");
-        contentValues.put("owner", "0776579631"); //TODO get currently authenticated phone number
+        contentValues.put("owner", myAppPreferences.getString("authenticatedPhoneNumber", "123456789"));
         contentValues.put("createDate", getCurrentDate());
         contentValues.put("createTime", getCurrentTime());
         contentValues.put("status", "active");
@@ -101,6 +111,17 @@ public class AddNewZoneActivity extends AppCompatActivity {
         sqLiteDatabase.insert("zones", null, contentValues);
 
         return true;
+    }
+
+    private static String generateUniqueID(){
+        UUID uuid = UUID.randomUUID();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        String currentTime = simpleDateFormat.format(new Date());
+
+        Random random = new Random();
+        int randomNumber = random.nextInt(10000);
+        String zoneId = currentTime + randomNumber;
+        return zoneId;
     }
 
     private boolean validateTextViews(){

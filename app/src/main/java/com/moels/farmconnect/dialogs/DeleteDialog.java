@@ -38,15 +38,15 @@ public class DeleteDialog extends DialogFragment implements DialogInterface.OnCl
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-         String _id = getActivity().getIntent().getStringExtra("zoneID");
-         new ZonesDatabaseHelper(getContext()).deleteZoneFromDatabase(_id);
+         String remote_id = getActivity().getIntent().getStringExtra("zoneID");
+         new ZonesDatabaseHelper(getContext()).deleteZoneFromDatabase(remote_id);
 
          Intent resultIntent = new Intent();
          getActivity().setResult(Activity.RESULT_OK, resultIntent);
          getActivity().finish();
 
          Intent deleteZoneService = new Intent(getActivity(), DeleteZoneService.class);
-         deleteZoneService.putExtra("zoneID", _id);
+         deleteZoneService.putExtra("zoneID", remote_id);
          getActivity().startService(deleteZoneService);
     }
 

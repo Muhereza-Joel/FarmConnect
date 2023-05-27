@@ -93,9 +93,9 @@ public class EditZoneActivity extends AppCompatActivity {
     }
 
     private void getZoneDetailsFromDatabase(){
-        String _id = getIntent().getStringExtra("zoneID");
-        String [] columnsToPick = {"_id","zoneName", "location", "products", "description"};
-        Cursor cursor = sqLiteDatabase.query("zones", columnsToPick, "_id = ?", new String[]{_id}, null, null, null);
+        String remote_id = getIntent().getStringExtra("zoneID");
+        String [] columnsToPick = {"remote_id","zoneName", "location", "products", "description"};
+        Cursor cursor = sqLiteDatabase.query("zones", columnsToPick, "remote_id = ?", new String[]{remote_id}, null, null, null);
 
         if (cursor.moveToNext()){
             do {
@@ -145,16 +145,16 @@ public class EditZoneActivity extends AppCompatActivity {
         contentValues.put("products", products);
         contentValues.put("description", description);
 
-        String _id = getIntent().getStringExtra("zoneID");
-        sqLiteDatabase.update("zones", contentValues, "_id = ?", new String[] {_id});
-        startServiceToUpdateZoneInFirebase(_id, zoneName, location, products, description);
+        String remote_id = getIntent().getStringExtra("zoneID");
+        sqLiteDatabase.update("zones", contentValues, "remote_id = ?", new String[] {remote_id});
+        startServiceToUpdateZoneInFirebase(remote_id, zoneName, location, products, description);
 
         return true;
     }
 
-    private void startServiceToUpdateZoneInFirebase(String _id, String zoneName, String zoneLocation, String productsToCollect, String description){
+    private void startServiceToUpdateZoneInFirebase(String remote_id, String zoneName, String zoneLocation, String productsToCollect, String description){
         Intent updateZoneService = new Intent(EditZoneActivity.this, UpdateZoneService.class);
-        updateZoneService.putExtra("zoneID", _id);
+        updateZoneService.putExtra("zoneID", remote_id);
         updateZoneService.putExtra("zoneName", zoneName);
         updateZoneService.putExtra("location", zoneLocation);
         updateZoneService.putExtra("productsToCollect", productsToCollect);

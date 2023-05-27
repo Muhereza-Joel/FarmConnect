@@ -1,7 +1,9 @@
 package com.moels.farmconnect.services;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.IBinder;
@@ -17,31 +19,33 @@ public class DeleteZoneService extends Service {
    private static final int POLL_INTERVAL = 2000;
    private Handler handler;
    private Runnable runnable;
+
    private SQLiteDatabase database;
-    //TODO Set deleted flag to true in case the delete process fails
+   private SharedPreferences myAppPreferences;
 
     @Override
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
         database = openOrCreateDatabase("FarmConnectZonesDatabase", MODE_PRIVATE, null);
+        myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        String _id = intent.getStringExtra("zoneID");
-        deleteZoneFromFirebaseDatabase(_id);
+        String remote_id = intent.getStringExtra("zoneID");
+        deleteZoneFromFirebaseDatabase(remote_id);
         return START_STICKY;
     }
 
-    private void deleteZoneFromFirebaseDatabase(String _id){
+    private void deleteZoneFromFirebaseDatabase(String remote_id){
         runnable = new Runnable() {
             @Override
             public void run() {
-                String phoneNumber = "0787203675";  //TODO Replace with the desired phone number
+                String phoneNumber = myAppPreferences.getString("authenticatedPhoneNumber", "123456789");
 
                 DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
-                databaseRef.child("zones").child(phoneNumber).child(_id).removeValue()
+                databaseRef.child("zones").child(phoneNumber).child(remote_id).removeValue()
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {

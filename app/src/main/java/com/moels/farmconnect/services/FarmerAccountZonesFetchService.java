@@ -77,6 +77,8 @@ public class FarmerAccountZonesFetchService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        handler.removeCallbacks(runnable);
+
     }
 
     private void getZonesFromFirebase(){
@@ -158,7 +160,9 @@ public class FarmerAccountZonesFetchService extends Service {
         stopSelf();
     }
 
-    private boolean addZoneToDatabase(String remote_id, String zoneName, String location, String productsToCollect, String description, String owner, String date, String time, String status){
+    private boolean addZoneToDatabase(String remote_id, String zoneName,
+                                      String location, String productsToCollect,
+                                      String description, String owner, String date, String time, String status){
         String query = "SELECT * FROM zones WHERE remote_id = ? AND owner = ?";
         Cursor cursor = zonesDatabase.rawQuery(query, new String[]{remote_id, owner});
         if (cursor.getCount() > 0){

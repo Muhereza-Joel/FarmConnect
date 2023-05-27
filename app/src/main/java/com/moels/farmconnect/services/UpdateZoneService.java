@@ -1,7 +1,9 @@
 package com.moels.farmconnect.services;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.IBinder;
@@ -22,19 +24,21 @@ public class UpdateZoneService extends Service {
     private Handler handler;
     private Runnable runnable;
     private SQLiteDatabase database;
+    private SharedPreferences myAppPreferences;
     // TODO Required to set updated flag for firebase to false in case of any failure
 
     @Override
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
+        myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
 
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        String _id = intent.getStringExtra("zoneID");
-        String cleanedZoneId = _id.replaceAll("[^a-zA-Z0-9_-]", "");
+        String remote_id = intent.getStringExtra("zoneID");
+        String cleanedZoneId = remote_id.replaceAll("[^a-zA-Z0-9_-]", "");
         String zoneName = intent.getStringExtra("zoneName");
         String location = intent.getStringExtra("location");
         String productsToCollect = intent.getStringExtra("productsToCollect");
@@ -45,12 +49,12 @@ public class UpdateZoneService extends Service {
         return START_STICKY;
     }
 
-    private void updateZoneInFirebaseDatabase(String _id, String zoneName, String location, String productsToCollect, String description){
+    private void updateZoneInFirebaseDatabase(String remote_id, String zoneName, String location, String productsToCollect, String description){
 
         runnable = new Runnable() {
             @Override
             public void run() {
-                String phoneNumber = "0787203675";  // TODO Replace the phone number with the authenticated number
+                String phoneNumber = myAppPreferences.getString("authenticatedPhoneNumber", "123456789");
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
                 Map<String, Object> updatedZone = new HashMap<>();
@@ -59,7 +63,7 @@ public class UpdateZoneService extends Service {
                 updatedZone.put("productsToCollect", productsToCollect);
                 updatedZone.put("description", description);
 
-                databaseReference.child("zones").child(phoneNumber).child(_id).updateChildren(updatedZone)
+                databaseReference.child("zones").child(phoneNumber).child(remote_id).updateChildren(updatedZone)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {

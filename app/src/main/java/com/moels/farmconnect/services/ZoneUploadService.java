@@ -2,7 +2,9 @@ package com.moels.farmconnect.services;
 
 import android.annotation.SuppressLint;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -22,10 +24,12 @@ public class ZoneUploadService extends Service {
     private Handler handler;
     private Runnable runnable;
     private SQLiteDatabase database;
+    private SharedPreferences myAppPreferences;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
         handler = new Handler();
         database = openOrCreateDatabase("FarmConnectZonesDatabase", MODE_PRIVATE, null);
     }
@@ -53,7 +57,7 @@ public class ZoneUploadService extends Service {
 
         if (cursor.moveToFirst()) {
             do {
-                @SuppressLint("Range") String id = cursor.getString(cursor.getColumnIndex("_id"));
+                @SuppressLint("Range") String remote_id = cursor.getString(cursor.getColumnIndex("remote_id"));
                 @SuppressLint("Range") String zoneName = cursor.getString(cursor.getColumnIndex("zoneName"));
                 @SuppressLint("Range") String location = cursor.getString(cursor.getColumnIndex("location"));
                 @SuppressLint("Range") String productsToCollect = cursor.getString(cursor.getColumnIndex("products"));
@@ -64,7 +68,7 @@ public class ZoneUploadService extends Service {
                 @SuppressLint("Range") String status = cursor.getString(cursor.getColumnIndex("status"));
 
                 String products = " ";
-                uploadZoneDataToFirebase(id, zoneName, location, productsToCollect, description, owner, createDate, createTime, status, products);
+                uploadZoneDataToFirebase(remote_id, zoneName, location, productsToCollect, description, owner, createDate, createTime, status, products);
 
             } while (cursor.moveToNext());
         }
@@ -72,18 +76,18 @@ public class ZoneUploadService extends Service {
     }
 
     private boolean uploadZoneDataToFirebase(
-            String id, String zoneName, String location, String productsToCollect,
+            String remote_id, String zoneName, String location, String productsToCollect,
             String description, String owner, String createDate, String createTime, String status, String products) {
 
-            String phoneNumber = "0787203675";  // TODO authenticated phone number
+            String phoneNumber = myAppPreferences.getString("authenticatedPhoneNumber", "123456789");
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-            Zone zone = new Zone(id, zoneName, location, productsToCollect, description, owner, createDate, createTime, status, products);
+            Zone zone = new Zone(remote_id, zoneName, location, productsToCollect, description, owner, createDate, createTime, status, products);
 
-            databaseReference.child("zones").child(phoneNumber).child(id).setValue(zone)
+            databaseReference.child("zones").child(phoneNumber).child(remote_id).setValue(zone)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        updateZoneUploadedStatus(id);
+                        updateZoneUploadedStatus(remote_id);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -96,8 +100,8 @@ public class ZoneUploadService extends Service {
             return true;
     }
 
-    private void updateZoneUploadedStatus(String id) {
-        database.execSQL("UPDATE zones SET uploaded = 'true' WHERE _id = " + id);
+    private void updateZoneUploadedStatus(String remote_id) {
+        database.execSQL("UPDATE zones SET uploaded = 'true' WHERE remote_id = " + remote_id);
 
         // Check if the last zone is uploaded and stop the service
         Cursor cursor = database.rawQuery("SELECT COUNT(*) FROM zones WHERE uploaded = 'false'", null);
