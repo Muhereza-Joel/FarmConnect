@@ -65,7 +65,7 @@ public class ZonesListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         zoneCardItems = getZonesFromDatabase();
-        zoneListRecyclerViewAdapter = new ZoneListRecyclerViewAdapter(getZonesFromDatabase(), getContext());
+        zoneListRecyclerViewAdapter = new ZoneListRecyclerViewAdapter(zoneCardItems, getContext());
         zonesListRecyclerView.setAdapter(zoneListRecyclerViewAdapter);
 
         zoneListRecyclerViewAdapter.setListener(new ZoneListRecyclerViewAdapter.Listener() {

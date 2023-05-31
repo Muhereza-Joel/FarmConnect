@@ -23,16 +23,22 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.adapters.ProductsRecyclerViewAdapter;
 import com.moels.farmconnect.dialogs.DeleteDialog;
+import com.moels.farmconnect.fragments.ChatListFragment;
+import com.moels.farmconnect.fragments.ProductsListFragment;
+import com.moels.farmconnect.models.ProductCardItem;
 import com.moels.farmconnect.utility_classes.UI;
 
-public class ProductsInAzoneActivity extends AppCompatActivity {
+import java.util.List;
+
+public class ProductsInAzoneActivity extends AppCompatActivity{
 
     private static final int EDIT_ZONE_REQUEST_CODE = 1;
     private Toolbar toolbar;
-    private TextView productsLabelTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +56,12 @@ public class ProductsInAzoneActivity extends AppCompatActivity {
                 toolbar.setOverflowIcon(icon);
             }
         }
+
+        ProductsListFragment productsListFragment = new ProductsListFragment();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.fragment_container, productsListFragment);
+        fragmentTransaction.commit();
+
 
     }
 
@@ -123,7 +135,6 @@ public class ProductsInAzoneActivity extends AppCompatActivity {
 
     private void initUI(){
         toolbar = findViewById(R.id.products_in_a_zone_activity_toolbar);
-        productsLabelTextView = findViewById(R.id.products_label);
     }
 
     private void setUpStatusBar(){
@@ -133,4 +144,5 @@ public class ProductsInAzoneActivity extends AppCompatActivity {
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
         }
     }
+
 }
