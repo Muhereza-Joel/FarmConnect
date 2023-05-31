@@ -24,8 +24,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="31">
+        <service
+            android:name=".services.FirebaseChangeListenerService"
+            android:enabled="true"
+            android:exported="false"></service>
+
         <activity
-            android:name=".CreateProductActivity"
+            android:name=".activities.CreateProductActivity"
             android:exported="false" />
 
         <service
