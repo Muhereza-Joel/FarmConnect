@@ -60,7 +60,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:background="@drawable/edit_text_border"
-                android:hint="Product Name"
+                android:hint="eg. coffee, beans, potatoes"
                 android:inputType="text"
                 android:maxLength="40"
                 android:padding="10dp" />
@@ -92,7 +92,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:background="@drawable/edit_text_border"
-                android:hint="Product Quantity"
+                android:hint="eg. 10bags or 50kgs"
                 android:inputType="text"
                 android:maxLength="40"
                 android:padding="10dp" />
@@ -124,8 +124,8 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:background="@drawable/edit_text_border"
-                android:hint="Product Price"
-                android:inputType="text"
+                android:hint="eg. 10000"
+                android:inputType="number"
                 android:maxLength="40"
                 android:padding="10dp" />
 
