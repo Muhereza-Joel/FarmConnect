@@ -24,10 +24,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="31">
+        <activity
+            android:name=".CreateProductActivity"
+            android:exported="false" />
+
         <service
             android:name=".services.BuyerAccountZoneFetchService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
         <service
             android:name=".services.FarmerAccountZonesFetchService"
             android:enabled="true"
@@ -78,8 +82,8 @@
         <activity
             android:name=".activities.AddProductToZoneActivity"
             android:exported="false"
-            android:windowSoftInputMode="stateHidden|adjustPan"
-            android:parentActivityName=".activities.MainActivity" />
+            android:parentActivityName=".activities.MainActivity"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".activities.AddNewZoneActivity"
             android:exported="false"

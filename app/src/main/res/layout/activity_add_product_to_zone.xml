@@ -9,44 +9,27 @@
     android:scrollbars="vertical"
     tools:context=".activities.AddProductToZoneActivity">
 
-        <include
-            android:id="@+id/add_product_to_zone_activity_toolbar"
-            layout="@layout/toolbar" />
-
-        <LinearLayout
-            android:id="@+id/products_list_fragment_container"
+        <RelativeLayout
+            android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_below="@id/add_product_to_zone_activity_toolbar">
+            android:layout_below="@+id/scroll_view">
 
-                <TextView
-                    android:id="@+id/products_label"
-                    android:layout_width="match_parent"
+                <include
+                    android:id="@+id/products_in_a_zone_activity_toolbar"
+                    layout="@layout/toolbar" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/add_new_zone_fab"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/add_product_to_zone_activity_toolbar"
-                    android:layout_centerInParent="true"
-                    android:layout_marginLeft="50dp"
-                    android:layout_marginTop="300dp"
-                    android:layout_marginRight="50dp"
-                    android:gravity="center"
-                    android:text="You have not posted any product to this zone"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_margin="20dp"
+                    android:src="@drawable/baseline_add_24"
+                    android:tint="@color/colorWhite"
+                    android:visibility="visible" />
 
-        </LinearLayout>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_new_zone_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_margin="20dp"
-            android:src="@drawable/baseline_add_24"
-            android:tint="@color/colorWhite"
-            android:visibility="visible" />
-
-
+        </RelativeLayout>
 
 </RelativeLayout>

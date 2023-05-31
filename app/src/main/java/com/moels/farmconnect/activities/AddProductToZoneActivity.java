@@ -16,8 +16,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.fragments.ProductsListFragment;
 import com.moels.farmconnect.utility_classes.UI;
 
 public class AddProductToZoneActivity extends AppCompatActivity {
@@ -39,6 +41,11 @@ public class AddProductToZoneActivity extends AppCompatActivity {
                 toolbar.setOverflowIcon(icon);
             }
         }
+
+        ProductsListFragment productsListFragment = new ProductsListFragment();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.fragment_container, productsListFragment);
+        fragmentTransaction.commit();
     }
 
     @Override
@@ -88,7 +95,7 @@ public class AddProductToZoneActivity extends AppCompatActivity {
     }
 
     private void initUI(){
-        toolbar = findViewById(R.id.add_product_to_zone_activity_toolbar);
+        toolbar = findViewById(R.id.products_in_a_zone_activity_toolbar);
     }
 
     private void setUpStatusBar(){
