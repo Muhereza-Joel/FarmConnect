@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -18,12 +19,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.fragments.ProductsListFragment;
 import com.moels.farmconnect.utility_classes.UI;
 
 public class AddProductToZoneActivity extends AppCompatActivity {
     private Toolbar toolbar;
+    private FloatingActionButton addNewProductFAB;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +45,19 @@ public class AddProductToZoneActivity extends AppCompatActivity {
             }
         }
 
+        addFragmentsToActivity();
+        addNewProductFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AddProductToZoneActivity.this, CreateProductActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+    }
+
+    private void addFragmentsToActivity(){
         ProductsListFragment productsListFragment = new ProductsListFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.fragment_container, productsListFragment);
@@ -96,6 +112,7 @@ public class AddProductToZoneActivity extends AppCompatActivity {
 
     private void initUI(){
         toolbar = findViewById(R.id.products_in_a_zone_activity_toolbar);
+        addNewProductFAB = findViewById(R.id.add_new_product_fab);
     }
 
     private void setUpStatusBar(){

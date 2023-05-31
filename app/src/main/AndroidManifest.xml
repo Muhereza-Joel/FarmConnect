@@ -25,13 +25,14 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="31">
         <service
-            android:name=".services.FirebaseChangeListenerService"
+            android:name=".services.FirebaseZonesDatabaseChangeListenerService"
             android:enabled="true"
             android:exported="false"></service>
 
         <activity
             android:name=".activities.CreateProductActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".activities.AddProductToZoneActivity"/>
 
         <service
             android:name=".services.BuyerAccountZoneFetchService"
@@ -87,6 +88,7 @@
         <activity
             android:name=".activities.AddProductToZoneActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:parentActivityName=".activities.MainActivity"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity

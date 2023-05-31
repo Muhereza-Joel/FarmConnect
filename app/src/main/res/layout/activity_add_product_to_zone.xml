@@ -20,7 +20,7 @@
                     layout="@layout/toolbar" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/add_new_zone_fab"
+                    android:id="@+id/add_new_product_fab"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"

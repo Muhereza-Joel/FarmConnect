@@ -13,8 +13,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class FirebaseChangeListenerService extends Service implements ChildEventListener {
-    public FirebaseChangeListenerService() {
+public class FirebaseZonesDatabaseChangeListenerService extends Service implements ChildEventListener {
+    public FirebaseZonesDatabaseChangeListenerService() {
     }
 
     @Override
