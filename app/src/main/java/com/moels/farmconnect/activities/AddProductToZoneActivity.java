@@ -50,6 +50,7 @@ public class AddProductToZoneActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(AddProductToZoneActivity.this, CreateProductActivity.class);
+                intent.putExtra("zoneID", getIntent().getStringExtra("zoneID"));
                 startActivity(intent);
             }
         });

@@ -15,9 +15,13 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE products(_pid INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "productRemoteId TEXT, " +
                 "productName TEXT, " +
                 "quantity TEXT, " +
                 "price TEXT, " +
+                "imageUrl TEXT, " +
+                "uploaded TEXT, " +
+                "updated TEXT, " +
                 "owner TEXT, " +
                 "date TEXT, " +
                 "time TEXT, " +
