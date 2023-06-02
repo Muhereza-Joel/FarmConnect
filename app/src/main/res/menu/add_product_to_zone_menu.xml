@@ -17,4 +17,18 @@
         android:tooltipText="Zone Details"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/zone_participants"
+        android:orderInCategory="200"
+        android:title="Zone Participants"
+        android:tooltipText="Zone Participants"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/invite_seller"
+        android:orderInCategory="300"
+        android:title="Invite People"
+        android:tooltipText="Invite People"
+        app:showAsAction="never" />
+
 </menu>
