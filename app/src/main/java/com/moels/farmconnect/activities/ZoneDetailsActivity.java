@@ -22,7 +22,7 @@ import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 public class ZoneDetailsActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
-    private EditText zoneNameEditText, locationEditText, productsEditText, descriptionEditText;
+    private TextView zoneNameEditText, locationEditText, productsEditText, descriptionEditText;
     private SQLiteDatabase sqLiteDatabase;
     private ZonesDatabaseHelper zonesDatabaseHelper;
 
@@ -72,13 +72,9 @@ public class ZoneDetailsActivity extends AppCompatActivity {
                 @SuppressLint("Range") String description = cursor.getString(cursor.getColumnIndex("description"));
 
                 zoneNameEditText.setText(zoneName);
-                zoneNameEditText.setEnabled(false);
                 locationEditText.setText(location);
-                locationEditText.setEnabled(false);
                 productsEditText.setText(products);
-                productsEditText.setEnabled(false);
                 descriptionEditText.setText(description);
-                descriptionEditText.setEnabled(false);
 
             } while (cursor.moveToNext());
         }

@@ -24,15 +24,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:targetApi="31">
+        <activity
+            android:name=".activities.ProductDetailsActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.AddProductToZoneActivity"/>
+
         <service
             android:name=".services.FirebaseZonesDatabaseChangeListenerService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
 
         <activity
             android:name=".activities.CreateProductActivity"
             android:exported="false"
-            android:parentActivityName=".activities.AddProductToZoneActivity"/>
+            android:parentActivityName=".activities.AddProductToZoneActivity" />
 
         <service
             android:name=".services.BuyerAccountZoneFetchService"

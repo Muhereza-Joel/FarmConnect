@@ -2,6 +2,7 @@ package com.moels.farmconnect.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -20,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.activities.ProductDetailsActivity;
 import com.moels.farmconnect.adapters.ProductsRecyclerViewAdapter;
 import com.moels.farmconnect.models.ProductCardItem;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
@@ -71,10 +73,18 @@ public class ProductsListFragment extends Fragment {
         productCardItems = getProductsFromDatabase(getActivity().getIntent().getStringExtra("zoneID"), authenticatedPhoneNumber);
         productsRecyclerViewAdapter = new ProductsRecyclerViewAdapter(productCardItems, getContext());
         productListRecyclerView.setAdapter(productsRecyclerViewAdapter);
+
+        productsRecyclerViewAdapter.setListener(new ProductsRecyclerViewAdapter.Listener() {
+            @Override
+            public void onClick(int position) {
+                Intent intent = new Intent(getContext(), ProductDetailsActivity.class);
+                intent.putExtra("productID", productCardItems.get(position).get_id());
+                startActivity(intent);
+            }
+        });
     }
 
     private List<ProductCardItem> getProductsFromDatabase(String zoneID, String owner){
-        System.out.println(owner);
         List<ProductCardItem> items = new ArrayList<>();
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM products WHERE zoneID = '" + zoneID + "' AND owner = '" + owner + "'", null);
 

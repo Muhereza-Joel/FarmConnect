@@ -27,7 +27,7 @@ tools:context=".activities.ZoneDetailsActivity">
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <com.google.android.material.textfield.TextInputEditText
+    <TextView
         android:id="@+id/zone_name_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,7 +36,6 @@ tools:context=".activities.ZoneDetailsActivity">
         android:layout_marginTop="20dp"
         android:layout_marginEnd="10dp"
         android:background="@drawable/edit_text_border"
-        android:hint="Zone Name"
         android:inputType="none"
         android:maxLength="40"
         android:padding="10dp" />
@@ -52,7 +51,7 @@ tools:context=".activities.ZoneDetailsActivity">
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <com.google.android.material.textfield.TextInputEditText
+    <TextView
         android:id="@+id/location_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -61,7 +60,6 @@ tools:context=".activities.ZoneDetailsActivity">
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:background="@drawable/edit_text_border"
-        android:hint="Location such district,village"
         android:inputType="none"
         android:maxLength="40"
         android:padding="10dp" />
@@ -77,7 +75,7 @@ tools:context=".activities.ZoneDetailsActivity">
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <com.google.android.material.textfield.TextInputEditText
+    <TextView
         android:id="@+id/products_to_collect_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -86,7 +84,6 @@ tools:context=".activities.ZoneDetailsActivity">
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:background="@drawable/edit_text_border"
-        android:hint="Products To Collect"
         android:maxLength="40"
         android:inputType="none"
         android:padding="10dp" />
@@ -102,7 +99,7 @@ tools:context=".activities.ZoneDetailsActivity">
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <com.google.android.material.textfield.TextInputEditText
+    <TextView
         android:id="@+id/description_edit_text"
         android:layout_width="match_parent"
         android:layout_height="150dp"
@@ -112,7 +109,6 @@ tools:context=".activities.ZoneDetailsActivity">
         android:layout_marginEnd="10dp"
         android:background="@drawable/edit_text_border"
         android:gravity="top"
-        android:hint="Description"
         android:inputType="none"
         android:lines="8"
         android:padding="10dp" />
