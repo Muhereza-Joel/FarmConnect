@@ -7,8 +7,10 @@ import androidx.core.content.ContextCompat;
 import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -36,12 +38,24 @@ public class ProductDetailsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Product Details", true);
 
+        Drawable icon = toolbar.getOverflowIcon();
+        if (icon != null){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                icon.setTint(ContextCompat.getColor(this, R.color.colorWhite));
+                toolbar.setOverflowIcon(icon);
+            }
+        }
+
         productsDatabaseHelper = new ProductsDatabaseHelper(getApplicationContext());
         sqLiteDatabase = productsDatabaseHelper.getReadableDatabase();
         getProductDetailsFromDatabase();
     }
 
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.product_details_activity_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
     private void initUI(){
         toolbar = findViewById(R.id.product_details_activity_toolbar);
