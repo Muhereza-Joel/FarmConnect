@@ -24,6 +24,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.database.FirebaseDatabase;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.adapters.ViewPagerAdapter;
 import com.moels.farmconnect.fragments.ChatListFragment;
@@ -54,6 +55,10 @@ public class MainActivity extends AppCompatActivity{
         if (savedInstanceState != null) {
             int currentlySelectedTab = savedInstanceState.getInt("currentlySelectedTab");
             tabLayout.selectTab(tabLayout.getTabAt(currentlySelectedTab));
+        }
+
+        if (FirebaseDatabase.getInstance() != null){
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         }
 
         Drawable icon = toolbar.getOverflowIcon();
