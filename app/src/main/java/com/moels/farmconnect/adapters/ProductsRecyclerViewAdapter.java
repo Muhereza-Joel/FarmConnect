@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.models.ProductCardItem;
 
@@ -50,8 +51,10 @@ public class ProductsRecyclerViewAdapter extends RecyclerView.Adapter<ProductsRe
 
         ProductCardItem productCardItem = productCardItems.get(position);
         holder._idTextView.setText(productCardItem.get_id());
+        Glide.with(context).load(productCardItem.getPhotoUrl()).into(holder.productImageView);
         holder.productNameTextView.setText(productCardItem.getProductName());
         holder.productQuantityTextView.setText(productCardItem.getQuantity());
+        holder.createTimeTextView.setText(productCardItem.getCreateTime());
         holder.statusTextView.setText(productCardItem.getStatus());
 
     }

@@ -8,7 +8,9 @@ import androidx.core.content.ContextCompat;
 
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -55,6 +57,8 @@ public class CreateProductActivity extends AppCompatActivity {
     private SQLiteDatabase sqLiteDatabase;
     private ProductsDatabaseHelper productsDatabaseHelper;
 
+    private SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +70,7 @@ public class CreateProductActivity extends AppCompatActivity {
 
         productsDatabaseHelper = new ProductsDatabaseHelper(getApplicationContext());
         sqLiteDatabase = productsDatabaseHelper.getWritableDatabase();
+        sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
 
         productImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,7 +189,7 @@ public class CreateProductActivity extends AppCompatActivity {
         String url = imageUrl;
         String uploaded = "false";
         String updated = "false";
-        String owner = "0776579631";
+        String owner = sharedPreferences.getString("authenticatedPhoneNumber", "123456789");
         String date = getCurrentDate();
         String time = getCurrentTime();
         String status = "available";

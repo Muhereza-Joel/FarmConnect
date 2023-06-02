@@ -20,7 +20,6 @@ public class FirebaseZonesDatabaseChangeListenerService extends Service implemen
     @Override
     public void onCreate() {
         super.onCreate();
-
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("zones");
         databaseReference.addChildEventListener(this);
     }
