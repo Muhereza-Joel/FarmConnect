@@ -1,11 +1,13 @@
 package com.moels.farmconnect.fragments;
 
+import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +34,13 @@ public class ChatListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.farmers_page_fragment, container, false);
+        UiModeManager uiModeManager = (UiModeManager) getActivity().getSystemService(Context.UI_MODE_SERVICE);
+        int currentMode = uiModeManager.getNightMode();
+
+        if (currentMode == UiModeManager.MODE_NIGHT_YES){
+            ScrollView scrollView = view.findViewById(R.id.chat_list_scroll_view);
+            scrollView.setBackgroundColor(getResources().getColor(R.color.colorBlack));
+        }
 
         //Crete adapter and set it on the recycler view
         ChatListRecyclerViewAdapter recyclerViewAdapter = new ChatListRecyclerViewAdapter(chatCard, context);

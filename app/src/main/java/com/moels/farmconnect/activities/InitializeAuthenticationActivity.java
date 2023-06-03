@@ -6,6 +6,8 @@
 package com.moels.farmconnect.activities;
 
 import android.Manifest;
+import android.app.UiModeManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -52,6 +54,7 @@ public class InitializeAuthenticationActivity extends AppCompatActivity {
         initUI();
         setUpStatusBar();
         setSupportActionBar(toolbar);
+        UI.setUpToolbarInDarkMode(getApplicationContext(), toolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Sign Up", true);
 
         if (savedInstanceState != null) {
@@ -184,11 +187,19 @@ public class InitializeAuthenticationActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.initialize_authentication_toolbar);
     }
 
-    private void setUpStatusBar(){
+    private void setUpStatusBar() {
+        Window window = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
+            window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            UiModeManager uiModeManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
+            int currentMode = uiModeManager.getNightMode();
+            if (currentMode == UiModeManager.MODE_NIGHT_YES) {
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorBlack));
+            }else {
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            }
         }
+
     }
 }

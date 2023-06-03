@@ -2,6 +2,7 @@ package com.moels.farmconnect.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +13,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -45,6 +47,13 @@ public class ZonesListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_zones_list, container, false);
+        UiModeManager uiModeManager = (UiModeManager) getActivity().getSystemService(Context.UI_MODE_SERVICE);
+        int currentMode = uiModeManager.getNightMode();
+
+        if (currentMode == UiModeManager.MODE_NIGHT_YES){
+            ScrollView scrollView = view.findViewById(R.id.zone_list_scroll_view);
+            scrollView.setBackgroundColor(getResources().getColor(R.color.colorBlack));
+        }
         return view;
     }
 

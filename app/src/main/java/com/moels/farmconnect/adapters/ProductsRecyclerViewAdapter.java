@@ -51,7 +51,7 @@ public class ProductsRecyclerViewAdapter extends RecyclerView.Adapter<ProductsRe
 
         ProductCardItem productCardItem = productCardItems.get(position);
         holder._idTextView.setText(productCardItem.get_id());
-        Glide.with(context).load(productCardItem.getPhotoUrl()).into(holder.productImageView);
+        Glide.with(context).load(productCardItem.getPhotoUrl()).circleCrop().into(holder.productImageView);
         holder.productNameTextView.setText(productCardItem.getProductName());
         holder.productQuantityTextView.setText(productCardItem.getQuantity());
         holder.createTimeTextView.setText(productCardItem.getCreateTime());

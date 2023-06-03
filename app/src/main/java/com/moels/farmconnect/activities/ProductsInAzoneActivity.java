@@ -2,6 +2,8 @@ package com.moels.farmconnect.activities;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.UiModeManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -47,6 +49,7 @@ public class ProductsInAzoneActivity extends AppCompatActivity{
         initUI();
         setUpStatusBar();
         setSupportActionBar(toolbar);
+        UI.setUpToolbarInDarkMode(getApplicationContext(), toolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, getIntent().getStringExtra("zoneName"), true);
 
         Drawable icon = toolbar.getOverflowIcon();
@@ -137,12 +140,20 @@ public class ProductsInAzoneActivity extends AppCompatActivity{
         toolbar = findViewById(R.id.products_in_a_zone_activity_toolbar);
     }
 
-    private void setUpStatusBar(){
+    private void setUpStatusBar() {
+        Window window = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
+            window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            UiModeManager uiModeManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
+            int currentMode = uiModeManager.getNightMode();
+            if (currentMode == UiModeManager.MODE_NIGHT_YES) {
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorBlack));
+            }else {
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            }
         }
+
     }
 
 }

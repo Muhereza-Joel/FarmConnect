@@ -1,5 +1,6 @@
 package com.moels.farmconnect.activities;
 
+import android.app.UiModeManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -47,6 +48,7 @@ public class AddNewZoneActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_new_zone);
         initUI();
         setUpStatusBar();
+        UI.setUpToolbarInDarkMode(getApplicationContext(), addNewZoneActivityToolbar);
 
         myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
         setSupportActionBar(addNewZoneActivityToolbar);
@@ -164,11 +166,19 @@ public class AddNewZoneActivity extends AppCompatActivity {
         descriptionEditText = findViewById(R.id.description_edit_text);
 
     }
-    private void setUpStatusBar(){
+    private void setUpStatusBar() {
+        Window window = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
+            window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            UiModeManager uiModeManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
+            int currentMode = uiModeManager.getNightMode();
+            if (currentMode == UiModeManager.MODE_NIGHT_YES) {
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorBlack));
+            }else {
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            }
         }
+
     }
 }

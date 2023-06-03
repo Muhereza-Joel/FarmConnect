@@ -7,7 +7,9 @@ import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.UiModeManager;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -41,6 +43,7 @@ public class EditZoneActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_zone);
         initUI();
         setUpStatusBar();
+        UI.setUpToolbarInDarkMode(getApplicationContext(), editZoneActivityToolbar);
 
         setSupportActionBar(editZoneActivityToolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Edit Zone", true);
@@ -162,11 +165,19 @@ public class EditZoneActivity extends AppCompatActivity {
         startService(updateZoneService);
     }
 
-    private void setUpStatusBar(){
+    private void setUpStatusBar() {
+        Window window = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
+            window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            UiModeManager uiModeManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
+            int currentMode = uiModeManager.getNightMode();
+            if (currentMode == UiModeManager.MODE_NIGHT_YES) {
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorBlack));
+            }else {
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            }
         }
+
     }
 }

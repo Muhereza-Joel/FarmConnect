@@ -5,6 +5,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
+import android.app.UiModeManager;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
@@ -32,6 +34,7 @@ public class ZoneDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_zone_details);
         initUI();
         setUpStatusBar();
+        UI.setUpToolbarInDarkMode(getApplicationContext(), toolbar);
 
         Drawable icon = toolbar.getOverflowIcon();
         if (icon != null){
@@ -81,11 +84,19 @@ public class ZoneDetailsActivity extends AppCompatActivity {
         cursor.close();
     }
 
-    private void setUpStatusBar(){
+    private void setUpStatusBar() {
+        Window window = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
+            window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            UiModeManager uiModeManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
+            int currentMode = uiModeManager.getNightMode();
+            if (currentMode == UiModeManager.MODE_NIGHT_YES) {
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorBlack));
+            }else {
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            }
         }
+
     }
 }

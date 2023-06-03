@@ -1,6 +1,7 @@
 package com.moels.farmconnect.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.moels.farmconnect.R;
@@ -52,6 +54,14 @@ public class ProductsListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_products_list, container, false);
+        UiModeManager uiModeManager = (UiModeManager) getActivity().getSystemService(Context.UI_MODE_SERVICE);
+        int currentMode = uiModeManager.getNightMode();
+
+        if (currentMode == UiModeManager.MODE_NIGHT_YES){
+            ScrollView scrollView = view.findViewById(R.id.products_scroll_view);
+            scrollView.setBackgroundColor(getResources().getColor(R.color.colorBlack));
+        }
+
         if (productCardItems.size() > 0){
             TextView textView = view.findViewById(R.id.products_label);
             textView.setVisibility(View.GONE);

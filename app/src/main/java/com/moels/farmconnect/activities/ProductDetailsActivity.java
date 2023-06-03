@@ -5,6 +5,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
+import android.app.UiModeManager;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
@@ -36,6 +38,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         initUI();
         setUpStatusBar();
         setSupportActionBar(toolbar);
+        UI.setUpToolbarInDarkMode(getApplicationContext(), toolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Product Details", true);
 
         Drawable icon = toolbar.getOverflowIcon();
@@ -65,12 +68,20 @@ public class ProductDetailsActivity extends AppCompatActivity {
         productPriceTextView = findViewById(R.id.product_price_text_view);
     }
 
-    private void setUpStatusBar(){
+    private void setUpStatusBar() {
+        Window window = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
+            window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            UiModeManager uiModeManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
+            int currentMode = uiModeManager.getNightMode();
+            if (currentMode == UiModeManager.MODE_NIGHT_YES) {
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorBlack));
+            }else {
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            }
         }
+
     }
 
     private void getProductDetailsFromDatabase(){

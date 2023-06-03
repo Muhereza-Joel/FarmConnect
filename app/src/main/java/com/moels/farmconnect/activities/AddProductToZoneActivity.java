@@ -1,5 +1,7 @@
 package com.moels.farmconnect.activities;
 
+import android.app.UiModeManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -33,6 +35,7 @@ public class AddProductToZoneActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_product_to_zone);
         initUI();
         setUpStatusBar();
+        UI.setUpToolbarInDarkMode(getApplicationContext(), toolbar);
 
         setSupportActionBar(toolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, getIntent().getStringExtra("zoneName"), true);
@@ -116,11 +119,19 @@ public class AddProductToZoneActivity extends AppCompatActivity {
         addNewProductFAB = findViewById(R.id.add_new_product_fab);
     }
 
-    private void setUpStatusBar(){
+    private void setUpStatusBar() {
+        Window window = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
+            window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            UiModeManager uiModeManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
+            int currentMode = uiModeManager.getNightMode();
+            if (currentMode == UiModeManager.MODE_NIGHT_YES) {
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorBlack));
+            }else {
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            }
         }
+
     }
 }
