@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grayWhite"
     android:overScrollMode="never"
     android:scrollbars="vertical"
     tools:context=".activities.InitializeAuthenticationActivity">
@@ -43,7 +42,6 @@
                 android:layout_marginTop="20dp"
                 android:gravity="center"
                 android:text="@string/country_code"
-                android:textColor="@color/colorTextPrimary"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 

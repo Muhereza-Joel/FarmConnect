@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grayWhite"
     android:overScrollMode="never"
     android:scrollbars="vertical"
     tools:context=".activities.AuthenticateUserActivity">
@@ -25,7 +24,6 @@
             android:paddingStart="40dp"
             android:paddingEnd="40dp"
             android:text="Verify Your \n Phone Number"
-            android:textColor="@color/colorTextPrimary"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -37,7 +35,6 @@
             android:paddingStart="40dp"
             android:paddingEnd="40dp"
             android:text="@string/enter_your_otp_code_here_sent_to"
-            android:textColor="@color/colorBlack"
             android:textSize="15sp"
             android:textStyle="normal" />
         
@@ -169,7 +166,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/din_t_receive_opt"
-                android:textColor="@color/colorBlack"
                 android:textSize="14sp" />
 
             <Button

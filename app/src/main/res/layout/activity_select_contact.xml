@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grayWhite"
     tools:context=".activities.ChatActivity">
 
     <LinearLayout
@@ -28,7 +27,6 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
-            android:background="@color/colorWhite"
             android:drawableLeft="@drawable/baseline_contacts_24"
             android:drawablePadding="5dp"
             android:gravity="left|center_vertical"
@@ -45,7 +43,6 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
-            android:background="@color/colorWhite"
             android:drawableLeft="@drawable/baseline_group_24"
             android:drawablePadding="5dp"
             android:gravity="left|center_vertical"

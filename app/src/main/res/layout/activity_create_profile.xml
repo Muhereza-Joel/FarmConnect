@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grayWhite"
     android:overScrollMode="never"
     android:scrollbars="vertical"
     tools:context=".activities.CreateProfileActivity">
@@ -60,7 +59,6 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:text="Personal Information"
-                android:textColor="@color/colorTextPrimary"
                 android:textSize="20sp"
                 android:textStyle="bold|italic" />
 
@@ -140,7 +138,6 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="10dp"
                 android:text="Preffered Account Type"
-                android:textColor="@color/colorTextPrimary"
                 android:textSize="20sp"
                 android:textStyle="bold|italic" />
 

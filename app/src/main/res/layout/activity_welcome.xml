@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grayWhite"
     android:overScrollMode="never"
     android:scrollbars="vertical"
     tools:context=".activities.WelcomeActivity">
@@ -34,7 +33,6 @@
         android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp"
         android:text="@string/create_account"
-        android:textColor="@color/colorTextPrimary"
         android:textSize="20sp"
         android:textStyle="bold" />
 
