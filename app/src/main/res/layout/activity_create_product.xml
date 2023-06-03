@@ -23,7 +23,7 @@
             android:layout_height="220dp"
             android:layout_margin="0dp"
             android:orientation="vertical"
-            android:background="@color/grayWhite"
+            android:background="?attr/colorPrimary"
             android:layout_below="@+id/create_product_activity_toolbar">
 
             <ImageView

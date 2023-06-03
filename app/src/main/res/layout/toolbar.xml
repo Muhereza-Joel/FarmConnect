@@ -5,8 +5,5 @@
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     android:background="@color/colorPrimary"
-    android:theme="@style/Theme.AppCompat.Light"
-    app:contentInsetStart="10dp"
-    app:popupTheme="@style/AppTheme"
     app:titleTextColor="@color/colorWhite">
 </androidx.appcompat.widget.Toolbar>

@@ -16,8 +16,7 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            android:background="@color/colorPrimary">
 
             <include
                 android:id="@+id/my_toolbar"
@@ -54,7 +53,9 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="20dp"
         android:src="@drawable/baseline_playlist_add_24"
-        android:tint="@color/colorWhite" />
+        android:background="@color/colorPrimary"
+        app:backgroundTint="@color/colorPrimary"
+        android:tint="@color/colorWhite"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_new_zone_fab"
@@ -65,6 +66,8 @@
         android:layout_margin="20dp"
         android:src="@drawable/baseline_location_on_24"
         android:tint="@color/colorWhite"
+        android:background="@color/colorPrimary"
+        app:backgroundTint="@color/colorPrimary"
         android:visibility="invisible" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -73,9 +76,14 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_margin="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@color/colorPrimary"
         android:src="@drawable/baseline_add_ic_call_24"
         android:tint="@color/colorWhite"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        app:backgroundTint="@color/colorPrimary" />
 
 </RelativeLayout>
