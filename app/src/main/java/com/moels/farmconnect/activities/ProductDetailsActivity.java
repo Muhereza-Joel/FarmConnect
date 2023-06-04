@@ -77,6 +77,12 @@ public class ProductDetailsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
+        if (id == R.id.edit_product){
+            Intent intent = new Intent(ProductDetailsActivity.this, EditProductActivity.class);
+            intent.putExtra("productID", getIntent().getStringExtra("productID"));
+            startActivity(intent);
+        }
+
         if (id == R.id.delete_product){
             DeleteProductConfirmationDialog deleteProductConfirmationDialog = new DeleteProductConfirmationDialog();
             deleteProductConfirmationDialog.show(getSupportFragmentManager(), "deleteProduct");

@@ -38,10 +38,12 @@
 
         <activity
             android:name=".activities.EditProductActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".activities.ProductDetailsActivity"/>
         <activity
             android:name=".activities.ProductDetailsActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:parentActivityName=".activities.AddProductToZoneActivity" />
 
         <service
