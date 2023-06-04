@@ -60,9 +60,6 @@ public class MainActivity extends AppCompatActivity{
             tabLayout.selectTab(tabLayout.getTabAt(currentlySelectedTab));
         }
 
-        if (FirebaseDatabase.getInstance() != null){
-            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-        }
 
         Drawable icon = toolbar.getOverflowIcon();
         if (icon != null){

@@ -129,8 +129,13 @@ public class BuyerAccountZoneFetchService extends Service {
 
                 addZoneToDatabase(id, zoneName, location, productsToCollect, description, owner, createDate, createTime, status);
 
+            }else {
+                zonesFetchListener.onBuyerZonesFetchComplete();
+                stopSelf();
+                //TODO Test this service on a number with no zones;
             }
         }
+
         zonesFetchListener.onBuyerZonesFetchComplete();
         stopSelf();
     }

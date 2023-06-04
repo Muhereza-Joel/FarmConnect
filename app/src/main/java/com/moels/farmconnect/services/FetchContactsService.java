@@ -94,6 +94,7 @@ public class FetchContactsService extends Service {
         runnable = new Runnable() {
                         @Override
             public void run() {
+         if (phoneBookList.size() > 0){
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("profiles");
         Query query = usersRef.orderByChild("phoneNumber");
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -139,7 +140,10 @@ public class FetchContactsService extends Service {
             // Other overridden methods of ValueEventListener
 
         });
-                        }
+         } else {
+             contactsFetchListener.onContactsFetchComplete();
+             stopSelf();
+         }}
         };
         handler.postDelayed(runnable, POLL_INTERVAL);
     }

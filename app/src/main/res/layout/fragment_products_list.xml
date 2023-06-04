@@ -21,10 +21,13 @@
 
         <TextView
             android:id="@+id/products_label"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
+            android:layout_marginTop="200dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
             android:text="@string/EmptyProductsPostsLabel"
             android:textSize="20sp"
             android:textStyle="bold" />

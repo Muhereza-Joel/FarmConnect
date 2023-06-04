@@ -133,6 +133,8 @@ public class FarmerAccountZonesFetchService extends Service {
             } while (cursor.moveToNext());
         }
         else {
+            zonesFetchListener.onFarmerZonesFetchComplete();
+            stopSelf();
             Log.d("FarmConnect", "No Contacts to pick");
         }
         return contactsList;
