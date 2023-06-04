@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -41,7 +42,13 @@ public class ZonesListFragment extends Fragment {
     private SQLiteDatabase sqLiteDatabase;
     private List<ZoneCardItem> zoneCardItems;
 
-
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        zonesDatabaseHelper = new ZonesDatabaseHelper(getContext());
+        sqLiteDatabase = zonesDatabaseHelper.getReadableDatabase();
+        zoneCardItems = getZonesFromDatabase();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,15 +61,17 @@ public class ZonesListFragment extends Fragment {
             ScrollView scrollView = view.findViewById(R.id.zone_list_scroll_view);
             scrollView.setBackgroundColor(getResources().getColor(R.color.colorBlack));
         }
+
+        if (zoneCardItems.size() > 0){
+            TextView textView = view.findViewById(R.id.zones_label);
+            textView.setVisibility(View.GONE);
+        }
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        zonesDatabaseHelper = new ZonesDatabaseHelper(getContext());
-        sqLiteDatabase = zonesDatabaseHelper.getReadableDatabase();
 
         zonesListRecyclerView = getView().findViewById(R.id.zones_list_recycler_view);
         zonesListRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
