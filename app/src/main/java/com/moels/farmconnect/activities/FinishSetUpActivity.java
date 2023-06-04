@@ -3,6 +3,7 @@ package com.moels.farmconnect.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.app.UiModeManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.services.FetchContactsService;
@@ -50,6 +52,7 @@ public class FinishSetUpActivity extends AppCompatActivity implements FetchConta
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_finish_set_up);
+        setUpUIForDarkMode();
         setUpStatusBar();
     }
 
@@ -77,11 +80,28 @@ public class FinishSetUpActivity extends AppCompatActivity implements FetchConta
         stopService(new Intent(FinishSetUpActivity.this, FetchContactsService.class));
     }
 
-    private void setUpStatusBar(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+    private void setUpUIForDarkMode(){
+        UiModeManager uiModeManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
+        int currentMode = uiModeManager.getNightMode();
+        if (currentMode == UiModeManager.MODE_NIGHT_YES) {
+            LinearLayout layout = findViewById(R.id.finish_setup_layout_container);
+            layout.setBackgroundColor(getResources().getColor(R.color.colorBlack));
         }
+    }
+
+    private void setUpStatusBar() {
+        Window window = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            UiModeManager uiModeManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
+            int currentMode = uiModeManager.getNightMode();
+            if (currentMode == UiModeManager.MODE_NIGHT_YES) {
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorBlack));
+            }else {
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            }
+        }
+
     }
 }

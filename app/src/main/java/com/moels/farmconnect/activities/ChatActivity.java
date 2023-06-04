@@ -10,6 +10,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,13 +23,16 @@ import com.moels.farmconnect.R;
 public class ChatActivity extends AppCompatActivity {
     ImageView profilePic;
     TextView activeChatTextView;
-    ImageButton backButton;
+    ImageButton backButton, searchIcon;
+
+    RelativeLayout topBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         initUI();
+        setUPTopBarForDarkMode();
         setUpStatusBar();
 
         String activeChatUsername = getIntent().getStringExtra("activeChatUsername");
@@ -40,14 +45,27 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ChatActivity.this, MainActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
+    }
+
+    private void setUPTopBarForDarkMode(){
+        UiModeManager uiModeManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
+        int currentMode = uiModeManager.getNightMode();
+        if (currentMode == UiModeManager.MODE_NIGHT_YES) {
+            topBar.setBackgroundColor(getResources().getColor(R.color.colorBlack));
+            backButton.setBackgroundColor(getResources().getColor(R.color.colorBlack));
+            searchIcon.setBackgroundColor(getResources().getColor(R.color.colorBlack));
+        }
     }
 
     private void initUI(){
         profilePic = findViewById(R.id.profilePic);
         activeChatTextView = findViewById(R.id.active_chat_username);
         backButton = findViewById(R.id.back_button);
+        searchIcon = findViewById(R.id.search_icon);
+        topBar = findViewById(R.id.top_bar);
     }
     private void setUpStatusBar() {
         Window window = null;
