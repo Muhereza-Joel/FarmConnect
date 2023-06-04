@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -39,6 +40,7 @@ public class ProductsListFragment extends Fragment {
     public List<ProductCardItem> productCardItems;
     private SharedPreferences sharedPreferences;
     private String authenticatedPhoneNumber;
+    private TextView textView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,21 +63,22 @@ public class ProductsListFragment extends Fragment {
             ScrollView scrollView = view.findViewById(R.id.products_scroll_view);
             scrollView.setBackgroundColor(getResources().getColor(R.color.colorBlack));
         }
-
-        if (productCardItems.size() > 0){
-            TextView textView = view.findViewById(R.id.products_label);
-            textView.setVisibility(View.GONE);
-        }
         return view;
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         productListRecyclerView = getView().findViewById(R.id.products_list_recycler_view);
         productListRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         productListRecyclerView.setAdapter(productsRecyclerViewAdapter);
+
+        if (productCardItems.size() > 0){
+            textView = view.findViewById(R.id.products_label);
+            textView.setVisibility(View.GONE);
+        }
     }
+
 
     @Override
     public void onResume() {
@@ -83,6 +86,7 @@ public class ProductsListFragment extends Fragment {
         productCardItems = getProductsFromDatabase(getActivity().getIntent().getStringExtra("zoneID"), authenticatedPhoneNumber);
         productsRecyclerViewAdapter = new ProductsRecyclerViewAdapter(productCardItems, getContext());
         productListRecyclerView.setAdapter(productsRecyclerViewAdapter);
+        //TODO Create bundle to to save tex view or zone name and hide the text view
 
         productsRecyclerViewAdapter.setListener(new ProductsRecyclerViewAdapter.Listener() {
             @Override
