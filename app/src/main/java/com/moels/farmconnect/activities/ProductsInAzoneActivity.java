@@ -1,24 +1,17 @@
 package com.moels.farmconnect.activities;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.SearchView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,14 +21,9 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.adapters.ProductsRecyclerViewAdapter;
-import com.moels.farmconnect.dialogs.DeleteDialog;
-import com.moels.farmconnect.fragments.ChatListFragment;
+import com.moels.farmconnect.dialogs.DeleteZoneConfirmationDialog;
 import com.moels.farmconnect.fragments.ProductsListFragment;
-import com.moels.farmconnect.models.ProductCardItem;
 import com.moels.farmconnect.utility_classes.UI;
-
-import java.util.List;
 
 public class ProductsInAzoneActivity extends AppCompatActivity{
 
@@ -118,7 +106,7 @@ public class ProductsInAzoneActivity extends AppCompatActivity{
         }
 
         if (id == R.id.delete_zone){
-            DeleteDialog deleteDialog = new DeleteDialog();
+            DeleteZoneConfirmationDialog deleteDialog = new DeleteZoneConfirmationDialog();
             deleteDialog.show(getSupportFragmentManager(), "sample");
 
         }

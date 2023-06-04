@@ -5,9 +5,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,12 +12,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.activities.MainActivity;
-import com.moels.farmconnect.activities.ProductsInAzoneActivity;
 import com.moels.farmconnect.services.DeleteZoneService;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
-public class DeleteDialog extends DialogFragment implements DialogInterface.OnClickListener {
+public class DeleteZoneConfirmationDialog extends DialogFragment implements DialogInterface.OnClickListener {
 
     @NonNull
     @Override

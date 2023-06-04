@@ -9,30 +9,30 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/delete_product"
-        android:orderInCategory="200"
-        android:title="Delete Product"
-        android:tooltipText="Zone Details"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/change_status"
-        android:orderInCategory="300"
+        android:orderInCategory="200"
         android:title="Change Status"
         android:tooltipText="Change Status"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/change_to_another_zone"
-        android:orderInCategory="400"
+        android:orderInCategory="300"
         android:title="Change Zone"
         android:tooltipText="Change Zone"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/post_to_another_zone"
-        android:orderInCategory="500"
+        android:orderInCategory="400"
         android:title="Copy To Zone"
         android:tooltipText="Copy To Zone"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/delete_product"
+        android:orderInCategory="500"
+        android:title="Delete Product"
+        android:tooltipText="Zone Details"
         app:showAsAction="never" />
 </menu>

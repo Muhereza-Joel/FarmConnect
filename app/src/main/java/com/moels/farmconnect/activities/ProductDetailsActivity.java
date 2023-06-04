@@ -1,18 +1,22 @@
 package com.moels.farmconnect.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.UiModeManager;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -20,6 +24,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.dialogs.DeleteProductConfirmationDialog;
+import com.moels.farmconnect.services.DeleteProductService;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.UI;
 
@@ -68,6 +74,17 @@ public class ProductDetailsActivity extends AppCompatActivity {
         productPriceTextView = findViewById(R.id.product_price_text_view);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.delete_product){
+            DeleteProductConfirmationDialog deleteProductConfirmationDialog = new DeleteProductConfirmationDialog();
+            deleteProductConfirmationDialog.show(getSupportFragmentManager(), "deleteProduct");
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     private void setUpStatusBar() {
         Window window = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -109,4 +126,5 @@ public class ProductDetailsActivity extends AppCompatActivity {
         productQuantityTextView.setText(quantity);
         productPriceTextView.setText(price);
     }
+
 }

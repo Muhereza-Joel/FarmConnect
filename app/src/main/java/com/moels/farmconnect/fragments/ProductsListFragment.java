@@ -1,6 +1,7 @@
 package com.moels.farmconnect.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
@@ -33,6 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductsListFragment extends Fragment {
+
+    private static final int PRODUCT_DELETE_REQUEST_CODE = 3;
     private RecyclerView productListRecyclerView;
     private ProductsRecyclerViewAdapter productsRecyclerViewAdapter;
     private ProductsDatabaseHelper productsDatabaseHelper;
@@ -41,6 +44,8 @@ public class ProductsListFragment extends Fragment {
     private SharedPreferences sharedPreferences;
     private String authenticatedPhoneNumber;
     private TextView textView;
+
+    private View view;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,7 +60,12 @@ public class ProductsListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_products_list, container, false);
+        view = inflater.inflate(R.layout.fragment_products_list, container, false);
+        if (productCardItems.size() > 0){
+            textView = view.findViewById(R.id.products_label);
+            textView.setVisibility(View.GONE);
+        }
+
         UiModeManager uiModeManager = (UiModeManager) getActivity().getSystemService(Context.UI_MODE_SERVICE);
         int currentMode = uiModeManager.getNightMode();
 
@@ -67,18 +77,12 @@ public class ProductsListFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         productListRecyclerView = getView().findViewById(R.id.products_list_recycler_view);
         productListRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         productListRecyclerView.setAdapter(productsRecyclerViewAdapter);
-
-        if (productCardItems.size() > 0){
-            textView = view.findViewById(R.id.products_label);
-            textView.setVisibility(View.GONE);
-        }
     }
-
 
     @Override
     public void onResume() {
@@ -86,16 +90,37 @@ public class ProductsListFragment extends Fragment {
         productCardItems = getProductsFromDatabase(getActivity().getIntent().getStringExtra("zoneID"), authenticatedPhoneNumber);
         productsRecyclerViewAdapter = new ProductsRecyclerViewAdapter(productCardItems, getContext());
         productListRecyclerView.setAdapter(productsRecyclerViewAdapter);
-        //TODO Create bundle to to save tex view or zone name and hide the text view
+
+        if (view != null) {
+            // Access the view and perform any necessary modifications
+            if (productCardItems.size() > 0) {
+                textView = view.findViewById(R.id.products_label);
+                textView.setVisibility(View.GONE);
+            }else {
+                textView = view.findViewById(R.id.products_label);
+                textView.setVisibility(View.VISIBLE);
+            }
+        }
 
         productsRecyclerViewAdapter.setListener(new ProductsRecyclerViewAdapter.Listener() {
             @Override
             public void onClick(int position) {
                 Intent intent = new Intent(getContext(), ProductDetailsActivity.class);
                 intent.putExtra("productID", productCardItems.get(position).get_id());
-                startActivity(intent);
+                startActivityForResult(intent, PRODUCT_DELETE_REQUEST_CODE);
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PRODUCT_DELETE_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            String updatedZoneName = data.getStringExtra("updatedZoneName");
+            productCardItems = getProductsFromDatabase(getActivity().getIntent().getStringExtra("zoneID"), authenticatedPhoneNumber);
+            productsRecyclerViewAdapter = new ProductsRecyclerViewAdapter(productCardItems, getContext());
+            productListRecyclerView.setAdapter(productsRecyclerViewAdapter);
+        }
     }
 
     private List<ProductCardItem> getProductsFromDatabase(String zoneID, String owner){
