@@ -52,6 +52,7 @@ public class ZoneListRecyclerViewAdapter extends RecyclerView.Adapter<ZoneListRe
         holder.createTimeTextView.setText(zoneCardItem.getCreateTime());
         holder.statusTextView.setText(zoneCardItem.getStatus());
     }
+    //TODO set card background for light and dark mode
 
     @Override
     public int getItemCount() {

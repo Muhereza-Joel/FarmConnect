@@ -51,6 +51,7 @@ public class ChatListRecyclerViewAdapter extends RecyclerView.Adapter<ChatListRe
         ChatCardItem item = itemList.get(position);
         holder.usernameTextView.setText(item.getUsername());
         Glide.with(context).load(item.getPhotoUrl()).circleCrop().into(holder.photoImageView);
+        //TODO set card background for light and dark mode
     }
 
     @Override

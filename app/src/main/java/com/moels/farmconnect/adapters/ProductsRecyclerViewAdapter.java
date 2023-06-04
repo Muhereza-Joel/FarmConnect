@@ -87,6 +87,7 @@ public class ProductsRecyclerViewAdapter extends RecyclerView.Adapter<ProductsRe
             productListItemCardView = itemView.findViewById(R.id.product_list_item_card_view);
 
         }
+        //TODO set card background for light and dark mode
 
     }
 

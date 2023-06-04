@@ -49,7 +49,8 @@ public class ContactListRecyclerViewAdapter extends RecyclerView.Adapter<Contact
         ContactCardItem contactCardItem = itemList.get(position);
         holder.usernameTextView.setText(contactCardItem.getUsername());
         holder.phoneNumberTextView.setText(contactCardItem.getPhoneNumber());
-//        Glide.with(context).load(contactCardItem.getProfilePicUrl()).circleCrop().into(holder.profilePicImageView);
+        //TODO use glide to load profile pic
+        //TODO set card background for light and dark mode
 
     }
 

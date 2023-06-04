@@ -13,4 +13,18 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
+    <TextView
+        android:id="@+id/products_label"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/products_list_recycler_view"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="300dp"
+        android:layout_marginRight="50dp"
+        android:gravity="center"
+        android:text="No products have been posted to this zone yet"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
 </ScrollView>
