@@ -26,4 +26,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="EmptyZonesFragmentLabel">Yo currently don,t have collections \n zones to add products to</string>
     <string name="EmptyProductsPostsLabel">No products have been posted to this zone yet</string>
+    <string name="empty_contacts_list_message">Yo don\'t have people using this app \n in your contacts</string>
+    <string name="registered_contacts_label">Contacts on Farm Connect</string>
 </resources>

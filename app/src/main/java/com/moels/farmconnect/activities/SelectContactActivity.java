@@ -4,8 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.UiModeManager;
 import android.content.ComponentName;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -13,7 +11,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -27,6 +24,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,12 +34,6 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.adapters.ContactListRecyclerViewAdapter;
 import com.moels.farmconnect.models.ContactCardItem;
@@ -55,7 +47,7 @@ import java.util.List;
 public class SelectContactActivity extends AppCompatActivity implements FetchContactsService.ContactsFetchListener{
     private FetchContactsService fetchContactsService;
     private boolean bound = false;
-    ProgressBar progressBar;
+    private ProgressBar progressBar;
     private static final int REQUEST_PERMISSION_CODE = 100;
     private Toolbar callActivityToolBar;
     private RecyclerView contactListRecyclerView;
@@ -64,10 +56,10 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
     private Button createNewContactButton;
     private ContactsDatabaseHelper contactsDatabaseHelper;
     private SQLiteDatabase sqLiteDatabase;
-    SharedPreferences myAppPreferences;
-    SharedPreferences.Editor editor;
+    private SharedPreferences myAppPreferences;
+    private TextView emptyContactListTextView;
 
-    private ServiceConnection serviceConnection = new ServiceConnection() {
+    private final ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder binder) {
             FetchContactsService.FetchContactsServiceBinder fetchContactsServiceBinder = (FetchContactsService.FetchContactsServiceBinder) binder;
@@ -101,7 +93,6 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
             return;
         }
         myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
-        editor = myAppPreferences.edit();
         boolean contactListFetched = myAppPreferences.getBoolean("contactListFetched", false);
 
 
@@ -144,6 +135,7 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
         contactListRecyclerView = findViewById(R.id.contacts_recycler_view);
         createNewContactButton = findViewById(R.id.create_new_contact_btn);
         progressBar = findViewById(R.id.progress_bar);
+        emptyContactListTextView = findViewById(R.id.empty_contacts_list_text_view);
     }
 
     private boolean checkRequiredPermissions(){
@@ -185,7 +177,7 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
             } while (cursor.moveToNext());
         }
             else {
-            Log.d("FarmConnect", "No Contacts to pick");
+            emptyContactListTextView.setVisibility(View.VISIBLE);
         }
             contactListRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
             contactListRecyclerViewAdapter = new ContactListRecyclerViewAdapter(contactsList, getApplicationContext());
