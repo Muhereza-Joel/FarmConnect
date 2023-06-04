@@ -2,6 +2,7 @@ package com.moels.farmconnect.activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -10,6 +11,7 @@ import android.app.ProgressDialog;
 import android.app.UiModeManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -51,6 +53,7 @@ import java.util.UUID;
 public class CreateProductActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
+    private static final int CAMERA_IMAGE_REQUEST = 2;
     private Toolbar toolbar;
     private ImageView productImageView;
     private EditText productNameEditText, productQuantityEditText, productPriceEditText;
@@ -77,9 +80,27 @@ public class CreateProductActivity extends AppCompatActivity {
         productImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, PICK_IMAGE_REQUEST);
+                AlertDialog.Builder builder = new AlertDialog.Builder(CreateProductActivity.this);
+                builder.setTitle("Choose An Option");
+                String[] options = {"Chose Photo From Gallery", "Take Photo Using Camera"};
+                builder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0: // Gallery
+                                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
+                                break;
+                            case 1: // Camera
+                                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                startActivityForResult(cameraIntent, CAMERA_IMAGE_REQUEST);
+                                break;
+                        }
+                    }
+                });
+                builder.show();
             }
+
         });
     }
 
@@ -109,21 +130,37 @@ public class CreateProductActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null){
-            Uri uri = data.getData();
-            CropImage.activity(uri).setActivityTitle("Crop Image")
-                    .setGuidelines(CropImageView.Guidelines.ON)
-                    .start(this);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == PICK_IMAGE_REQUEST && data != null && data.getData() != null) {
+                Uri uri = data.getData();
+                CropImage.activity(uri)
+                        .setActivityTitle("Crop Image")
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .start(this);
+            } else if (requestCode == CAMERA_IMAGE_REQUEST && data != null && data.getExtras() != null) {
+                Bitmap photo = (Bitmap) data.getExtras().get("data");
+                Uri uri = getImageUri(this, photo);
+                CropImage.activity(uri)
+                        .setActivityTitle("Crop Image")
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .start(this);
+            } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && data != null) {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                Uri croppedImageURI = result.getUri();
 
-        } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            Uri croppedImageURI = result.getUri();
 
-            Glide.with(this)
-                    .load(croppedImageURI)
-                    .into(productImageView);
-
+                Glide.with(this)
+                        .load(croppedImageURI)
+                        .into(productImageView);
+            }
         }
+    }
+
+    private Uri getImageUri(Context context, Bitmap bitmap) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Title", null);
+        return Uri.parse(path);
     }
 
     private void uploadProductImage(){
@@ -141,6 +178,8 @@ public class CreateProductActivity extends AppCompatActivity {
         String timestamp = String.valueOf(System.currentTimeMillis());
         String randomString = UUID.randomUUID().toString();
         String imageName = timestamp + "_" + randomString + ".png";
+
+        //TODO replace with authenticated phone number
         StorageReference imageReference = storageReference.child("ProductImages").child("0776579631").child(imageName);
 
         UploadTask uploadTask = imageReference.putBytes(data);
