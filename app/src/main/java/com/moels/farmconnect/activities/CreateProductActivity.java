@@ -204,8 +204,7 @@ public class CreateProductActivity extends AppCompatActivity {
         String randomString = UUID.randomUUID().toString();
         String imageName = timestamp + "_" + randomString + ".png";
 
-        //TODO replace with authenticated phone number
-        StorageReference imageReference = storageReference.child("ProductImages").child("0776579631").child(imageName);
+        StorageReference imageReference = storageReference.child("ProductImages").child(sharedPreferences.getString("authenticatedPhoneNumber", "123456789")).child(imageName);
 
         UploadTask uploadTask = imageReference.putBytes(data);
         uploadTask.addOnFailureListener(new OnFailureListener() {

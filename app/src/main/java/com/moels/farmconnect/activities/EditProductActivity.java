@@ -13,6 +13,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -55,6 +56,7 @@ public class EditProductActivity extends AppCompatActivity {
     private TextView productNameEditView, productQuantityEditView, productPriceEditView;
     private ProductsDatabaseHelper productsDatabaseHelper;
     private ProgressDialog progressDialog;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +77,7 @@ public class EditProductActivity extends AppCompatActivity {
         }
 
         productsDatabaseHelper = new ProductsDatabaseHelper(getApplicationContext());
+        sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
         showProductDetails(productsDatabaseHelper.getProductDetails(getIntent().getStringExtra("productID")));
         productImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -231,7 +234,7 @@ public class EditProductActivity extends AppCompatActivity {
                 String timestamp = String.valueOf(System.currentTimeMillis());
                 String randomString = UUID.randomUUID().toString();
                 String imageName = timestamp + "_" + randomString + ".png";
-                StorageReference imageReference = storageReference.child("ProductImages").child("0776579631").child(imageName);
+                StorageReference imageReference = storageReference.child("ProductImages").child(sharedPreferences.getString("authenticatedPhoneNumber", "123456789")).child(imageName);
 
                 UploadTask uploadTask = imageReference.putBytes(data);
                 uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -270,11 +273,13 @@ public class EditProductActivity extends AppCompatActivity {
         String productName = productNameEditView.getText().toString();
         String productQuantity = productQuantityEditView.getText().toString();
         String productPrice = productPriceEditView.getText().toString();
+        String updated = "true";
 
         values.add(imageUrl);
         values.add(productName);
         values.add(productQuantity);
         values.add(productPrice);
+        values.add(updated);
 
         return values;
     }
@@ -285,6 +290,7 @@ public class EditProductActivity extends AppCompatActivity {
         contentValues.put("productName", values.get(1));
         contentValues.put("quantity", values.get(2));
         contentValues.put("price", values.get(3));
+        contentValues.put("updated", values.get(4));
 
         boolean productIsUpdated = productsDatabaseHelper.updateProduct(productID, contentValues);
         if (productIsUpdated){

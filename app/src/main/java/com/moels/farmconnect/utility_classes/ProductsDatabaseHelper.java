@@ -95,6 +95,7 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToNext()){
            productImageUrl = cursor.getString(cursor.getColumnIndex("imageUrl"));
         }
+        cursor.close();
         return productImageUrl;
     }
 
