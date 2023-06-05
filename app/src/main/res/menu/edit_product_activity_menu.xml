@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/save_edited_product_details_btn"
+        android:title="@string/save_menu_item_text"
+        android:icon="@drawable/baseline_check_24"
+        app:showAsAction="always" />
+
+</menu>

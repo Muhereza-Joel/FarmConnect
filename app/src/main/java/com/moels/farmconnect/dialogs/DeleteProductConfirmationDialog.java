@@ -42,14 +42,16 @@ public class DeleteProductConfirmationDialog extends DialogFragment implements D
         String productID = getActivity().getIntent().getStringExtra("productID");
         String url = getImageUrl(productID);
         if (!TextUtils.isEmpty(url)){
-            productsDatabaseHelper.deleteProductFromDatabase(productID);
-            Intent deleteProductService = new Intent(getActivity(), DeleteProductService.class);
-            deleteProductService.putExtra("imageUrl", url);
-            getActivity().startService(deleteProductService);
+            boolean productIsDeleted = productsDatabaseHelper.deleteProductFromDatabase(productID);
+            if (productIsDeleted){
+                Intent deleteProductService = new Intent(getActivity(), DeleteProductService.class);
+                deleteProductService.putExtra("imageUrl", url);
+                getActivity().startService(deleteProductService);
 
-            Intent resultIntent = new Intent();
-            getActivity().setResult(Activity.RESULT_OK, resultIntent);
-            getActivity().finish();
+                Intent resultIntent = new Intent();
+                getActivity().setResult(Activity.RESULT_OK, resultIntent);
+                getActivity().finish();
+            }
         }
 
     }

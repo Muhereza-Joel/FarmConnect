@@ -29,13 +29,14 @@ import com.moels.farmconnect.services.DeleteProductService;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.UI;
 
+import java.util.List;
+
 public class ProductDetailsActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private ImageView productImageView;
     private TextView productNameTextView, productQuantityTextView, productPriceTextView;
     private ProductsDatabaseHelper productsDatabaseHelper;
-    private SQLiteDatabase sqLiteDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +57,13 @@ public class ProductDetailsActivity extends AppCompatActivity {
         }
 
         productsDatabaseHelper = new ProductsDatabaseHelper(getApplicationContext());
-        sqLiteDatabase = productsDatabaseHelper.getReadableDatabase();
-        getProductDetailsFromDatabase();
+        showProductDetails(productsDatabaseHelper.getProductDetails(getIntent().getStringExtra("productID")));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        showProductDetails(productsDatabaseHelper.getProductDetails(getIntent().getStringExtra("productID")));
     }
 
     @Override
@@ -107,30 +113,14 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     }
 
-    private void getProductDetailsFromDatabase(){
-        String productRemoteId = getIntent().getStringExtra("productID");
-        String [] columnsToPick = {"imageUrl","productName","quantity", "price"};
-        Cursor cursor = sqLiteDatabase.query("products",
-                columnsToPick,
-                "productRemoteId = ?", new String[]{productRemoteId}, null, null, null);
-
-        if (cursor.moveToNext()){
-            @SuppressLint("Range") String productImageUrl = cursor.getString(cursor.getColumnIndex("imageUrl"));
-            @SuppressLint("Range") String productName = cursor.getString(cursor.getColumnIndex("productName"));
-            @SuppressLint("Range") String productQuantity = cursor.getString(cursor.getColumnIndex("quantity"));
-            @SuppressLint("Range") String productPrice = cursor.getString(cursor.getColumnIndex("price"));
-
-            loadDetailsInUI(productImageUrl, productName, productQuantity, productPrice);
-
-            cursor.close();
+    private void showProductDetails(List<String> productDetails){
+        if (productDetails.size() > 0){
+            Glide.with(getApplicationContext()).load(productDetails.get(0)).into(productImageView);
+            productNameTextView.setText(productDetails.get(1));
+            productQuantityTextView.setText(productDetails.get(2));
+            productPriceTextView.setText(productDetails.get(3));
         }
-    }
 
-    private void loadDetailsInUI(String imageUrl, String productName, String quantity, String price){
-        Glide.with(getApplicationContext()).load(imageUrl).into(productImageView);
-        productNameTextView.setText(productName);
-        productQuantityTextView.setText(quantity);
-        productPriceTextView.setText(price);
     }
 
 }

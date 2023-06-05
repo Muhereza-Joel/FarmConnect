@@ -45,8 +45,10 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -104,26 +106,27 @@ public class CreateProductActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.create_product_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
+    private void initUI(){
+        toolbar = findViewById(R.id.create_product_activity_toolbar);
+        productImageView = findViewById(R.id.product_image_view);
+        productNameEditText = findViewById(R.id.product_name_edit_text);
+        productQuantityEditText = findViewById(R.id.product_quantity_edit_text);
+        productPriceEditText = findViewById(R.id.product_price_edit_text);    }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_save){
-            if (validateTextViews() == true){
-                progressDialog = new ProgressDialog(this);
-                progressDialog.setMessage("Processing...");
-                progressDialog.setCancelable(false);
-                progressDialog.show();
-                uploadProductImage();
+    private void setUpStatusBar() {
+        Window window = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            UiModeManager uiModeManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
+            int currentMode = uiModeManager.getNightMode();
+            if (currentMode == UiModeManager.MODE_NIGHT_YES) {
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorBlack));
+            }else {
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
             }
-
         }
-        return super.onOptionsItemSelected(item);
+
     }
 
     @Override
@@ -163,6 +166,28 @@ public class CreateProductActivity extends AppCompatActivity {
         return Uri.parse(path);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.create_product_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_save){
+            if (validateEditViews() == true){
+                progressDialog = new ProgressDialog(this);
+                progressDialog.setMessage("Processing...");
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+                uploadProductImage();
+            }
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void uploadProductImage(){
         productImageView.setDrawingCacheEnabled(true);
         productImageView.buildDrawingCache();
@@ -199,8 +224,8 @@ public class CreateProductActivity extends AppCompatActivity {
                         String url = uri.toString();
                         progressDialog.dismiss();
 
-                        boolean productCreated = addProductToDatabase(url);
-                        if (productCreated == true){
+                        boolean productIsCreated = productsDatabaseHelper.addProductToDatabase(getValuesFromUI(url));
+                        if (productIsCreated){
                             resetUI();
                             View parentView = findViewById(R.id.parent);
                             UI.displaySnackBar(getApplicationContext(), parentView, "Product Added Successfully!!");
@@ -212,7 +237,8 @@ public class CreateProductActivity extends AppCompatActivity {
         });
     }
 
-    private boolean validateTextViews(){
+    private boolean validateEditViews(){
+        //TODO Add functionality to check for the type of image
         boolean validated = true;
         if (TextUtils.isEmpty(productNameEditText.getText().toString())
                 || TextUtils.isEmpty(productQuantityEditText.getText().toString())
@@ -222,7 +248,10 @@ public class CreateProductActivity extends AppCompatActivity {
         }
         return validated;
     }
-    private boolean addProductToDatabase(String imageUrl){
+
+    private List<String> getValuesFromUI(String imageUrl){
+        List<String> values = new ArrayList<>();
+
         String productRemoteId = generateUniqueID();
         String productName = productNameEditText.getText().toString();
         String productQuantity = productQuantityEditText.getText().toString();
@@ -236,30 +265,23 @@ public class CreateProductActivity extends AppCompatActivity {
         String status = "available";
         String zoneID = getIntent().getStringExtra("zoneID");
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("productRemoteId", productRemoteId);
-        contentValues.put("productName", productName);
-        contentValues.put("quantity", productQuantity);
-        contentValues.put("price", productPrice);
-        contentValues.put("imageUrl", url);
-        contentValues.put("uploaded", uploaded);
-        contentValues.put("updated", updated);
-        contentValues.put("owner", owner);
-        contentValues.put("date", date);
-        contentValues.put("time", time);
-        contentValues.put("status", status);
-        contentValues.put("zoneID", zoneID);
+        values.add(productRemoteId);
+        values.add(productName);
+        values.add(productQuantity);
+        values.add(productPrice);
+        values.add(url);
+        values.add(uploaded);
+        values.add(updated);
+        values.add(owner);
+        values.add(date);
+        values.add(time);
+        values.add(status);
+        values.add(zoneID);
 
-        sqLiteDatabase.insert("products", null, contentValues);
-        return true;
+        return values;
     }
 
-    private void resetUI(){
-        productImageView.setImageResource(R.drawable.baseline_insert_photo_24);
-        productNameEditText.setText("");
-        productQuantityEditText.setText("");
-        productPriceEditText.setText("");
-    }
+
 
     private static String generateUniqueID(){
         UUID uuid = UUID.randomUUID();
@@ -286,26 +308,11 @@ public class CreateProductActivity extends AppCompatActivity {
         return formattedTime;
     }
 
-    private void initUI(){
-        toolbar = findViewById(R.id.create_product_activity_toolbar);
-        productImageView = findViewById(R.id.product_image_view);
-        productNameEditText = findViewById(R.id.product_name_edit_text);
-        productQuantityEditText = findViewById(R.id.product_quantity_edit_text);
-        productPriceEditText = findViewById(R.id.product_price_edit_text);    }
-
-    private void setUpStatusBar() {
-        Window window = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            UiModeManager uiModeManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
-            int currentMode = uiModeManager.getNightMode();
-            if (currentMode == UiModeManager.MODE_NIGHT_YES) {
-                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorBlack));
-            }else {
-                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
-            }
-        }
-
+    private void resetUI(){
+        productImageView.setImageResource(R.drawable.baseline_insert_photo_24);
+        productNameEditText.setText("");
+        productQuantityEditText.setText("");
+        productPriceEditText.setText("");
     }
+
 }
