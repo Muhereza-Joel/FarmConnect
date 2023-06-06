@@ -6,6 +6,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
+
+import com.moels.farmconnect.models.ProductCardItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +85,38 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
         long rowsInserted = sqLiteDatabase.insert("products", null, contentValues);
         if (rowsInserted > 0) rowCreated = true;
         return rowCreated;
+    }
+
+    public List<ProductCardItem> getAllProducts(String zoneID, String owner){
+        List<ProductCardItem> items = new ArrayList<>();
+        Cursor cursor;
+
+        if (owner.equals("")){
+            cursor = sqLiteDatabase.rawQuery("SELECT * FROM products WHERE zoneID = '" + zoneID, null);
+
+        }else {
+            cursor = sqLiteDatabase.rawQuery("SELECT * FROM products WHERE zoneID = '" + zoneID + "' AND owner = '" + owner + "'", null);
+        }
+
+
+        if (cursor.moveToNext()) {
+            do {
+                @SuppressLint("Range") String productRemoteID = cursor.getString(cursor.getColumnIndex("productRemoteId"));
+                @SuppressLint("Range") String imageUrl = cursor.getString(cursor.getColumnIndex("imageUrl"));
+                @SuppressLint("Range") String productName = cursor.getString(cursor.getColumnIndex("productName"));
+                @SuppressLint("Range") String productQuantity = cursor.getString(cursor.getColumnIndex("quantity"));
+                @SuppressLint("Range") String createTime = cursor.getString(cursor.getColumnIndex("time"));
+                @SuppressLint("Range") String status = cursor.getString(cursor.getColumnIndex("status"));
+
+                if (!TextUtils.isEmpty(imageUrl) || !TextUtils.isEmpty(productName) || !TextUtils.isEmpty(productQuantity)) {
+                    ProductCardItem productCardItem = new ProductCardItem(productRemoteID, productName, productQuantity, imageUrl, createTime, status);
+                    items.add(productCardItem);
+                }
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return items;
+
     }
 
     public List<String> getProductDetails(String productID){
