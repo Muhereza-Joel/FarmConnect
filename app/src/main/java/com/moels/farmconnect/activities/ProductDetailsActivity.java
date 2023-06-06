@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
@@ -32,11 +33,13 @@ import com.moels.farmconnect.utility_classes.UI;
 import java.util.List;
 
 public class ProductDetailsActivity extends AppCompatActivity {
-
     private Toolbar toolbar;
     private ImageView productImageView;
     private TextView productNameTextView, productQuantityTextView,productUnitPriceTextView, productPriceTextView;
     private ProductsDatabaseHelper productsDatabaseHelper;
+    private SharedPreferences sharedPreferences;
+    private boolean isFarmerAccount;
+    private boolean isBuyerAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
             }
         }
 
+        sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
+        isFarmerAccount = sharedPreferences.getBoolean("farmerAccountTypeChosen", false);
+        isBuyerAccount = sharedPreferences.getBoolean("buyerAccountTypeChosen", false);
         productsDatabaseHelper = new ProductsDatabaseHelper(getApplicationContext());
         showProductDetails(productsDatabaseHelper.getProductDetails(getIntent().getStringExtra("productID")));
     }
@@ -68,7 +74,13 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.product_details_activity_menu, menu);
+        if (isFarmerAccount){
+            getMenuInflater().inflate(R.menu.product_details_activity_menu, menu);
+        }
+        else if (isBuyerAccount){
+            getMenuInflater().inflate(R.menu.product_details_activity_menu_for_buyer, menu);
+        }
+
         return super.onCreateOptionsMenu(menu);
     }
 

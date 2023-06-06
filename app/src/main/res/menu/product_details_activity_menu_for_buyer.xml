@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/change_status"
+        android:orderInCategory="200"
+        android:title="Change Status"
+        android:tooltipText="Change Status"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/change_to_another_zone"
+        android:orderInCategory="300"
+        android:title="Change Zone"
+        android:tooltipText="Change Zone"
+        app:showAsAction="never" />
+
+</menu>
