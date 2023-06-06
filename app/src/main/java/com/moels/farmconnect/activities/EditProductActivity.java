@@ -17,17 +17,22 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -47,13 +52,17 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EditProductActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 3;
     private static final int CAMERA_IMAGE_REQUEST = 4;
     private Toolbar toolbar;
     private ImageView productImageView;
-    private TextView productNameEditView, productQuantityEditView, productPriceEditView;
+    private EditText productNameEditText, productQuantityEditText, productUnitPriceEditText;
+    private Spinner quantityUnitsSpinner;
+    private TextView productPriceTextView;
     private ProductsDatabaseHelper productsDatabaseHelper;
     private ProgressDialog progressDialog;
     private SharedPreferences sharedPreferences;
@@ -76,8 +85,13 @@ public class EditProductActivity extends AppCompatActivity {
             }
         }
 
+        productQuantityEditText.addTextChangedListener(createTextWatcher());
+        productUnitPriceEditText.addTextChangedListener(createTextWatcher());
+
         productsDatabaseHelper = new ProductsDatabaseHelper(getApplicationContext());
         sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
+
+
         showProductDetails(productsDatabaseHelper.getProductDetails(getIntent().getStringExtra("productID")));
         productImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,9 +122,11 @@ public class EditProductActivity extends AppCompatActivity {
     private void initUI(){
         toolbar = findViewById(R.id.edit_product_activity_toolbar);
         productImageView = findViewById(R.id.product_image_view);
-        productNameEditView = findViewById(R.id.product_name_edit_text);
-        productQuantityEditView = findViewById(R.id.product_quantity_edit_text);
-        productPriceEditView = findViewById(R.id.product_price_edit_text);
+        productNameEditText = findViewById(R.id.product_name_edit_text);
+        productQuantityEditText = findViewById(R.id.product_quantity_edit_text);
+        productUnitPriceEditText = findViewById(R.id.product_unit_price_edit_text);
+        productPriceTextView = findViewById(R.id.product_auto_price_text_view);
+        quantityUnitsSpinner = findViewById(R.id.units_spinner);
     }
 
     private void setUpStatusBar() {
@@ -131,12 +147,89 @@ public class EditProductActivity extends AppCompatActivity {
 
     private void showProductDetails(List<String> productDetails){
         if (productDetails.size() > 0){
+            String quantityString = productDetails.get(2);
+            String quantity = extractDigits(quantityString);
+            String units = extractCharacters(quantityString);
+
             Glide.with(getApplicationContext()).load(productDetails.get(0)).into(productImageView);
-            productNameEditView.setText(productDetails.get(1));
-            productQuantityEditView.setText(productDetails.get(2));
-            productPriceEditView.setText(productDetails.get(3));
+            productNameEditText.setText(productDetails.get(1));
+            productQuantityEditText.setText(quantity);
+            selectUnitValueInSpinner(units);
+            productUnitPriceEditText.setText(productDetails.get(3));
+            productPriceTextView.setText(productDetails.get(4));
         }
 
+    }
+
+    private TextWatcher createTextWatcher(){
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                calculateTotalPrice();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+    }
+
+    private void calculateTotalPrice(){
+        String quantityString = productQuantityEditText.getText().toString();
+        String unitPriceString = productUnitPriceEditText.getText().toString();
+
+        if (!TextUtils.isEmpty(quantityString) && !TextUtils.isEmpty(unitPriceString)){
+            double quantity = Double.parseDouble(quantityString);
+            double unitPrice = Double.parseDouble(unitPriceString);
+            long totalPrice = (long) (quantity * unitPrice);
+            productPriceTextView.setText(String.format("%s", totalPrice));
+        }
+
+    }
+
+
+    private static String extractDigits(String input) {
+        Pattern pattern = Pattern.compile("(\\d+)");
+        Matcher matcher = pattern.matcher(input);
+
+        if (matcher.find()) {
+            return matcher.group(1);
+        } else {
+            return "";
+        }
+    }
+
+    private static String extractCharacters(String input) {
+        Pattern pattern = Pattern.compile("([A-Za-z()]+)");
+        Matcher matcher = pattern.matcher(input);
+
+        if (matcher.find()) {
+            return matcher.group(1);
+        } else {
+            return "";
+        }
+    }
+
+    private void selectUnitValueInSpinner(String unit){
+        String[] entries = getResources().getStringArray(R.array.quantity_units);
+
+        int index = -1;
+        for (int i = 0; i < entries.length; i++) {
+            if (entries[i].equals(unit)) {
+                index = i;
+                break;
+            }
+        }
+
+        if (index != -1) {
+            quantityUnitsSpinner.setSelection(index);
+        }
     }
 
     @Override
@@ -185,7 +278,7 @@ public class EditProductActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.save_edited_product_details_btn){
-            if (validateEditViews()){
+            if (validateViews()){
                 progressDialog = new ProgressDialog(this);
                 progressDialog.setMessage("Processing...");
                 progressDialog.setCancelable(false);
@@ -196,14 +289,26 @@ public class EditProductActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private boolean validateEditViews(){
-        //TODO Add functionality to check for the type of image
+    private boolean validateViews(){
         boolean validated = true;
-        if (TextUtils.isEmpty(productNameEditView.getText().toString())
-                || TextUtils.isEmpty(productQuantityEditView.getText().toString())
-                || TextUtils.isEmpty(productPriceEditView.getText().toString())){
-            UI.displayToast(getApplicationContext(), "All fields are required");
-            validated = false;
+
+        Drawable productImageDrawable = productImageView.getDrawable();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (productImageDrawable instanceof VectorDrawable) {
+                UI.displayToast(getApplicationContext(), "Please select an image");
+                validated = false;
+            } else if (TextUtils.isEmpty(productNameEditText.getText().toString())
+                    || TextUtils.isEmpty(productQuantityEditText.getText().toString())
+                    || TextUtils.isEmpty(productPriceTextView.getText().toString())
+                    || TextUtils.isEmpty(productUnitPriceEditText.getText().toString())){
+
+                UI.displayToast(getApplicationContext(), "All fields are required");
+                validated = false;
+
+            }else if (quantityUnitsSpinner.getSelectedItem().toString().equals("Choose Unit")){
+                UI.displayToast(getApplicationContext(), "Please Select A Unit");
+                validated = false;
+            }
         }
         return validated;
     }
@@ -270,14 +375,20 @@ public class EditProductActivity extends AppCompatActivity {
     private List<String> getUpdatedValuesFromUI(String imageUrl){
         List<String> values = new ArrayList<>();
 
-        String productName = productNameEditView.getText().toString();
-        String productQuantity = productQuantityEditView.getText().toString();
-        String productPrice = productPriceEditView.getText().toString();
+        String productName = productNameEditText.getText().toString();
+
+        String quantity = productQuantityEditText.getText().toString();
+        String unit = quantityUnitsSpinner.getSelectedItem().toString();
+        String productQuantity = quantity + " " + unit;
+
+        String productUnitPrice = productUnitPriceEditText.getText().toString();
+        String productPrice = productPriceTextView.getText().toString();
         String updated = "true";
 
         values.add(imageUrl);
         values.add(productName);
         values.add(productQuantity);
+        values.add(productUnitPrice);
         values.add(productPrice);
         values.add(updated);
 
@@ -289,8 +400,9 @@ public class EditProductActivity extends AppCompatActivity {
         contentValues.put("imageUrl", values.get(0));
         contentValues.put("productName", values.get(1));
         contentValues.put("quantity", values.get(2));
-        contentValues.put("price", values.get(3));
-        contentValues.put("updated", values.get(4));
+        contentValues.put("unitPrice", values.get(3));
+        contentValues.put("price", values.get(4));
+        contentValues.put("updated", values.get(5));
 
         boolean productIsUpdated = productsDatabaseHelper.updateProduct(productID, contentValues);
         if (productIsUpdated){

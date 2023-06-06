@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="quantity_units">
+        <item>Choose Unit</item>
+        <item>Kilogram(s)</item>
+        <item>Gram(s)</item>
+        <item>Tonne(s)</item>
+        <item>Liter(s)</item>
+        <item>Bag(s)</item>
+        <item>Piece(s)</item>
+    </string-array>
+</resources>

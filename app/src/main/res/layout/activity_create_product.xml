@@ -11,7 +11,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <include
             android:id="@+id/create_product_activity_toolbar"
@@ -34,7 +34,9 @@
                 android:clipToOutline="true"
                 android:outlineProvider="background"
                 android:src="@drawable/baseline_insert_photo_24"
-                android:padding="10dp" />
+                android:contentDescription="@string/alt_text_for_product_image_view"
+                android:padding="10dp"
+                tools:targetApi="s" />
 
         </LinearLayout>
 
@@ -48,7 +50,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Product Name"
+                android:text="@string/product_input_label"
                 android:textStyle="bold"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
@@ -58,12 +60,12 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/product_name_edit_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:background="@drawable/edit_text_border"
-                android:hint="eg. coffee, beans, potatoes"
+                android:hint="@string/product_inputs_hint"
                 android:inputType="text"
                 android:maxLength="40"
                 android:padding="10dp" />
@@ -80,7 +82,60 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Quantity"
+                android:text="@string/quantity_label"
+                android:textStyle="bold"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:textSize="20sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/product_quantity_edit_text"
+                    android:layout_width="100dp"
+                    android:layout_weight="1"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/edit_text_border"
+                    android:hint="@string/product_quantity_hint"
+                    android:inputType="numberDecimal"
+                    android:maxLength="10"
+                    android:padding="10dp" />
+
+                <Spinner
+                    android:id="@+id/units_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/edit_text_border"
+                    android:entries="@array/quantity_units"
+                    android:padding="10dp" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/product_unit_price_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/product_quantity_container">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/unit_price_label"
                 android:textStyle="bold"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
@@ -88,16 +143,16 @@
                 android:textSize="20sp"/>
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/product_quantity_edit_text"
+                android:id="@+id/product_unit_price_edit_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:background="@drawable/edit_text_border"
-                android:hint="eg. 10bags or 50kgs"
-                android:inputType="text"
-                android:maxLength="40"
+                android:hint="@string/uint_price_hint"
+                android:inputType="numberDecimal"
+                android:maxLength="10"
                 android:padding="10dp" />
 
         </LinearLayout>
@@ -107,28 +162,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_below="@+id/product_quantity_container">
+            android:layout_below="@+id/product_unit_price_container">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Price"
+                android:text="@string/price_label"
                 android:textStyle="bold"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="10dp"
                 android:textSize="20sp"/>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/product_price_edit_text"
+            <TextView
+                android:id="@+id/product_auto_price_text_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/edit_text_border"
-                android:hint="eg. 10000"
-                android:inputType="number"
+                android:hint="@string/auto_price_hint"
                 android:maxLength="40"
                 android:padding="10dp" />
 

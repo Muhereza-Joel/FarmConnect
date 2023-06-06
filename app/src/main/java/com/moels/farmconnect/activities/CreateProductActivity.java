@@ -9,7 +9,6 @@ import androidx.core.content.ContextCompat;
 
 import android.app.ProgressDialog;
 import android.app.UiModeManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,11 +16,15 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +32,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -58,7 +63,9 @@ public class CreateProductActivity extends AppCompatActivity {
     private static final int CAMERA_IMAGE_REQUEST = 2;
     private Toolbar toolbar;
     private ImageView productImageView;
-    private EditText productNameEditText, productQuantityEditText, productPriceEditText;
+    private EditText productNameEditText, productQuantityEditText, productUnitPriceEditText;
+    private Spinner quantityUnitsSpinner;
+    private TextView productPriceTextView;
     private ProgressDialog progressDialog;
     private SQLiteDatabase sqLiteDatabase;
     private ProductsDatabaseHelper productsDatabaseHelper;
@@ -104,6 +111,9 @@ public class CreateProductActivity extends AppCompatActivity {
             }
 
         });
+
+        productQuantityEditText.addTextChangedListener(createTextWatcher());
+        productUnitPriceEditText.addTextChangedListener(createTextWatcher());
     }
 
     private void initUI(){
@@ -111,7 +121,10 @@ public class CreateProductActivity extends AppCompatActivity {
         productImageView = findViewById(R.id.product_image_view);
         productNameEditText = findViewById(R.id.product_name_edit_text);
         productQuantityEditText = findViewById(R.id.product_quantity_edit_text);
-        productPriceEditText = findViewById(R.id.product_price_edit_text);    }
+        productUnitPriceEditText = findViewById(R.id.product_unit_price_edit_text);
+        productPriceTextView = findViewById(R.id.product_auto_price_text_view);
+        quantityUnitsSpinner = findViewById(R.id.units_spinner);
+    }
 
     private void setUpStatusBar() {
         Window window = null;
@@ -125,6 +138,38 @@ public class CreateProductActivity extends AppCompatActivity {
             }else {
                 window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
             }
+        }
+
+    }
+
+    private TextWatcher createTextWatcher(){
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                calculateTotalPrice();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+    }
+
+    private void calculateTotalPrice(){
+        String quantityString = productQuantityEditText.getText().toString();
+        String unitPriceString = productUnitPriceEditText.getText().toString();
+
+        if (!TextUtils.isEmpty(quantityString) && !TextUtils.isEmpty(unitPriceString)){
+            double quantity = Double.parseDouble(quantityString);
+            double unitPrice = Double.parseDouble(unitPriceString);
+            long totalPrice = (long) (quantity * unitPrice);
+            productPriceTextView.setText(String.format("%s", totalPrice));
         }
 
     }
@@ -176,7 +221,7 @@ public class CreateProductActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_save){
-            if (validateEditViews() == true){
+            if (validateViews() == true){
                 progressDialog = new ProgressDialog(this);
                 progressDialog.setMessage("Processing...");
                 progressDialog.setCancelable(false);
@@ -236,14 +281,26 @@ public class CreateProductActivity extends AppCompatActivity {
         });
     }
 
-    private boolean validateEditViews(){
-        //TODO Add functionality to check for the type of image
+    private boolean validateViews(){
         boolean validated = true;
-        if (TextUtils.isEmpty(productNameEditText.getText().toString())
-                || TextUtils.isEmpty(productQuantityEditText.getText().toString())
-                || TextUtils.isEmpty(productPriceEditText.getText().toString())){
-            UI.displayToast(getApplicationContext(), "All fields are required");
-            validated = false;
+
+        Drawable productImageDrawable = productImageView.getDrawable();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (productImageDrawable instanceof VectorDrawable) {
+                UI.displayToast(getApplicationContext(), "Please select an image");
+                validated = false;
+            } else if (TextUtils.isEmpty(productNameEditText.getText().toString())
+                    || TextUtils.isEmpty(productQuantityEditText.getText().toString())
+                    || TextUtils.isEmpty(productPriceTextView.getText().toString())
+                    || TextUtils.isEmpty(productUnitPriceEditText.getText().toString())){
+
+                    UI.displayToast(getApplicationContext(), "All fields are required");
+                    validated = false;
+
+            }else if (quantityUnitsSpinner.getSelectedItem().toString().equals("Choose Unit")){
+                UI.displayToast(getApplicationContext(), "Please Select A Unit");
+                validated = false;
+            }
         }
         return validated;
     }
@@ -253,8 +310,13 @@ public class CreateProductActivity extends AppCompatActivity {
 
         String productRemoteId = generateUniqueID();
         String productName = productNameEditText.getText().toString();
-        String productQuantity = productQuantityEditText.getText().toString();
-        String productPrice = productPriceEditText.getText().toString();
+
+        String quantity = productQuantityEditText.getText().toString();
+        String unit = quantityUnitsSpinner.getSelectedItem().toString();
+        String productQuantity = quantity + " " + unit;
+
+        String productUnitPrice = productUnitPriceEditText.getText().toString();
+        String productPrice = productPriceTextView.getText().toString();
         String url = imageUrl;
         String uploaded = "false";
         String updated = "false";
@@ -267,6 +329,7 @@ public class CreateProductActivity extends AppCompatActivity {
         values.add(productRemoteId);
         values.add(productName);
         values.add(productQuantity);
+        values.add(productUnitPrice);
         values.add(productPrice);
         values.add(url);
         values.add(uploaded);
@@ -311,7 +374,8 @@ public class CreateProductActivity extends AppCompatActivity {
         productImageView.setImageResource(R.drawable.baseline_insert_photo_24);
         productNameEditText.setText("");
         productQuantityEditText.setText("");
-        productPriceEditText.setText("");
+        productUnitPriceEditText.setText("");
+        productPriceTextView.setText("");
     }
 
 }

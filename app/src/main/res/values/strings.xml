@@ -29,4 +29,13 @@
     <string name="empty_contacts_list_message">Yo don\'t have people using this app \n in your contacts</string>
     <string name="registered_contacts_label">Contacts on Farm Connect</string>
     <string name="save_menu_item_text">Save</string>
+    <string name="uint_price_hint">eg. 10000</string>
+    <string name="unit_price_label">Unit Price</string>
+    <string name="price_label">Price</string>
+    <string name="auto_price_hint">0</string>
+    <string name="product_quantity_hint">eg. 10bags or 50kgs</string>
+    <string name="quantity_label">Quantity</string>
+    <string name="product_inputs_hint">eg. coffee, beans, potatoes</string>
+    <string name="product_input_label">Product Name</string>
+    <string name="alt_text_for_product_image_view">Product Image</string>
 </resources>

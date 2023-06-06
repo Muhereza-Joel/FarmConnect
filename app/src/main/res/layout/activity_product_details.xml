@@ -10,7 +10,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <include
@@ -25,12 +25,14 @@
             android:clipToOutline="true"
             android:outlineProvider="background"
             android:src="@drawable/baseline_insert_photo_24"
-            android:padding="10dp" />
+            android:padding="10dp"
+            tools:targetApi="s"
+            android:contentDescription="@string/alt_text_for_product_image_view" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Product Name"
+            android:text="@string/product_input_label"
             android:textStyle="bold"
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
@@ -40,19 +42,18 @@
         <TextView
             android:id="@+id/product_name_text_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             android:background="@drawable/edit_text_border"
-            android:inputType="text"
             android:maxLength="40"
             android:padding="10dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Quantity"
+            android:text="@string/quantity_label"
             android:textStyle="bold"
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
@@ -62,19 +63,39 @@
         <TextView
             android:id="@+id/product_quantity_text_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             android:background="@drawable/edit_text_border"
-            android:inputType="text"
             android:maxLength="40"
             android:padding="10dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Price"
+            android:text="@string/unit_price_label"
+            android:textStyle="bold"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:id="@+id/product_unit_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/edit_text_border"
+            android:maxLength="40"
+            android:padding="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/price_label"
             android:textStyle="bold"
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
@@ -84,12 +105,12 @@
         <TextView
             android:id="@+id/product_price_text_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp"
             android:background="@drawable/edit_text_border"
-            android:inputType="number"
             android:maxLength="40"
             android:padding="10dp" />
     </LinearLayout>

@@ -35,7 +35,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private ImageView productImageView;
-    private TextView productNameTextView, productQuantityTextView, productPriceTextView;
+    private TextView productNameTextView, productQuantityTextView,productUnitPriceTextView, productPriceTextView;
     private ProductsDatabaseHelper productsDatabaseHelper;
 
     @Override
@@ -77,6 +77,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         productImageView = findViewById(R.id.product_image_view);
         productNameTextView = findViewById(R.id.product_name_text_view);
         productQuantityTextView = findViewById(R.id.product_quantity_text_view);
+        productUnitPriceTextView = findViewById(R.id.product_unit_text_view);
         productPriceTextView = findViewById(R.id.product_price_text_view);
     }
 
@@ -118,7 +119,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
             Glide.with(getApplicationContext()).load(productDetails.get(0)).into(productImageView);
             productNameTextView.setText(productDetails.get(1));
             productQuantityTextView.setText(productDetails.get(2));
-            productPriceTextView.setText(productDetails.get(3));
+            productUnitPriceTextView.setText(productDetails.get(3));
+            productPriceTextView.setText(productDetails.get(4));
         }
 
     }
