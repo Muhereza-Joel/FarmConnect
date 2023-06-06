@@ -45,21 +45,7 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < newVersion){
-            db.execSQL("DROP TABLE IF EXISTS products");
-            db.execSQL("CREATE TABLE products(_pid INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "productRemoteId TEXT, " +
-                    "productName TEXT, " +
-                    "quantity TEXT, " +
-                    "unitPrice TEXT, " +
-                    "price TEXT, " +
-                    "imageUrl TEXT, " +
-                    "uploaded TEXT, " +
-                    "updated TEXT, " +
-                    "owner TEXT, " +
-                    "date TEXT, " +
-                    "time TEXT, " +
-                    "status TEXT, " +
-                    "zoneID TEXT)");
+                db.execSQL("ALTER TABLE products ADD COLUMN unitPrice TEXT");
         }
 
     }
