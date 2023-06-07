@@ -4,12 +4,14 @@ public class Product {
 
     public Product(){}
 
-    public String productID, productName, quantity, price, owner, date, time, status, zoneID;
+    public String productID, productName, quantity,unitPrice, price, imageUrl, owner, createDate, createTime, status, zoneID;
 
     public Product(String productID,
                    String productName,
                    String quantity,
+                   String unitPrice,
                    String price,
+                   String imageUrl,
                    String owner,
                    String date,
                    String time,
@@ -19,10 +21,12 @@ public class Product {
         this.productID = productID;
         this.productName = productName;
         this.quantity = quantity;
+        this.unitPrice = unitPrice;
         this.price = price;
+        this.imageUrl = imageUrl;
         this.owner = owner;
-        this.date = date;
-        this.time = time;
+        this.createDate = date;
+        this.createTime = time;
         this.status = status;
         this.zoneID = zoneID;
     }
@@ -39,20 +43,28 @@ public class Product {
         return quantity;
     }
 
+    public String getUnitPrice() {
+        return unitPrice;
+    }
+
     public String getPrice() {
         return price;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 
     public String getOwner() {
         return owner;
     }
 
-    public String getDate() {
-        return date;
+    public String getCreateDate() {
+        return createDate;
     }
 
-    public String getTime() {
-        return time;
+    public String getCreateTime() {
+        return createTime;
     }
 
     public String getStatus() {

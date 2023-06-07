@@ -43,6 +43,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.services.ProductsUploadService;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.UI;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -273,6 +274,11 @@ public class CreateProductActivity extends AppCompatActivity {
                             resetUI();
                             View parentView = findViewById(R.id.parent);
                             UI.displaySnackBar(getApplicationContext(), parentView, "Product Added Successfully!!");
+
+                            Intent serviceIntent = new Intent(CreateProductActivity.this, ProductsUploadService.class);
+                            serviceIntent.putExtra("zoneID", getIntent().getStringExtra("zoneID"));
+                            startService(serviceIntent);
+
                         }
                     }
                 });

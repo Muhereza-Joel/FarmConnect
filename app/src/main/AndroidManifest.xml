@@ -32,6 +32,10 @@
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
         tools:targetApi="31">
         <service
+            android:name=".services.ProductsUploadService"
+            android:enabled="true"
+            android:exported="false"></service>
+        <service
             android:name=".services.DeleteProductService"
             android:enabled="true"
             android:exported="false" />
@@ -40,7 +44,7 @@
             android:name=".activities.EditProductActivity"
             android:exported="false"
             android:parentActivityName=".activities.ProductDetailsActivity"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activities.ProductDetailsActivity"
             android:exported="false"
@@ -56,7 +60,7 @@
             android:name=".activities.CreateProductActivity"
             android:exported="false"
             android:parentActivityName=".activities.AddProductToZoneActivity"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
 
         <service
             android:name=".services.BuyerAccountZoneFetchService"

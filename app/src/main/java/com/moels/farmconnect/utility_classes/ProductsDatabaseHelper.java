@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 
+import com.moels.farmconnect.models.Product;
 import com.moels.farmconnect.models.ProductCardItem;
 
 import java.util.ArrayList;
@@ -73,12 +74,38 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
         return rowCreated;
     }
 
+    public List<Product> getAllProductsToUpload(String currentZoneId){
+        List<Product> products = new ArrayList<>();
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM products WHERE uploaded = 'false' AND zoneID = '" + currentZoneId + "'", null);
+        if (cursor.moveToNext()){
+            do{
+                @SuppressLint("Range") String productRemoteId = cursor.getString(cursor.getColumnIndex("productRemoteId"));
+                @SuppressLint("Range") String productName = cursor.getString(cursor.getColumnIndex("productName"));
+                @SuppressLint("Range") String quantity = cursor.getString(cursor.getColumnIndex("quantity"));
+                @SuppressLint("Range") String unitPrice = cursor.getString(cursor.getColumnIndex("unitPrice"));
+                @SuppressLint("Range") String price = cursor.getString(cursor.getColumnIndex("price"));
+                @SuppressLint("Range") String imageUrl = cursor.getString(cursor.getColumnIndex("imageUrl"));
+                @SuppressLint("Range") String owner = cursor.getString(cursor.getColumnIndex("owner"));
+                @SuppressLint("Range") String date = cursor.getString(cursor.getColumnIndex("date"));
+                @SuppressLint("Range") String time = cursor.getString(cursor.getColumnIndex("time"));
+                @SuppressLint("Range") String status = cursor.getString(cursor.getColumnIndex("status"));
+                @SuppressLint("Range") String zoneID = cursor.getString(cursor.getColumnIndex("zoneID"));
+
+                Product product = new Product(productRemoteId, productName, quantity, unitPrice, price, imageUrl, owner, date, time, status, zoneID);
+                products.add(product);
+            }
+            while (cursor.moveToNext());
+        }
+        cursor.close();
+        return products;
+    }
+
     public List<ProductCardItem> getAllProducts(String zoneID, String owner){
         List<ProductCardItem> items = new ArrayList<>();
         Cursor cursor;
 
         if (owner.equals("")){
-            cursor = sqLiteDatabase.rawQuery("SELECT * FROM products WHERE zoneID = '" + zoneID, null);
+            cursor = sqLiteDatabase.rawQuery("SELECT * FROM products WHERE zoneID = '" + zoneID + "'", null);
 
         }else {
             cursor = sqLiteDatabase.rawQuery("SELECT * FROM products WHERE zoneID = '" + zoneID + "' AND owner = '" + owner + "'", null);
@@ -150,6 +177,13 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
         }
         return productUpdated;
     }
+
+    public void updateProductUploaded(String productID, boolean uploaded) {
+        ContentValues values = new ContentValues();
+        values.put("uploaded", uploaded ? "true" : "false");
+        sqLiteDatabase.update("products", values, "productRemoteId = ?", new String[]{productID});
+    }
+
 
     public boolean deleteProductFromDatabase(String _id){
         boolean productDeleted = false;
