@@ -132,14 +132,20 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public List<String> getProductDetails(String productID){
+    public List<String> getProductDetails(String productID) {
         List<String> resultSet = new ArrayList<>();
-        String [] columnsToPick = {"imageUrl","productName","quantity", "unitPrice", "price"};
+
+        if (productID == null || productID.isEmpty()) {
+            // Handle the case when productID is null or empty
+            return resultSet;
+        }
+
+        String[] columnsToPick = {"imageUrl", "productName", "quantity", "unitPrice", "price"};
         Cursor cursor = sqLiteDatabase.query("products",
                 columnsToPick,
                 "productRemoteId = ?", new String[]{productID}, null, null, null);
 
-        if (cursor.moveToNext()){
+        if (cursor.moveToNext()) {
             @SuppressLint("Range") String productImageUrl = cursor.getString(cursor.getColumnIndex("imageUrl"));
             @SuppressLint("Range") String productName = cursor.getString(cursor.getColumnIndex("productName"));
             @SuppressLint("Range") String productQuantity = cursor.getString(cursor.getColumnIndex("quantity"));
@@ -154,8 +160,10 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
 
             cursor.close();
         }
+
         return resultSet;
     }
+
 
     @SuppressLint("Range")
     public String getImageUrl(String productID){
