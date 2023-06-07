@@ -1,10 +1,10 @@
 package com.moels.farmconnect.models;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class Zone {
     private String zoneID, zoneName, zoneLocation, productsToCollect, description, owner, date, time, status;
-    private String products;
 
     public Zone(){}
 
@@ -16,8 +16,7 @@ public class Zone {
                 String owner,
                 String date,
                 String time,
-                String status,
-                String products
+                String status
     ) {
         this.zoneID = zoneID;
         this.zoneName = zoneName;
@@ -28,7 +27,6 @@ public class Zone {
         this.date = date;
         this.time = time;
         this.status = status;
-        this.products = products;
     }
 
     public String getZoneID() {
@@ -67,7 +65,4 @@ public class Zone {
         return status;
     }
 
-    public String getProducts() {
-        return products;
-    }
 }

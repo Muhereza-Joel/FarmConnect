@@ -19,6 +19,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.moels.farmconnect.models.Zone;
 import com.moels.farmconnect.utility_classes.UI;
 
+import java.util.HashMap;
+
 public class ZoneUploadService extends Service {
     private static final int POLL_INTERVAL = 2000; // Execute after 2 seconds
     private Handler handler;
@@ -67,8 +69,7 @@ public class ZoneUploadService extends Service {
                 @SuppressLint("Range") String createTime = cursor.getString(cursor.getColumnIndex("createTime"));
                 @SuppressLint("Range") String status = cursor.getString(cursor.getColumnIndex("status"));
 
-                String products = " ";
-                uploadZoneDataToFirebase(remote_id, zoneName, location, productsToCollect, description, owner, createDate, createTime, status, products);
+                uploadZoneDataToFirebase(remote_id, zoneName, location, productsToCollect, description, owner, createDate, createTime, status);
 
             } while (cursor.moveToNext());
         }
@@ -77,11 +78,11 @@ public class ZoneUploadService extends Service {
 
     private boolean uploadZoneDataToFirebase(
             String remote_id, String zoneName, String location, String productsToCollect,
-            String description, String owner, String createDate, String createTime, String status, String products) {
+            String description, String owner, String createDate, String createTime, String status) {
 
             String phoneNumber = myAppPreferences.getString("authenticatedPhoneNumber", "123456789");
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-            Zone zone = new Zone(remote_id, zoneName, location, productsToCollect, description, owner, createDate, createTime, status, products);
+            Zone zone = new Zone(remote_id, zoneName, location, productsToCollect, description, owner, createDate, createTime, status);
 
             databaseReference.child("zones").child(phoneNumber).child(remote_id).setValue(zone)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

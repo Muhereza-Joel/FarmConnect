@@ -26,7 +26,9 @@ import com.moels.farmconnect.utility_classes.UI;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FarmerAccountZonesFetchService extends Service {
     private static final int POLL_INTERVAL = 2000;
@@ -102,11 +104,13 @@ public class FarmerAccountZonesFetchService extends Service {
                     List<Zone> zoneList = new ArrayList<>();
 
                     for (DataSnapshot zoneSnapshot : dataSnapshot.getChildren()) {
+                        // Exclude the retrieval of the products field
                         Zone zone = zoneSnapshot.getValue(Zone.class);
                         zoneList.add(zone);
                     }
-                    getDetailsForEveryZone(zoneList);
 
+                    // Process the zone list without the products field
+                    getDetailsForEveryZone(zoneList);
                 }
 
                 @Override
@@ -116,6 +120,7 @@ public class FarmerAccountZonesFetchService extends Service {
             });
         }
     }
+
 
 
     private ArrayList<String> getContactsFromDatabase(){
@@ -152,7 +157,6 @@ public class FarmerAccountZonesFetchService extends Service {
                 String createDate = zone.getDate();
                 String createTime = zone.getTime();
                 String status = zone.getStatus();
-                String products = zone.getProducts();
 
                 addZoneToDatabase(id, zoneName, location, productsToCollect, description, owner, createDate, createTime, status);
 
