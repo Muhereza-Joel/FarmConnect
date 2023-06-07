@@ -55,6 +55,7 @@ public class DeleteZoneService extends Service {
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
+                                stopSelf();
                                 // Failed to delete zone
                                 // Handle the error appropriately
                             }

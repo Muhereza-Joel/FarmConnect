@@ -275,9 +275,8 @@ public class CreateProductActivity extends AppCompatActivity {
                             View parentView = findViewById(R.id.parent);
                             UI.displaySnackBar(getApplicationContext(), parentView, "Product Added Successfully!!");
 
-                            Intent serviceIntent = new Intent(CreateProductActivity.this, ProductsUploadService.class);
-                            serviceIntent.putExtra("zoneID", getIntent().getStringExtra("zoneID"));
-                            startService(serviceIntent);
+                            String zoneID = getIntent().getStringExtra("zoneID");
+                            startProductsUploadService(zoneID);
 
                         }
                     }
@@ -286,6 +285,15 @@ public class CreateProductActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void startProductsUploadService(String zoneID) {
+        if (zoneID != null && !zoneID.isEmpty()) {
+            Intent serviceIntent = new Intent(getApplicationContext(), ProductsUploadService.class);
+            serviceIntent.putExtra("zoneID", zoneID);
+            startService(serviceIntent);
+        }
+    }
+
 
     private boolean validateViews(){
         boolean validated = true;
@@ -383,5 +391,15 @@ public class CreateProductActivity extends AppCompatActivity {
         productUnitPriceEditText.setText("");
         productPriceTextView.setText("");
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(CreateProductActivity.this, AddProductToZoneActivity.class);
+        intent.putExtra("zoneID", getIntent().getStringExtra("zoneID"));
+        intent.putExtra("zoneName", getIntent().getStringExtra("zoneName"));
+        startActivity(intent);
+        finish();
+    }
+
 
 }

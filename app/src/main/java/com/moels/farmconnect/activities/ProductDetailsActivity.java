@@ -137,4 +137,12 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(ProductDetailsActivity.this, AddProductToZoneActivity.class);
+        intent.putExtra("zoneID", getIntent().getStringExtra("zoneID"));
+        startActivity(intent);
+        finish();
+    }
 }

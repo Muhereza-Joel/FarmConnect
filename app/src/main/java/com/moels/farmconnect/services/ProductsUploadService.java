@@ -75,8 +75,10 @@ public class ProductsUploadService extends Service {
                             public void onComplete(DatabaseError error, DatabaseReference ref) {
                                 if (error == null) {
                                     productsDatabaseHelper.updateProductUploaded(productID, true);
+                                    stopSelf();
                                 } else {
                                     productsDatabaseHelper.updateProductUploaded(productID,false);
+                                    stopSelf();
                                 }
                             }
                         });

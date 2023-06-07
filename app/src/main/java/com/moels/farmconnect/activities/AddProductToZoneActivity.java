@@ -54,6 +54,7 @@ public class AddProductToZoneActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(AddProductToZoneActivity.this, CreateProductActivity.class);
                 intent.putExtra("zoneID", getIntent().getStringExtra("zoneID"));
+                intent.putExtra("zoneName", getIntent().getStringExtra("zoneName"));
                 startActivity(intent);
             }
         });
@@ -66,6 +67,17 @@ public class AddProductToZoneActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.fragment_container, productsListFragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        toolbar.setTitle(getIntent().getStringExtra("zoneName"));
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
     }
 
     @Override
