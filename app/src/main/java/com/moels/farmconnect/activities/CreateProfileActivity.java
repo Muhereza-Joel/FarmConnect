@@ -2,6 +2,7 @@ package com.moels.farmconnect.activities;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
@@ -40,12 +41,16 @@ import androidx.core.content.ContextCompat;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.models.User;
 import com.moels.farmconnect.utility_classes.UI;
@@ -55,6 +60,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class CreateProfileActivity extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -66,6 +72,8 @@ public class CreateProfileActivity extends AppCompatActivity {
     RadioGroup accountTypeRadioGroup;
     private RadioButton buyerRadioButton, farmerRadioButton;
     private Spinner genderSpinner;
+
+    private ProgressDialog progressDialog;
     Uri croppedImageUri;
 
     @Override
@@ -200,20 +208,45 @@ public class CreateProfileActivity extends AppCompatActivity {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
             byte[] data = byteArrayOutputStream.toByteArray();
-            List<Long> dataList = new ArrayList<>();
-            for (int b : data) {
-                dataList.add((long) b);
-            }
 
+            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+            StorageReference storageReference = firebaseStorage.getReference();
 
-            User user = new User(fullName,gender, authenticatedPhoneNumber, birthDate, selectedValue, dataList);
+            String timestamp = String.valueOf(System.currentTimeMillis());
+            String randomString = UUID.randomUUID().toString();
+            String imageName = timestamp + "_" + randomString + ".png";
 
             SharedPreferences myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = myAppPreferences.edit();
 
-            uploadProfileData(editor, user);
-            saveChosenAccount(editor);
-            startFinishSetUpActivity();
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage("Processing...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
+            StorageReference imageReference = storageReference.child("ProfileImages").child(myAppPreferences.getString("authenticatedPhoneNumber", "123456789")).child(imageName);
+            UploadTask uploadTask = imageReference.putBytes(data);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Task<Uri> downloadUrlTask = taskSnapshot.getStorage().getDownloadUrl();
+                    downloadUrlTask.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String url = uri.toString();
+                            User user = new User(fullName,gender, authenticatedPhoneNumber, birthDate, selectedValue, url);
+                            uploadProfileData(editor, user);
+                            saveChosenAccount(editor);
+                        }
+                    });
+                }
+            });
+
 
             return true;
         }
@@ -223,7 +256,7 @@ public class CreateProfileActivity extends AppCompatActivity {
 
     private void uploadProfileData(SharedPreferences.Editor editor, User user) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference profileReference = databaseReference.child("profiles");
+        DatabaseReference profileReference = databaseReference.child("userAccounts");
 
         // Check if the user already exists in the database
         Query query = profileReference.orderByChild("phoneNumber").equalTo(user.getPhoneNumber());
@@ -235,6 +268,8 @@ public class CreateProfileActivity extends AppCompatActivity {
                     UI.displayToast(getApplicationContext(), "Profile already exists");
                     editor.putBoolean("profileCreated", true);
                     editor.apply();
+                    progressDialog.dismiss();
+                    startFinishSetUpActivity();
                 } else {
                     // User doesn't exist, proceed with uploading
                     profileReference.push().setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -244,6 +279,8 @@ public class CreateProfileActivity extends AppCompatActivity {
                             Log.d("On Success", "Uploaded data to Firebase Realtime Database");
                             editor.putBoolean("profileCreated", true);
                             editor.apply();
+                            progressDialog.dismiss();
+                            startFinishSetUpActivity();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override

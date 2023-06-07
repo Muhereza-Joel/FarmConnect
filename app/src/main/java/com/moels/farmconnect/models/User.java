@@ -8,12 +8,12 @@ public class User implements Serializable {
     private String phoneNumber;
     private String dateOfBirth;
     private String accountType;
-    private List<Byte> profilePicUrl;
+    private String profilePicUrl;
     private String gender;
 
     public User(){}
 
-    public User(String name, String gender, String phoneNumber, String dateOfBirth, String accountType, List profilePicUrl) {
+    public User(String name, String gender, String phoneNumber, String dateOfBirth, String accountType, String profilePicUrl) {
         this.name = name;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
@@ -26,49 +26,23 @@ public class User implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getPhoneNumber() {
         return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
     }
 
     public String getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
     public String getAccountType() {
         return accountType;
     }
 
-    public void setAccountType(String accountType) {
-        this.accountType = accountType;
-    }
-
-    public List<Byte> getProfilePicUrl() {
+    public String getProfilePicUrl() {
         return profilePicUrl;
-    }
-
-    public void setProfilePicUrl(List<Byte> profilePicUrl) {
-        this.profilePicUrl = profilePicUrl;
     }
 
     public String getGender() {
         return gender;
     }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-
 }

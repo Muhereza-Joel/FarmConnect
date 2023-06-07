@@ -95,7 +95,7 @@ public class FetchContactsService extends Service {
                         @Override
             public void run() {
          if (phoneBookList.size() > 0){
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("profiles");
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("userAccounts");
         Query query = usersRef.orderByChild("phoneNumber");
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
