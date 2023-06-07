@@ -411,4 +411,13 @@ public class EditProductActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(EditProductActivity.this, ProductDetailsActivity.class);
+        intent.putExtra("productID", getIntent().getStringExtra("productID"));
+        startActivity(intent);
+        finish();
+    }
+
 }

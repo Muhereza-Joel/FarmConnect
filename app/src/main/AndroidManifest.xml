@@ -48,6 +48,7 @@
         <activity
             android:name=".activities.ProductDetailsActivity"
             android:exported="false"
+            android:launchMode="singleTop"
             android:parentActivityName=".activities.AddProductToZoneActivity" />
 
         <service
