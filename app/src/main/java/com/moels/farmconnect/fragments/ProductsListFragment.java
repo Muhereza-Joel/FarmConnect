@@ -113,6 +113,9 @@ public class ProductsListFragment extends Fragment {
             @Override
             public void onClick(int position) {
                     Intent intent = new Intent(getContext(), ProductDetailsActivity.class);
+
+                    //This id will be used together with product id to delete product from firebase
+                    intent.putExtra("zoneID", getActivity().getIntent().getStringExtra("zoneID"));
                     intent.putExtra("productID", productCardItems.get(position).get_id());
                     startActivityForResult(intent, PRODUCT_DELETE_REQUEST_CODE);
 

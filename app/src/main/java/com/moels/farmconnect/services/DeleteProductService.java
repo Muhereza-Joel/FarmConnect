@@ -2,7 +2,9 @@ package com.moels.farmconnect.services;
 
 import android.annotation.SuppressLint;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
@@ -14,6 +16,8 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.moels.farmconnect.dialogs.ProgressDialog;
@@ -24,7 +28,7 @@ public class DeleteProductService extends Service {
     private static final int POLL_INTERVAL = 1000;
     private Handler handler;
     private Runnable runnable;
-
+    private SharedPreferences sharedPreferences;
     public DeleteProductService() {
     }
 
@@ -32,16 +36,19 @@ public class DeleteProductService extends Service {
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
+        sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        String zoneID = intent.getStringExtra("zoneID");
+        String productID = intent.getStringExtra("productID");
         String url = intent.getStringExtra("imageUrl");
-        deleteImageAtUrl(url);
+        deleteImageAtUrl(zoneID, productID, url);
         return START_STICKY;
     }
 
-    private void deleteImageAtUrl(String url){
+    private void deleteImageAtUrl(String zoneID, String productID, String url){
         runnable = new Runnable() {
             @Override
             public void run() {
@@ -51,6 +58,7 @@ public class DeleteProductService extends Service {
                     @Override
                     public void onSuccess(Void unused) {
                         Log.d("FarmConnect", "image deleted");
+                        deleteProductFromFirebase(zoneID, productID);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -61,6 +69,26 @@ public class DeleteProductService extends Service {
             }
         };
         handler.postDelayed(runnable, POLL_INTERVAL);
+    }
+
+    private void deleteProductFromFirebase(String zoneID, String productID) {
+        String phoneNumber = sharedPreferences.getString("authenticatedPhoneNumber", "123456789");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference.child("zones").child(phoneNumber).child(zoneID).child("products").child(productID).removeValue()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d("FarmConnect", "Phone Number " + phoneNumber);
+                        Log.d("FarmConnect", "Zone ID " + zoneID);
+                        Log.d("FarmConnect", "Product ID " + productID);
+                        Log.d("FarmConnect", "Product Deleted");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        e.getLocalizedMessage();
+                    }
+                });
     }
 
 

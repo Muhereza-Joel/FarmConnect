@@ -39,12 +39,15 @@ public class DeleteProductConfirmationDialog extends DialogFragment implements D
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
+        String zoneID = getActivity().getIntent().getStringExtra("zoneID");
         String productID = getActivity().getIntent().getStringExtra("productID");
         String url = getImageUrl(productID);
         if (!TextUtils.isEmpty(url)){
             boolean productIsDeleted = productsDatabaseHelper.deleteProductFromDatabase(productID);
             if (productIsDeleted){
                 Intent deleteProductService = new Intent(getActivity(), DeleteProductService.class);
+                deleteProductService.putExtra("zoneID", zoneID);
+                deleteProductService.putExtra("productID", productID);
                 deleteProductService.putExtra("imageUrl", url);
                 getActivity().startService(deleteProductService);
 
