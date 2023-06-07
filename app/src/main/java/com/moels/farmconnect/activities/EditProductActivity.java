@@ -43,6 +43,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.services.UpdateProductService;
+import com.moels.farmconnect.services.UpdateZoneService;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.UI;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -407,7 +409,9 @@ public class EditProductActivity extends AppCompatActivity {
         boolean productIsUpdated = productsDatabaseHelper.updateProduct(productID, contentValues);
         if (productIsUpdated){
             UI.displayToast(getApplicationContext(), "Product Updated");
-            //TODO start product edit service
+            Intent serviceIntent = new Intent(getApplicationContext(), UpdateProductService.class);
+            serviceIntent.putExtra("productID", productID);
+            startService(serviceIntent);
         }
     }
 

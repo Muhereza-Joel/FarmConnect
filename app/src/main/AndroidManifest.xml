@@ -32,9 +32,13 @@
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
         tools:targetApi="31">
         <service
-            android:name=".services.ProductsUploadService"
+            android:name=".services.UpdateProductService"
             android:enabled="true"
             android:exported="false"></service>
+        <service
+            android:name=".services.ProductsUploadService"
+            android:enabled="true"
+            android:exported="false" />
         <service
             android:name=".services.DeleteProductService"
             android:enabled="true"

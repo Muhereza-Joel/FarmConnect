@@ -74,6 +74,30 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
         return rowCreated;
     }
 
+    public List<String> getUpdatedProduct(String currentProductId){
+        List<String> product = new ArrayList<>();
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM products WHERE updated = 'true' AND productRemoteId = '" + currentProductId + "'", null);
+        if (cursor.moveToNext()){
+            do {
+                @SuppressLint("Range") String zoneID = cursor.getString(cursor.getColumnIndex("zoneID"));
+                @SuppressLint("Range") String productName = cursor.getString(cursor.getColumnIndex("productName"));
+                @SuppressLint("Range") String quantity = cursor.getString(cursor.getColumnIndex("quantity"));
+                @SuppressLint("Range") String unitPrice = cursor.getString(cursor.getColumnIndex("unitPrice"));
+                @SuppressLint("Range") String price = cursor.getString(cursor.getColumnIndex("price"));
+                @SuppressLint("Range") String imageUrl = cursor.getString(cursor.getColumnIndex("imageUrl"));
+
+                product.add(zoneID);
+                product.add(productName);
+                product.add(quantity);
+                product.add(unitPrice);
+                product.add(price);
+                product.add(imageUrl);
+            }
+            while (cursor.moveToNext());
+        }
+        return product;
+    }
+
     public List<Product> getAllProductsToUpload(String currentZoneId){
         List<Product> products = new ArrayList<>();
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM products WHERE uploaded = 'false' AND zoneID = '" + currentZoneId + "'", null);
@@ -187,6 +211,12 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void updateProductUploaded(String productID, boolean uploaded) {
+        ContentValues values = new ContentValues();
+        values.put("uploaded", uploaded ? "true" : "false");
+        sqLiteDatabase.update("products", values, "productRemoteId = ?", new String[]{productID});
+    }
+
+    public void updateProductUpdateStatus(String productID, boolean uploaded) {
         ContentValues values = new ContentValues();
         values.put("uploaded", uploaded ? "true" : "false");
         sqLiteDatabase.update("products", values, "productRemoteId = ?", new String[]{productID});
