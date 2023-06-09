@@ -70,7 +70,9 @@ public class ProductsDataSyncService extends Service implements ChildEventListen
             public void run() {
                     Log.d("FarmConnect", "run: DataSync Service is running");
                     if (getSizeOfSyncedData() == 0){
-                        getProductsFromDatabase();
+                        getAllProductsFromDatabase();
+                    } else if(getSizeOfSyncedData() > 0){
+                        getNewProductsFromFirebaseDatabase();
                     }
 
 
@@ -79,7 +81,7 @@ public class ProductsDataSyncService extends Service implements ChildEventListen
         handler.postDelayed(runnable, POLL_INTERVAL);
     }
 
-    private void getProductsFromDatabase(){
+    private void getAllProductsFromDatabase(){
         List<String> registeredContactList = contactsDatabaseHelper.getAllRegisteredContacts();
         for (String phoneNumber : registeredContactList){
             Log.d("FarmConnect", "getProductsFromDatabase: " + phoneNumber);
@@ -123,6 +125,58 @@ public class ProductsDataSyncService extends Service implements ChildEventListen
 
             }
         }
+
+    }
+
+    private void getNewProductsFromFirebaseDatabase(){
+            List<String> registeredContactList = contactsDatabaseHelper.getAllRegisteredContacts();
+            for (String phoneNumber : registeredContactList) {
+                Log.d("FarmConnect", "getProductsFromDatabase: " + phoneNumber);
+                List<String> zoneIDs = zonesDatabaseHelper.getZoneIds(phoneNumber);
+
+                for (String zoneID : zoneIDs) {
+                    Log.d("FarmConnect", "getProductsFromDatabase: " + zoneID);
+                    productsReference = FirebaseDatabase.getInstance().getReference().child("zones").child(phoneNumber).child(zoneID).child("products");
+
+                    productsReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot productSnapshot : snapshot.getChildren()) {
+                                String productRemoteId = productSnapshot.child("productID").getValue(String.class);
+
+                                if (!syncedData.contains(productRemoteId)) {
+                                    List<String> productDetails = new ArrayList<>();
+
+                                    productDetails.add(productRemoteId);
+                                    productDetails.add(productSnapshot.child("productName").getValue(String.class));
+                                    productDetails.add(productSnapshot.child("quantity").getValue(String.class));
+                                    productDetails.add(productSnapshot.child("unitPrice").getValue(String.class));
+                                    productDetails.add(productSnapshot.child("price").getValue(String.class));
+                                    productDetails.add(productSnapshot.child("imageUrl").getValue(String.class));
+                                    productDetails.add("true");
+                                    productDetails.add("false");
+                                    productDetails.add(productSnapshot.child("owner").getValue(String.class));
+                                    productDetails.add(productSnapshot.child("createDate").getValue(String.class));
+                                    productDetails.add(productSnapshot.child("createTime").getValue(String.class));
+                                    productDetails.add(productSnapshot.child("status").getValue(String.class));
+                                    productDetails.add(productSnapshot.child("zoneID").getValue(String.class));
+
+                                    productsDatabaseHelper.addProductToDatabase(productDetails);
+
+                                    syncedData.add(productRemoteId); // Add the productRemoteId to the HashSet
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+
+                        // Rest of the ValueEventListener implementation...
+                    });
+                }
+            }
 
     }
 
