@@ -56,7 +56,7 @@
             android:parentActivityName=".activities.AddProductToZoneActivity" />
 
         <service
-            android:name=".services.FirebaseZonesDatabaseChangeListenerService"
+            android:name=".services.ProductsDataSyncService"
             android:enabled="true"
             android:exported="false" />
 

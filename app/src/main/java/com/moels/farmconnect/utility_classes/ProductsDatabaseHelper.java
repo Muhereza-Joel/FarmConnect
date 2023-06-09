@@ -17,7 +17,9 @@ import java.util.List;
 public class ProductsDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "FarmConnectProductsDatabase";
-    private static final int DATABASE_VERSION = 2;
+
+    //Earlier version number was 2
+    private static final int DATABASE_VERSION = 3;
     private final SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
     public ProductsDatabaseHelper(Context context){
@@ -26,8 +28,9 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE products(_pid INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "productRemoteId TEXT, " +
+        db.execSQL("CREATE TABLE products(" +
+                "_pid INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "productRemoteId TEXT UNIQUE, " +
                 "productName TEXT, " +
                 "quantity TEXT, " +
                 "unitPrice TEXT, " +
@@ -46,9 +49,53 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < newVersion){
-                db.execSQL("ALTER TABLE products ADD COLUMN unitPrice TEXT");
+            //Copy original data
+            db.execSQL("CREATE TABLE products_temp AS SELECT * FROM products");
+
+            db.execSQL("DROP TABLE IF EXISTS products");
+
+            db.execSQL("CREATE TABLE products(" +
+                    "_pid INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "productRemoteId TEXT UNIQUE, " +
+                    "productName TEXT, " +
+                    "quantity TEXT, " +
+                    "unitPrice TEXT, " +
+                    "price TEXT, " +
+                    "imageUrl TEXT, " +
+                    "uploaded TEXT, " +
+                    "updated TEXT, " +
+                    "owner TEXT, " +
+                    "date TEXT, " +
+                    "time TEXT, " +
+                    "status TEXT, " +
+                    "zoneID TEXT)");
+
+
+            //Copy data back to the table
+            db.execSQL("INSERT INTO products(" +
+                    "productRemoteId, productName, quantity, unitPrice, " +
+                    "price, imageUrl, uploaded, updated, owner, " +
+                    "date, time, status, zoneID) " +
+                    "SELECT productRemoteId, productName, quantity, unitPrice, " +
+                    "price, imageUrl, uploaded, updated, owner, " +
+                    "date, time, status, zoneID FROM products_temp");
+
+            //Delete the temporary table
+            db.execSQL("DROP TABLE IF EXISTS products_temp");
         }
 
+    }
+
+    public List<String> getProductRemoteIds(){
+        List<String> productsRemoteIds = new ArrayList<>();
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT productRemoteId FROM products", null);
+        if (cursor.moveToNext()){
+            do {
+                @SuppressLint("Range") String productRemoteId = cursor.getString(cursor.getColumnIndex("productRemoteId"));
+                productsRemoteIds.add(productRemoteId);
+            }while (cursor.moveToNext());
+        }
+        return productsRemoteIds;
     }
 
     public boolean addProductToDatabase(List<String> productDetails){
@@ -69,8 +116,10 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("status", productDetails.get(11));
         contentValues.put("zoneID", productDetails.get(12));
 
-        long rowsInserted = sqLiteDatabase.insert("products", null, contentValues);
-        if (rowsInserted > 0) rowCreated = true;
+        long rowsInserted = sqLiteDatabase.insertWithOnConflict("products", null, contentValues, SQLiteDatabase.CONFLICT_IGNORE);
+        if (rowsInserted != -1) {
+            rowCreated = true;
+        }
         return rowCreated;
     }
 

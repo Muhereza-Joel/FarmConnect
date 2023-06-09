@@ -30,6 +30,7 @@ import com.moels.farmconnect.R;
 import com.moels.farmconnect.adapters.ViewPagerAdapter;
 import com.moels.farmconnect.fragments.ChatListFragment;
 import com.moels.farmconnect.fragments.ZonesListFragment;
+import com.moels.farmconnect.services.ProductsDataSyncService;
 import com.moels.farmconnect.utility_classes.UI;
 
 import java.util.Objects;
@@ -71,6 +72,10 @@ public class MainActivity extends AppCompatActivity{
 
         setSupportActionBar(toolbar);
         UI.setUpActionBar(getSupportActionBar(), "FarmConnect");
+
+        //Start DataSynService.
+        Intent serviceIntent = new Intent(getApplicationContext(), ProductsDataSyncService.class);
+        startService(serviceIntent);
 
         //Create adapter for the view_pager
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());

@@ -1,14 +1,19 @@
 package com.moels.farmconnect.utility_classes;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ContactsDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "FarmConnectContactsDatabase";
     private static final int DATABASE_VERSION = 2;
+    private SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
     public ContactsDatabaseHelper(Context context){
         super(context, DATABASE_NAME,null, DATABASE_VERSION );
@@ -35,5 +40,17 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
                     "phoneNumber TEXT)");
         }
 
+    }
+
+    public List<String> getAllRegisteredContacts(){
+        List<String> phoneNumbers = new ArrayList<>();
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT phoneNumber FROM contacts", null);
+        if (cursor.moveToNext()){
+            do {
+                @SuppressLint("Range") String phoneNumber = cursor.getString(cursor.getColumnIndex("phoneNumber"));
+                phoneNumbers.add(phoneNumber);
+            }while (cursor.moveToNext());
+        }
+        return phoneNumbers;
     }
 }
