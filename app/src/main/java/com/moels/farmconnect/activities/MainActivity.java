@@ -203,10 +203,11 @@ public class MainActivity extends AppCompatActivity implements ProductsDataSyncS
         tabLayout.selectTab(tabLayout.getTabAt(tabLayout.getSelectedTabPosition()));
 
         //Start DataSynService.
-        Intent serviceIntent = new Intent(getApplicationContext(), ProductsDataSyncService.class);
-        startService(serviceIntent);
-        bindService(serviceIntent, productsSyncServiceConnection, Context.BIND_AUTO_CREATE);
-
+        if (buyerAccountChosen){
+            Intent serviceIntent = new Intent(getApplicationContext(), ProductsDataSyncService.class);
+            startService(serviceIntent);
+            bindService(serviceIntent, productsSyncServiceConnection, Context.BIND_AUTO_CREATE);
+        }
     }
 
     @Override
@@ -231,14 +232,16 @@ public class MainActivity extends AppCompatActivity implements ProductsDataSyncS
             // Set the gravity to display the menu below the icon
             popupMenu.setGravity(Gravity.END | Gravity.BOTTOM);
             popupMenu.show();
-
-            MenuItem syncItem = menu.findItem(R.id.action_sync);
-            LinearLayout actionLayout = (LinearLayout) syncItem.getActionView();
-            progressBar = actionLayout.findViewById(R.id.action_sync_progress);
-            progressBar.setVisibility(View.GONE);
-
         }
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem syncItem = menu.findItem(R.id.action_sync);
+        progressBar = syncItem.getActionView().findViewById(R.id.action_sync_progress);
+
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -312,8 +315,9 @@ public class MainActivity extends AppCompatActivity implements ProductsDataSyncS
     public void onProductsSyncComplete() {
         if (bound){
             unbindService(productsSyncServiceConnection);
+            progressBar.setVisibility(View.GONE);
             bound = false;
         }
-//        UI.hide(progressBar);
+
     }
 }
