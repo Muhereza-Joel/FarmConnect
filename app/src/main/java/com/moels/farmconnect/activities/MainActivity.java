@@ -236,6 +236,7 @@ public class MainActivity extends AppCompatActivity implements ProductsDataSyncS
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem syncItem = menu.findItem(R.id.action_sync);
         progressBar = syncItem.getActionView().findViewById(R.id.action_sync_progress);
+        UI.hide(progressBar);
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -319,20 +320,20 @@ public class MainActivity extends AppCompatActivity implements ProductsDataSyncS
 
     @Override
     public void onNetworkConnected() {
-        //Start DataSynService.
         if (buyerAccountChosen){
             Intent serviceIntent = new Intent(getApplicationContext(), ProductsDataSyncService.class);
             startService(serviceIntent);
+            UI.show(progressBar);
             bindService(serviceIntent, productsSyncServiceConnection, Context.BIND_AUTO_CREATE);
         }
     }
 
     @Override
     public void onWifiConnected() {
-        //Start DataSynService.
         if (buyerAccountChosen){
             Intent serviceIntent = new Intent(getApplicationContext(), ProductsDataSyncService.class);
             startService(serviceIntent);
+            UI.show(progressBar);
             bindService(serviceIntent, productsSyncServiceConnection, Context.BIND_AUTO_CREATE);
         }
     }
