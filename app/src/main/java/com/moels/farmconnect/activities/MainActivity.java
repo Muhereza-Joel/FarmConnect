@@ -39,12 +39,13 @@ import com.moels.farmconnect.R;
 import com.moels.farmconnect.adapters.ViewPagerAdapter;
 import com.moels.farmconnect.fragments.ChatListFragment;
 import com.moels.farmconnect.fragments.ZonesListFragment;
+import com.moels.farmconnect.receivers.NetworkChangeReceiver;
 import com.moels.farmconnect.services.ProductsDataSyncService;
 import com.moels.farmconnect.utility_classes.UI;
 
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements ProductsDataSyncService.ProductsSyncListener{
+public class MainActivity extends AppCompatActivity implements ProductsDataSyncService.ProductsSyncListener, NetworkChangeReceiver.NetworkChangeListener {
 
     public TabLayout tabLayout;
     private ViewPager viewPager;
@@ -87,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements ProductsDataSyncS
             int currentlySelectedTab = savedInstanceState.getInt("currentlySelectedTab");
             tabLayout.selectTab(tabLayout.getTabAt(currentlySelectedTab));
         }
+
+        NetworkChangeReceiver.setListener(this);
 
 
         Drawable icon = toolbar.getOverflowIcon();
@@ -201,13 +204,6 @@ public class MainActivity extends AppCompatActivity implements ProductsDataSyncS
     protected void onStart() {
         super.onStart();
         tabLayout.selectTab(tabLayout.getTabAt(tabLayout.getSelectedTabPosition()));
-
-        //Start DataSynService.
-        if (buyerAccountChosen){
-            Intent serviceIntent = new Intent(getApplicationContext(), ProductsDataSyncService.class);
-            startService(serviceIntent);
-            bindService(serviceIntent, productsSyncServiceConnection, Context.BIND_AUTO_CREATE);
-        }
     }
 
     @Override
@@ -319,5 +315,35 @@ public class MainActivity extends AppCompatActivity implements ProductsDataSyncS
             bound = false;
         }
 
+    }
+
+    @Override
+    public void onNetworkConnected() {
+        //Start DataSynService.
+        if (buyerAccountChosen){
+            Intent serviceIntent = new Intent(getApplicationContext(), ProductsDataSyncService.class);
+            startService(serviceIntent);
+            bindService(serviceIntent, productsSyncServiceConnection, Context.BIND_AUTO_CREATE);
+        }
+    }
+
+    @Override
+    public void onWifiConnected() {
+        //Start DataSynService.
+        if (buyerAccountChosen){
+            Intent serviceIntent = new Intent(getApplicationContext(), ProductsDataSyncService.class);
+            startService(serviceIntent);
+            bindService(serviceIntent, productsSyncServiceConnection, Context.BIND_AUTO_CREATE);
+        }
+    }
+
+    @Override
+    public void onNetworkDisconnected() {
+        if (bound){
+            unbindService(productsSyncServiceConnection);
+            stopService(new Intent(MainActivity.this, ProductsDataSyncService.class));
+            progressBar.setVisibility(View.GONE);
+            bound = false;
+        }
     }
 }

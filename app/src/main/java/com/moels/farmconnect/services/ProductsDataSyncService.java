@@ -59,8 +59,7 @@ public class ProductsDataSyncService extends Service{
        if (productsIdsLoaded){
            startMonitoring();
        }
-
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
     public boolean getExistingProductRemoteIDs(List<String> productRemoteIDs) {
