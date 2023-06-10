@@ -58,7 +58,7 @@ public class FinalizeSetupOfZonesActivity extends AppCompatActivity implements F
     @Override
     protected void onStart() {
         super.onStart();
-        SharedPreferences sharedPreferences = getSharedPreferences("YourSharedPreferencesName", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
 
         // Start and bind the corresponding service
         if (sharedPreferences.getBoolean("buyerAccountTypeChosen", false) == true) {

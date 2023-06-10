@@ -1,12 +1,19 @@
 package com.moels.farmconnect.activities;
 
 import android.app.UiModeManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -14,6 +21,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
@@ -35,7 +44,7 @@ import com.moels.farmconnect.utility_classes.UI;
 
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements ProductsDataSyncService.ProductsSyncListener{
 
     public TabLayout tabLayout;
     private ViewPager viewPager;
@@ -45,7 +54,25 @@ public class MainActivity extends AppCompatActivity{
     private SharedPreferences myAppPreferences;
     private boolean buyerAccountChosen;
     private boolean farmerAccountChosen;
-    private Bundle bundle  = new Bundle();;
+    private Bundle bundle  = new Bundle();
+    private ProgressBar progressBar;
+    private ProductsDataSyncService productsDataSyncService;
+    private boolean bound = false;
+
+    private ServiceConnection productsSyncServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            ProductsDataSyncService.ProductsSyncServiceBinder productsSyncServiceBinder = (ProductsDataSyncService.ProductsSyncServiceBinder) binder;
+            productsDataSyncService = productsSyncServiceBinder.getProductsSyncServiceBinder();
+            productsDataSyncService.setProductsSyncListener(MainActivity.this);
+            bound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            bound = false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,10 +99,6 @@ public class MainActivity extends AppCompatActivity{
 
         setSupportActionBar(toolbar);
         UI.setUpActionBar(getSupportActionBar(), "FarmConnect");
-
-        //Start DataSynService.
-        Intent serviceIntent = new Intent(getApplicationContext(), ProductsDataSyncService.class);
-        startService(serviceIntent);
 
         //Create adapter for the view_pager
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
@@ -172,16 +195,24 @@ public class MainActivity extends AppCompatActivity{
         savedInstanceState.putInt("currentlySelectedTab", tabLayout.getSelectedTabPosition());
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        bundle.putInt("currentlySelectedTab", tabLayout.getSelectedTabPosition());
-    }
+
 
     @Override
     protected void onStart() {
         super.onStart();
         tabLayout.selectTab(tabLayout.getTabAt(tabLayout.getSelectedTabPosition()));
+
+        //Start DataSynService.
+        Intent serviceIntent = new Intent(getApplicationContext(), ProductsDataSyncService.class);
+        startService(serviceIntent);
+        bindService(serviceIntent, productsSyncServiceConnection, Context.BIND_AUTO_CREATE);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        bundle.putInt("currentlySelectedTab", tabLayout.getSelectedTabPosition());
     }
 
 
@@ -200,6 +231,12 @@ public class MainActivity extends AppCompatActivity{
             // Set the gravity to display the menu below the icon
             popupMenu.setGravity(Gravity.END | Gravity.BOTTOM);
             popupMenu.show();
+
+            MenuItem syncItem = menu.findItem(R.id.action_sync);
+            LinearLayout actionLayout = (LinearLayout) syncItem.getActionView();
+            progressBar = actionLayout.findViewById(R.id.action_sync_progress);
+            progressBar.setVisibility(View.GONE);
+
         }
         return true;
     }
@@ -271,4 +308,12 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
+    @Override
+    public void onProductsSyncComplete() {
+        if (bound){
+            unbindService(productsSyncServiceConnection);
+            bound = false;
+        }
+//        UI.hide(progressBar);
+    }
 }

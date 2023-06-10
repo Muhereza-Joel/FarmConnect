@@ -3,6 +3,7 @@ package com.moels.farmconnect.services;
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
@@ -25,7 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ProductsDataSyncService extends Service implements ChildEventListener {
+public class ProductsDataSyncService extends Service{
     private Set<String> syncedData = new HashSet<>();
     private static final int POLL_INTERVAL = 1000;
     private Handler handler;
@@ -36,6 +37,9 @@ public class ProductsDataSyncService extends Service implements ChildEventListen
 
     private DatabaseReference zonesDatabaseReference;
     private DatabaseReference productsReference;
+    private ProductsSyncListener productsSyncListener;
+    private final IBinder  binder = new ProductsSyncServiceBinder();
+
     public ProductsDataSyncService() {
     }
 
@@ -304,40 +308,18 @@ public class ProductsDataSyncService extends Service implements ChildEventListen
             productsDatabaseHelper.deleteProductFromDatabase(obsoleteProductId);
             Log.d("FarmConnect", "removeObsoleteProductsFromSyncedData: Product id " + obsoleteProductId + " deleted from database");
         }
+        productsSyncListener.onProductsSyncComplete();
+        stopSelf();
     }
 
 
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+        return binder;
     }
 
-    @Override
-    public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
-    }
-
-    @Override
-    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-    }
-
-    @Override
-    public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-    }
-
-    @Override
-    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-    }
-
-    @Override
-    public void onCancelled(@NonNull DatabaseError error) {
-
-    }
 
    private boolean isDataSynced(String dataId){
         return syncedData.contains(dataId);
@@ -354,6 +336,21 @@ public class ProductsDataSyncService extends Service implements ChildEventListen
     private int getSizeOfSyncedData(){
         return syncedData.size();
     }
+
+    public class ProductsSyncServiceBinder extends Binder {
+        public ProductsDataSyncService getProductsSyncServiceBinder(){
+            return ProductsDataSyncService.this;
+        }
+    }
+
+    public void setProductsSyncListener(ProductsSyncListener productsSyncListener) {
+        this.productsSyncListener = productsSyncListener;
+    }
+
+    public interface ProductsSyncListener{
+        void onProductsSyncComplete();
+    }
+
 
 
     @Override
