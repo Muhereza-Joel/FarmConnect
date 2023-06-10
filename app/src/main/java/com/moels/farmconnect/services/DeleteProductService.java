@@ -63,6 +63,7 @@ public class DeleteProductService extends Service {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        deleteProductFromFirebase(zoneID, productID);
                         e.getLocalizedMessage();
                     }
                 });
