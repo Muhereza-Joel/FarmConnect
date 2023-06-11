@@ -3,6 +3,7 @@ package com.moels.farmconnect.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.app.ProgressDialog;
 import android.app.UiModeManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -23,6 +24,7 @@ import com.moels.farmconnect.utility_classes.UI;
 
 public class FinishSetUpActivity extends AppCompatActivity implements FetchContactsService.ContactsFetchListener{
     private FetchContactsService fetchContactsService;
+    private ProgressDialog progressDialog;
     private boolean bound = false;
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -54,6 +56,11 @@ public class FinishSetUpActivity extends AppCompatActivity implements FetchConta
         setContentView(R.layout.activity_finish_set_up);
         setUpUIForDarkMode();
         setUpStatusBar();
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Fetching Contacts List");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
     }
 
 
@@ -77,6 +84,7 @@ public class FinishSetUpActivity extends AppCompatActivity implements FetchConta
             bound = false;
         }
 
+        progressDialog.dismiss();
         stopService(new Intent(FinishSetUpActivity.this, FetchContactsService.class));
     }
 

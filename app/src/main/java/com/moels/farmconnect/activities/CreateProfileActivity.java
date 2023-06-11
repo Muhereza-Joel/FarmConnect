@@ -241,7 +241,6 @@ public class CreateProfileActivity extends AppCompatActivity {
                             String url = uri.toString();
                             User user = new User(fullName,gender, authenticatedPhoneNumber, birthDate, selectedValue, url);
                             uploadProfileData(editor, user);
-                            saveChosenAccount(editor);
                         }
                     });
                 }
@@ -265,11 +264,32 @@ public class CreateProfileActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     // User already exists, handle accordingly
-                    UI.displayToast(getApplicationContext(), "Profile already exists");
-                    editor.putBoolean("profileCreated", true);
-                    editor.apply();
-                    progressDialog.dismiss();
-                    startFinishSetUpActivity();
+                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                        String phoneNumber = userSnapshot.child("phoneNumber").getValue(String.class);
+                        if (phoneNumber != null && phoneNumber.equals(user.getPhoneNumber())) {
+                            String existingAccountType = userSnapshot.child("accountType").getValue(String.class);
+                            System.out.println(existingAccountType);
+                            if (existingAccountType != null) {
+                                if (existingAccountType.equals("Buyer account")) {
+                                    editor.putBoolean("buyerAccountTypeChosen", true);
+                                    editor.putBoolean("farmerAccountTypeChosen", false);
+                                    editor.apply();
+                                } else if (existingAccountType.equals("Farmer account")) {
+                                    editor.putBoolean("farmerAccountTypeChosen", true);
+                                    editor.putBoolean("buyerAccountTypeChosen", false);
+                                    editor.apply();
+                                }
+                            } else {
+                                // Handle the case where the "accountType" field is missing or null
+                                // You can set default values or handle it according to your requirements
+                            }
+                            editor.putBoolean("profileCreated", true);
+                            editor.apply();
+                            progressDialog.dismiss();
+                            startFinishSetUpActivity();
+                            break;
+                        }
+                    }
                 } else {
                     // User doesn't exist, proceed with uploading
                     profileReference.push().setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -280,6 +300,7 @@ public class CreateProfileActivity extends AppCompatActivity {
                             editor.putBoolean("profileCreated", true);
                             editor.apply();
                             progressDialog.dismiss();
+                            saveChosenAccount(editor);
                             startFinishSetUpActivity();
                         }
                     }).addOnFailureListener(new OnFailureListener() {

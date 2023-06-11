@@ -3,6 +3,7 @@ package com.moels.farmconnect.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.app.ProgressDialog;
 import android.app.UiModeManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -24,6 +25,7 @@ public class FinalizeSetupOfZonesActivity extends AppCompatActivity implements F
     private FarmerAccountZonesFetchService farmerAccountZonesFetchService;
     private BuyerAccountZoneFetchService buyerAccountZoneFetchService;
     private boolean bound = false;
+    private ProgressDialog progressDialog;
 
     private ServiceConnection farmerServiceConnection = new ServiceConnection() {
         @Override
@@ -58,6 +60,10 @@ public class FinalizeSetupOfZonesActivity extends AppCompatActivity implements F
     @Override
     protected void onStart() {
         super.onStart();
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Finding collection zones");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
 
         // Start and bind the corresponding service
@@ -100,6 +106,7 @@ public class FinalizeSetupOfZonesActivity extends AppCompatActivity implements F
             unbindService(buyerServiceConnection);
             bound = false;
         }
+        progressDialog.dismiss();
         stopService(new Intent(FinalizeSetupOfZonesActivity.this, BuyerAccountZoneFetchService.class));
     }
 
@@ -114,6 +121,7 @@ public class FinalizeSetupOfZonesActivity extends AppCompatActivity implements F
             unbindService(farmerServiceConnection);
             bound = false;
         }
+        progressDialog.dismiss();
         stopService(new Intent(FinalizeSetupOfZonesActivity.this, FarmerAccountZonesFetchService.class));
     }
 

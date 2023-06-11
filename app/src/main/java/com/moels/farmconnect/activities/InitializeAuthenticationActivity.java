@@ -6,6 +6,7 @@
 package com.moels.farmconnect.activities;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
@@ -40,6 +41,7 @@ public class InitializeAuthenticationActivity extends AppCompatActivity {
     private EditText phoneNumberToAuthenticate;
     private Button sendOneTimePasswordButton;
     private ProgressBar progressBar;
+    private ProgressDialog progressDialog;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = null;
     private FirebaseAuth mAuth;
     private static final int PERMISSION_REQUEST_CODE = 123;
@@ -133,13 +135,16 @@ public class InitializeAuthenticationActivity extends AppCompatActivity {
             return;
         }
 
-        UI.show(progressBar);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Connecting!!!");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
         UI.hide(sendOneTimePasswordButton);
 
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                UI.hide(progressBar);
+                progressDialog.dismiss();
                 UI.show(sendOneTimePasswordButton);
                 Log.d("Verification Completed", "onVerificationCompleted:" + phoneAuthCredential);
 
@@ -148,7 +153,7 @@ public class InitializeAuthenticationActivity extends AppCompatActivity {
 
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
-                UI.hide(progressBar);
+                progressDialog.dismiss();
                 UI.show(sendOneTimePasswordButton);
                 UI.displayToast(InitializeAuthenticationActivity.this, e.getMessage());
                 Log.d("Verification Failed", "Failed To Send One Time Password");
@@ -158,7 +163,7 @@ public class InitializeAuthenticationActivity extends AppCompatActivity {
             public void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                 super.onCodeSent(verificationId, forceResendingToken);
 
-                UI.hide(progressBar);
+                progressDialog.dismiss();
                 UI.show(sendOneTimePasswordButton);
 
                 Intent goToAuthenticateUserActivityIntent = new Intent(InitializeAuthenticationActivity.this, AuthenticateUserActivity.class);

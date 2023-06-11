@@ -1,5 +1,6 @@
 package com.moels.farmconnect.activities;
 
+import android.app.ProgressDialog;
 import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
@@ -39,16 +40,17 @@ import java.util.concurrent.TimeUnit;
 
 public class AuthenticateUserActivity extends AppCompatActivity {
     private String verificationId;
-    EditText oneTimePasswordEditTextOne,
+    private EditText oneTimePasswordEditTextOne,
             oneTimePasswordEditTextTwo,
             oneTimePasswordEditTextThree,
             oneTimePasswordEditTextFour,
             oneTimePasswordEditTextFive,
             oneTimePasswordEditTextSix;
-    TextView phoneNumberToAuthenticate;
-    Button verifyPhoneNumberButton,reSendOneTimePasswordButton;
-    ProgressBar progressBar;
-    Toolbar toolbar;
+    private TextView phoneNumberToAuthenticate;
+    private Button verifyPhoneNumberButton,reSendOneTimePasswordButton;
+    private ProgressBar progressBar;
+    private ProgressDialog progressDialog;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,9 @@ public class AuthenticateUserActivity extends AppCompatActivity {
         setUpOTPInputs();
 
         verificationId = getIntent().getStringExtra("verificationId");
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Processing!!!");
+        progressDialog.setCancelable(false);
 
         verifyPhoneNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,14 +80,14 @@ public class AuthenticateUserActivity extends AppCompatActivity {
                 if(validateOneTimePasswordEditTexts() == true){
                     String oneTimePassword = combineCodeFromEditTexts();
                     if (verificationId != null){
-                        UI.show(progressBar);
+                        progressDialog.show();
                         UI.hide(verifyPhoneNumberButton);
                         PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.getCredential(verificationId, oneTimePassword);
                         FirebaseAuth.getInstance().signInWithCredential(phoneAuthCredential).
                                 addOnCompleteListener( new OnCompleteListener<AuthResult>(){
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
-                                        UI.hide(progressBar);
+                                        progressDialog.dismiss();
                                         UI.show(verifyPhoneNumberButton);
 
                                         if (task.isSuccessful()){
