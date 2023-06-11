@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,9 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToNext()){
             do {
                 @SuppressLint("Range") String phoneNumber = cursor.getString(cursor.getColumnIndex("phoneNumber"));
-                phoneNumbers.add(phoneNumber);
+                if (!(TextUtils.isEmpty(phoneNumber))){
+                    phoneNumbers.add(phoneNumber);
+                }
             }while (cursor.moveToNext());
         }
         return phoneNumbers;

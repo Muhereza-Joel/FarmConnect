@@ -56,6 +56,75 @@ public class FarmerAccountZonesFetchService extends Service {
         return START_STICKY;
     }
 
+    private void getZonesFromFirebase(){
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                retrieveZonesByPhoneNumbers(contactsDatabaseHelper.getAllRegisteredContacts());
+            }
+        };
+        handler.postDelayed(runnable, POLL_INTERVAL);
+    }
+
+    private void retrieveZonesByPhoneNumbers(List<String> phoneNumbers) {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        if (phoneNumbers.size() > 0){
+            for (String phoneNumber : phoneNumbers) {
+                Query query = databaseReference.child("zones").child(phoneNumber);
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        List<Zone> zoneList = new ArrayList<>();
+
+                        for (DataSnapshot zoneSnapshot : dataSnapshot.getChildren()) {
+                            // Exclude the retrieval of the products field
+                            Zone zone = zoneSnapshot.getValue(Zone.class);
+                            zoneList.add(zone);
+                        }
+
+                        // Process the zone list without the products field
+                        getDetailsForEveryZone(zoneList);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        UI.displayToast(getApplicationContext(), "Error retrieving zone data");
+                    }
+                });
+            }
+
+        }else {
+            zonesFetchListener.onFarmerZonesFetchComplete();
+            stopSelf();
+            Log.d("FarmConnect", "No Contacts to pick");
+        }
+
+    }
+
+    private void getDetailsForEveryZone(List<Zone> zoneList) {
+        for (Zone zone : zoneList) {
+            if (zone != null){
+                String uploaded = "true";
+                List<String> zoneDetails = new ArrayList<>();
+
+                zoneDetails.add(zone.getZoneID());
+                zoneDetails.add(zone.getZoneName());
+                zoneDetails.add(zone.getZoneLocation());
+                zoneDetails.add(zone.getProductsToCollect());
+                zoneDetails.add(zone.getDescription());
+                zoneDetails.add(uploaded);
+                zoneDetails.add(zone.getOwner());
+                zoneDetails.add(zone.getDate());
+                zoneDetails.add(zone.getTime());
+                zoneDetails.add(zone.getStatus());
+
+                zonesDatabaseHelper.addZoneToDatabase(zoneDetails);
+            }
+        }
+        zonesFetchListener.onFarmerZonesFetchComplete();
+        stopSelf();
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
         return binder;
@@ -81,117 +150,6 @@ public class FarmerAccountZonesFetchService extends Service {
         super.onDestroy();
         handler.removeCallbacks(runnable);
 
-    }
-
-    private void getZonesFromFirebase(){
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                retrieveZonesByPhoneNumbers(getContactsFromDatabase());
-            }
-        };
-        handler.postDelayed(runnable, POLL_INTERVAL);
-    }
-
-    private void retrieveZonesByPhoneNumbers(List<String> phoneNumbers) {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-
-        for (String phoneNumber : phoneNumbers) {
-            Query query = databaseReference.child("zones").child(phoneNumber);
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    List<Zone> zoneList = new ArrayList<>();
-
-                    for (DataSnapshot zoneSnapshot : dataSnapshot.getChildren()) {
-                        // Exclude the retrieval of the products field
-                        Zone zone = zoneSnapshot.getValue(Zone.class);
-                        zoneList.add(zone);
-                    }
-
-                    // Process the zone list without the products field
-                    getDetailsForEveryZone(zoneList);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    UI.displayToast(getApplicationContext(), "Error retrieving zone data");
-                }
-            });
-        }
-    }
-
-
-
-    private ArrayList<String> getContactsFromDatabase(){
-        ArrayList<String> contactsList = new ArrayList<>();
-        String [] columnsToPick = {"_id","username", "phoneNumber"};
-        Cursor cursor = contactsDatabase.query("contacts", columnsToPick,
-                null, null, null, null, null);
-
-        if (cursor.moveToFirst()){
-            do {
-                @SuppressLint("Range") String phoneNumber = cursor.getString(cursor.getColumnIndex("phoneNumber"));
-                if (!(TextUtils.isEmpty(phoneNumber))){
-                    contactsList.add(phoneNumber);
-                }
-            } while (cursor.moveToNext());
-        }
-        else {
-            zonesFetchListener.onFarmerZonesFetchComplete();
-            stopSelf();
-            Log.d("FarmConnect", "No Contacts to pick");
-        }
-        return contactsList;
-    }
-
-    private void getDetailsForEveryZone(List<Zone> zoneList) {
-        for (Zone zone : zoneList) {
-            if (zone != null){
-                String id = zone.getZoneID();
-                String zoneName = zone.getZoneName();
-                String location = zone.getZoneLocation();
-                String productsToCollect = zone.getProductsToCollect();
-                String description = zone.getDescription();
-                String owner = zone.getOwner();
-                String createDate = zone.getDate();
-                String createTime = zone.getTime();
-                String status = zone.getStatus();
-
-                addZoneToDatabase(id, zoneName, location, productsToCollect, description, owner, createDate, createTime, status);
-
-            }
-        }
-        zonesFetchListener.onFarmerZonesFetchComplete();
-        stopSelf();
-    }
-
-    private boolean addZoneToDatabase(String remote_id, String zoneName,
-                                      String location, String productsToCollect,
-                                      String description, String owner, String date, String time, String status){
-        String query = "SELECT * FROM zones WHERE remote_id = ? AND owner = ?";
-        Cursor cursor = zonesDatabase.rawQuery(query, new String[]{remote_id, owner});
-        if (cursor.getCount() > 0){
-            Log.d("FarmConnect", "Zone " + remote_id + " Exists In Database Already");
-        } else {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("remote_id", remote_id);
-            contentValues.put("zoneName", zoneName);
-            contentValues.put("location", location);
-            contentValues.put("products", productsToCollect);
-            contentValues.put("description", description);
-            contentValues.put("uploaded", "true");
-            contentValues.put("owner", owner);
-            contentValues.put("createDate", date);
-            contentValues.put("createTime", time);
-            contentValues.put("status", status);
-
-            zonesDatabase.insert("zones", null, contentValues);
-            Log.d("FarmConnect", "Contact Added To Database");
-
-        }
-
-        return true;
     }
 
 }
