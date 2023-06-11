@@ -1,6 +1,7 @@
 package com.moels.farmconnect.utility_classes;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,7 +14,9 @@ import java.util.List;
 public class ContactsDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "FarmConnectContactsDatabase";
-    private static final int DATABASE_VERSION = 2;
+
+    //Upgraded database from version 2
+    private static final int DATABASE_VERSION = 3;
     private SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
     public ContactsDatabaseHelper(Context context){
@@ -24,13 +27,19 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE contacts (" +
                 "_id INTEGER PRIMARY KEY," +
                 "username TEXT," +
-                "phoneNumber TEXT)");
-
+                "phoneNumber TEXT UNIQUE," +
+                "imageUrl TEXT," +
+                "accountType TEXT," +
+                "uploaded TEXT," +
+                "updated TEXT)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < newVersion) {
+            // Create a temporary table to backup the existing data
+            db.execSQL("CREATE TABLE contacts_temp AS SELECT * FROM contacts");
+
             // Drop the old table
             db.execSQL("DROP TABLE IF EXISTS contacts");
 
@@ -38,10 +47,38 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("CREATE TABLE contacts (" +
                     "_id INTEGER PRIMARY KEY," +
                     "username TEXT," +
-                    "phoneNumber TEXT)");
-        }
+                    "phoneNumber TEXT UNIQUE," +
+                    "imageUrl TEXT," +
+                    "accountType TEXT," +
+                    "uploaded TEXT," +
+                    "updated TEXT)");
 
+            // Copy the data from the temporary table to the new table
+            db.execSQL("INSERT INTO contacts (_id, username, phoneNumber) SELECT _id, username, phoneNumber FROM contacts_temp");
+
+            // Drop the temporary table
+            db.execSQL("DROP TABLE IF EXISTS contacts_temp");
+        }
     }
+
+    public boolean addContactToDatabase(List<String> contactDetails){
+        boolean rowCreated = false;
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("username", contactDetails.get(0));
+        contentValues.put("phoneNumber", contactDetails.get(1));
+        contentValues.put("imageUrl", contactDetails.get(2));
+        contentValues.put("accountType", contactDetails.get(3));
+        contentValues.put("uploaded", contactDetails.get(4));
+        contentValues.put("updated", contactDetails.get(5));
+
+        long rowsInserted = sqLiteDatabase.insertWithOnConflict("contacts", null, contentValues, SQLiteDatabase.CONFLICT_IGNORE);
+        if (rowsInserted != -1) {
+            rowCreated = true;
+        }
+        return rowCreated;
+    }
+
 
     public List<String> getAllRegisteredContacts(){
         List<String> phoneNumbers = new ArrayList<>();

@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.models.ContactCardItem;
 
@@ -47,9 +48,11 @@ public class ContactListRecyclerViewAdapter extends RecyclerView.Adapter<Contact
         });
 
         ContactCardItem contactCardItem = itemList.get(position);
+        Glide.with(context).load(contactCardItem.getProfilePicUrl()).circleCrop().into(holder.profilePicImageView);
         holder.usernameTextView.setText(contactCardItem.getUsername());
         holder.phoneNumberTextView.setText(contactCardItem.getPhoneNumber());
-        //TODO use glide to load profile pic
+        holder.accountTypeTextView.setText(contactCardItem.getAccountType());
+
         //TODO set card background for light and dark mode
 
     }
@@ -64,7 +67,7 @@ public class ContactListRecyclerViewAdapter extends RecyclerView.Adapter<Contact
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
         ImageView profilePicImageView;
-        TextView usernameTextView, phoneNumberTextView;
+        TextView usernameTextView, phoneNumberTextView, accountTypeTextView;
         CardView contactListItemCardView;
 
         public ViewHolder(@NonNull View itemView) {
@@ -72,6 +75,7 @@ public class ContactListRecyclerViewAdapter extends RecyclerView.Adapter<Contact
             profilePicImageView = itemView.findViewById(R.id.photoImageView);
             usernameTextView = itemView.findViewById(R.id.usernameTextView);
             phoneNumberTextView = itemView.findViewById(R.id.phoneNumberTextView);
+            accountTypeTextView = itemView.findViewById(R.id.accountTypeTextView);
             contactListItemCardView = itemView.findViewById(R.id.contact_list_item_card_view);
         }
     }

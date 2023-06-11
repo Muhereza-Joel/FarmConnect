@@ -198,7 +198,7 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
     private void getContactsFromDatabase(){
         ContactCardItem contactCardItem;
         contactsList = new ArrayList<>();
-        String [] columnsToPick = {"_id","username", "phoneNumber"};
+        String [] columnsToPick = {"_id","username", "phoneNumber", "imageUrl","accountType"};
         Cursor cursor = sqLiteDatabase.query("contacts", columnsToPick,
                 null, null, null, null, null);
 
@@ -206,10 +206,21 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
             do {
                 @SuppressLint("Range") String username = cursor.getString(cursor.getColumnIndex("username"));
                 @SuppressLint("Range") String phoneNumber = cursor.getString(cursor.getColumnIndex("phoneNumber"));
-                if (!(TextUtils.isEmpty(username) || TextUtils.isEmpty(phoneNumber))){
-                    Log.d("FarmConnect", username + " " + phoneNumber);
+                @SuppressLint("Range") String imageUrl = cursor.getString(cursor.getColumnIndex("imageUrl"));
+                @SuppressLint("Range") String accountType = cursor.getString(cursor.getColumnIndex("accountType"));
+
+                String accountBudge = "";
+
+                if (accountType.equals("Buyer account")){
+                    accountBudge = "Buyer";
+                } else {
+                    accountBudge = "Seller";
+                }
+
+
+                if (!(TextUtils.isEmpty(username) || TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(imageUrl) || TextUtils.isEmpty(accountType))){
                     contactCardItem = new ContactCardItem();
-                    contactCardItem.setCardItem(username, phoneNumber);
+                    contactCardItem.setCardItem(username,imageUrl, phoneNumber, accountBudge);
                     contactsList.add(contactCardItem);
                 }
 

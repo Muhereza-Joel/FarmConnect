@@ -108,14 +108,28 @@ public class FetchContactsService extends Service {
 
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         String key = snapshot.getKey();
+                        String name = snapshot.child("name").getValue(String.class);
                         String firebasePhoneNumber = snapshot.child("phoneNumber").getValue(String.class);
+                        String imageUrl = snapshot.child("profilePicUrl").getValue(String.class);
+                        String accountType = snapshot.child("accountType").getValue(String.class);
+                        String uploaded = "true";
+                        String updated = "false";
+
                         String cleanedFirebasePhoneNumber = firebasePhoneNumber.replaceAll("[^0-9]", "");
 
                         // Compare phone numbers without country codes
                         if (cleanedPhoneNumber.endsWith(cleanedFirebasePhoneNumber)
                                 || cleanedFirebasePhoneNumber.endsWith(cleanedPhoneNumber)) {
                             Log.d("Firebase Phone Number", firebasePhoneNumber);
-                            insertContactToDatabase(snapshot.child("name").getValue(String.class), firebasePhoneNumber);
+
+                            List<String> contactDetails = new ArrayList<>();
+                            contactDetails.add(name);
+                            contactDetails.add(firebasePhoneNumber);
+                            contactDetails.add(imageUrl);
+                            contactDetails.add(accountType);
+                            contactDetails.add(uploaded);
+                            contactDetails.add(updated);
+                            contactsDatabaseHelper.addContactToDatabase(contactDetails);
                             isMatchFound = true; // Set the flag to true if a match is found
                             break; // Exit the inner loop
                         }
