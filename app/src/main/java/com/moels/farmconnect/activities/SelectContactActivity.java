@@ -37,6 +37,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.adapters.ContactListRecyclerViewAdapter;
 import com.moels.farmconnect.models.ContactCardItem;
+import com.moels.farmconnect.services.BuyerAccountZoneFetchService;
+import com.moels.farmconnect.services.FarmerAccountZonesFetchService;
 import com.moels.farmconnect.services.FetchContactsService;
 import com.moels.farmconnect.utility_classes.ContactsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.UI;
@@ -58,6 +60,8 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
     private SQLiteDatabase sqLiteDatabase;
     private SharedPreferences myAppPreferences;
     private TextView emptyContactListTextView;
+    private boolean isFarmerAccount;
+    private boolean isBuyerAccount;
 
     private final ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -92,7 +96,10 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
             requestPermissions();
             return;
         }
+
         myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
+        isBuyerAccount = myAppPreferences.getBoolean("buyerAccountTypeChosen", false);
+        isFarmerAccount = myAppPreferences.getBoolean("farmerAccountTypeChosen", false);
         boolean contactListFetched = myAppPreferences.getBoolean("contactListFetched", false);
 
 
@@ -197,6 +204,18 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
         getContactsFromDatabase();
         UI.displayToast(getApplicationContext(), "Contact List Updated");
         stopService(new Intent(SelectContactActivity.this, FetchContactsService.class));
+
+        if (isBuyerAccount){
+            Intent buyerAccountZonesFetchService = new Intent(getApplicationContext(), BuyerAccountZoneFetchService.class);
+            startService(buyerAccountZonesFetchService);
+        }
+
+        if (isFarmerAccount){
+            Intent farmerAccountZonesFetchService = new Intent(getApplicationContext(), FarmerAccountZonesFetchService.class);
+            startService(farmerAccountZonesFetchService);
+        }
+
+
     }
 
     private void setUpStatusBar() {
