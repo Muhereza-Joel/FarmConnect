@@ -124,6 +124,7 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("createDate", zoneDetails.get(7));
         contentValues.put("createTime", zoneDetails.get(8));
         contentValues.put("status", zoneDetails.get(9));
+        contentValues.put("updated", zoneDetails.get(10));
 
         long rowsInserted = sqLiteDatabase.insertWithOnConflict("zones", null, contentValues, SQLiteDatabase.CONFLICT_IGNORE);
         if (rowsInserted != -1){

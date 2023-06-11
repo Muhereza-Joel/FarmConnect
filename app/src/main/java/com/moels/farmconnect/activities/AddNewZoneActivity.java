@@ -128,6 +128,7 @@ public class AddNewZoneActivity extends AppCompatActivity {
         List<String> zoneDetails = new ArrayList<>();
 
         String uploadedStatus = "false";
+        String updatedStatus = "false";
         String activeStatus = "active";
 
         zoneDetails.add(generateUniqueID());
@@ -140,6 +141,7 @@ public class AddNewZoneActivity extends AppCompatActivity {
         zoneDetails.add(getCurrentDate());
         zoneDetails.add(getCurrentTime());
         zoneDetails.add(activeStatus);
+        zoneDetails.add(updatedStatus);
 
         return zoneDetails;
     }

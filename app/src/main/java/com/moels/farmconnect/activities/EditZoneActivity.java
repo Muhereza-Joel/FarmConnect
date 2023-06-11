@@ -132,6 +132,7 @@ public class EditZoneActivity extends AppCompatActivity {
         contentValues.put("location", updatedZoneDetails.get(1));
         contentValues.put("products", updatedZoneDetails.get(2));
         contentValues.put("description", updatedZoneDetails.get(3));
+        contentValues.put("updated", updatedZoneDetails.get(4));
 
         boolean zoneUpdated = zonesDatabaseHelper.updateZone(zoneID, contentValues);
 
@@ -141,6 +142,7 @@ public class EditZoneActivity extends AppCompatActivity {
     }
 
     private List<String> getUpdatedValuesFromUI(){
+        String updated = "true";
         List<String> zoneDetails = new ArrayList<>();
 
         //TODO add flag for updated to true
@@ -148,6 +150,7 @@ public class EditZoneActivity extends AppCompatActivity {
         zoneDetails.add(locationEditText.getText().toString());
         zoneDetails.add(productsToCollectEditText.getText().toString());
         zoneDetails.add(descriptionEditText.getText().toString());
+        zoneDetails.add(updated);
         return zoneDetails;
     }
 

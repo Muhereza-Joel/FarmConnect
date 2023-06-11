@@ -105,6 +105,7 @@ public class FarmerAccountZonesFetchService extends Service {
         for (Zone zone : zoneList) {
             if (zone != null){
                 String uploaded = "true";
+                String updated = "false";
                 List<String> zoneDetails = new ArrayList<>();
 
                 zoneDetails.add(zone.getZoneID());
@@ -117,6 +118,7 @@ public class FarmerAccountZonesFetchService extends Service {
                 zoneDetails.add(zone.getDate());
                 zoneDetails.add(zone.getTime());
                 zoneDetails.add(zone.getStatus());
+                zoneDetails.add(updated);
 
                 zonesDatabaseHelper.addZoneToDatabase(zoneDetails);
             }
