@@ -14,7 +14,9 @@ import java.util.List;
 public class ZonesDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "FarmConnectZonesDatabase";
-    private static final int DATABASE_VERSION = 3;
+
+    //upgraded from version 3
+    private static final int DATABASE_VERSION = 4;
 
     private SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
@@ -24,8 +26,9 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE zones(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "remote_id TEXT, " +
+        db.execSQL("CREATE TABLE zones(" +
+                "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "remote_id TEXT UNIQUE, " +
                 "zoneName TEXT, " +
                 "location TEXT, " +
                 "products TEXT, " +
@@ -34,27 +37,42 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
                 "owner TEXT, " +
                 "createDate TEXT, " +
                 "createTime TEXT, " +
-                "status TEXT )");
+                "status TEXT, " +
+                "updated TEXT" +
+                ")");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < newVersion){
-            db.execSQL("DROP TABLE IF EXISTS zones");
-            db.execSQL("CREATE TABLE zones(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                       "remote_id TEXT, " +
-                        "zoneName TEXT, " +
-                        "location TEXT, " +
-                        "products TEXT, " +
-                        "description TEXT, " +
-                        "uploaded TEXT, " +
-                        "owner TEXT, " +
-                        "createDate TEXT, " +
-                        "createTime TEXT, " +
-                        "status TEXT )");
-        }
+        if (oldVersion < newVersion) {
 
+            db.execSQL("CREATE TABLE temp_zones AS SELECT * FROM zones");
+
+            db.execSQL("DROP TABLE IF EXISTS zones");
+
+            db.execSQL("CREATE TABLE zones(" +
+                    "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "remote_id TEXT UNIQUE, " +
+                    "zoneName TEXT, " +
+                    "location TEXT, " +
+                    "products TEXT, " +
+                    "description TEXT, " +
+                    "uploaded TEXT, " +
+                    "owner TEXT, " +
+                    "createDate TEXT, " +
+                    "createTime TEXT, " +
+                    "status TEXT, " +
+                    "updated TEXT" +
+                    ")");
+
+            db.execSQL("INSERT INTO zones " +
+                    "SELECT * FROM temp_zones");
+
+            // Step 5: Drop the temporary table
+            db.execSQL("DROP TABLE IF EXISTS temp_zones");
+        }
     }
+
 
     public List<String> getZoneIds(String phoneNumber){
         List<String> zonesRemoteIds = new ArrayList<>();
