@@ -1,7 +1,6 @@
 package com.moels.farmconnect.activities;
 
 import android.app.UiModeManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,8 +29,10 @@ import com.moels.farmconnect.utility_classes.UI;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -40,7 +41,6 @@ public class AddNewZoneActivity extends AppCompatActivity {
     private Toolbar addNewZoneActivityToolbar;
     private EditText zoneNameEditText, locationEditText, productsToCollectEditText, descriptionEditText;
     private ZonesDatabaseHelper zonesDatabaseHelper;
-    private SQLiteDatabase sqLiteDatabase;
     private SharedPreferences myAppPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,107 +55,6 @@ public class AddNewZoneActivity extends AppCompatActivity {
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Add New Zone", true);
 
         zonesDatabaseHelper = new ZonesDatabaseHelper(getApplicationContext());
-        sqLiteDatabase = zonesDatabaseHelper.getReadableDatabase();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.add_zone_activity_menu, menu);
-        MenuItem menuItem = menu.findItem(R.id.save_zone_btn);
-        SpannableString spannableString = new SpannableString(menuItem.getTitle());
-        spannableString.setSpan(new ForegroundColorSpan(Color.WHITE), 0, spannableString.length(), 0);
-        menuItem.setTitle(spannableString);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if(id == R.id.save_zone_btn){
-            View parentView = findViewById(R.id.parent);
-
-            boolean validated = validateTextViews();
-            if (validated == true){
-                boolean zoneCreated = addZoneToDatabase();
-                if(zoneCreated == true) {
-                    clearEditTexts();
-                    UI.displaySnackBar(getApplicationContext(), parentView, "Collection Zone Created!!");
-                    Intent uploadZoneService = new Intent(AddNewZoneActivity.this, ZoneUploadService.class);
-                    startService(uploadZoneService);
-                }
-            }
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    private boolean addZoneToDatabase(){
-        String zoneName = zoneNameEditText.getText().toString();
-        String location = locationEditText.getText().toString();
-        String products = productsToCollectEditText.getText().toString();
-        String description = descriptionEditText.getText().toString();
-
-        ContentValues contentValues = new ContentValues();
-        String remote_id = generateUniqueID();
-
-        contentValues.put("remote_id", remote_id);
-        contentValues.put("zoneName", zoneName);
-        contentValues.put("location", location);
-        contentValues.put("products", products);
-        contentValues.put("description", description);
-        contentValues.put("uploaded", "false");
-        contentValues.put("owner", myAppPreferences.getString("authenticatedPhoneNumber", "123456789"));
-        contentValues.put("createDate", getCurrentDate());
-        contentValues.put("createTime", getCurrentTime());
-        contentValues.put("status", "active");
-
-        sqLiteDatabase.insert("zones", null, contentValues);
-
-        return true;
-    }
-
-    private static String generateUniqueID(){
-        UUID uuid = UUID.randomUUID();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-        String currentTime = simpleDateFormat.format(new Date());
-
-        Random random = new Random();
-        int randomNumber = random.nextInt(10000);
-        String zoneId = currentTime + randomNumber;
-        return zoneId;
-    }
-
-    private boolean validateTextViews(){
-        boolean validated = true;
-        if (TextUtils.isEmpty(zoneNameEditText.getText().toString())
-                || TextUtils.isEmpty(locationEditText.getText().toString())
-                || TextUtils.isEmpty(productsToCollectEditText.getText().toString())
-                || TextUtils.isEmpty(descriptionEditText.getText().toString())){
-            UI.displayToast(getApplicationContext(), "All fields are required");
-            validated = false;
-        }
-        return validated;
-    }
-    private String getCurrentDate(){
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        String formattedDate = dateFormat.format(calendar.getTime());
-        return formattedDate;
-    }
-
-    private String getCurrentTime(){
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat timeFormat = new SimpleDateFormat("h:mma");
-        String formattedTime = timeFormat.format(calendar.getTime());
-        return formattedTime;
-    }
-
-    public void clearEditTexts(){
-        zoneNameEditText.setText("");
-        locationEditText.setText("");
-        productsToCollectEditText.setText("");
-        descriptionEditText.setText("");
     }
 
     private void initUI(){
@@ -181,4 +80,102 @@ public class AddNewZoneActivity extends AppCompatActivity {
         }
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.add_zone_activity_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.save_zone_btn);
+        SpannableString spannableString = new SpannableString(menuItem.getTitle());
+        spannableString.setSpan(new ForegroundColorSpan(Color.WHITE), 0, spannableString.length(), 0);
+        menuItem.setTitle(spannableString);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if(id == R.id.save_zone_btn){
+            View parentView = findViewById(R.id.parent);
+
+            boolean validated = validateViews();
+            if (validated){
+                boolean zoneCreated = zonesDatabaseHelper.addZoneToDatabase(getValuesFromUI());
+                if(zoneCreated) {
+                    clearEditTexts();
+                    UI.displaySnackBar(getApplicationContext(), parentView, "Collection Zone Created!!");
+                    Intent uploadZoneService = new Intent(AddNewZoneActivity.this, ZoneUploadService.class);
+                    startService(uploadZoneService);
+                }
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private boolean validateViews(){
+        boolean validated = true;
+        if (TextUtils.isEmpty(zoneNameEditText.getText().toString())
+                || TextUtils.isEmpty(locationEditText.getText().toString())
+                || TextUtils.isEmpty(productsToCollectEditText.getText().toString())
+                || TextUtils.isEmpty(descriptionEditText.getText().toString())){
+            UI.displayToast(getApplicationContext(), "All fields are required");
+            validated = false;
+        }
+        return validated;
+    }
+
+    private List<String> getValuesFromUI(){
+        List<String> zoneDetails = new ArrayList<>();
+
+        String uploadedStatus = "false";
+        String activeStatus = "active";
+
+        zoneDetails.add(generateUniqueID());
+        zoneDetails.add(zoneNameEditText.getText().toString());
+        zoneDetails.add(locationEditText.getText().toString());
+        zoneDetails.add(productsToCollectEditText.getText().toString());
+        zoneDetails.add(descriptionEditText.getText().toString());
+        zoneDetails.add(uploadedStatus);
+        zoneDetails.add(myAppPreferences.getString("authenticatedPhoneNumber", "123456789"));
+        zoneDetails.add(getCurrentDate());
+        zoneDetails.add(getCurrentTime());
+        zoneDetails.add(activeStatus);
+
+        return zoneDetails;
+    }
+
+    private static String generateUniqueID(){
+        UUID uuid = UUID.randomUUID();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        String currentTime = simpleDateFormat.format(new Date());
+
+        Random random = new Random();
+        int randomNumber = random.nextInt(10000);
+        String zoneId = currentTime + randomNumber;
+        return zoneId;
+    }
+
+
+    private String getCurrentDate(){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        String formattedDate = dateFormat.format(calendar.getTime());
+        return formattedDate;
+    }
+
+    private String getCurrentTime(){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat timeFormat = new SimpleDateFormat("h:mma");
+        String formattedTime = timeFormat.format(calendar.getTime());
+        return formattedTime;
+    }
+
+    public void clearEditTexts(){
+        zoneNameEditText.setText("");
+        locationEditText.setText("");
+        productsToCollectEditText.setText("");
+        descriptionEditText.setText("");
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.moels.farmconnect.utility_classes;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -53,6 +54,28 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
                         "status TEXT )");
         }
 
+    }
+
+    public boolean addZoneToDatabase(List<String> zoneDetails){
+        boolean rowCreated = false;
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("remote_id", zoneDetails.get(0));
+        contentValues.put("zoneName", zoneDetails.get(1));
+        contentValues.put("location", zoneDetails.get(2));
+        contentValues.put("products", zoneDetails.get(3));
+        contentValues.put("description", zoneDetails.get(4));
+        contentValues.put("uploaded", zoneDetails.get(5));
+        contentValues.put("owner", zoneDetails.get(6));
+        contentValues.put("createDate", zoneDetails.get(7));
+        contentValues.put("createTime", zoneDetails.get(8));
+        contentValues.put("status", zoneDetails.get(9));
+
+        long rowsInserted = sqLiteDatabase.insertWithOnConflict("zones", null, contentValues, SQLiteDatabase.CONFLICT_IGNORE);
+        if (rowsInserted != -1){
+            rowCreated = true;
+        }
+        return rowCreated;
     }
 
     public List<String> getZoneIds(String phoneNumber){
