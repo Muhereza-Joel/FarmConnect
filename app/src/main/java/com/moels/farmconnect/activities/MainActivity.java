@@ -11,6 +11,8 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -45,7 +47,7 @@ import com.moels.farmconnect.utility_classes.UI;
 
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements ProductsDataSyncService.ProductsSyncListener, NetworkChangeReceiver.NetworkChangeListener {
+public class MainActivity extends AppCompatActivity implements ProductsDataSyncService.ProductsSyncListener{
 
     public TabLayout tabLayout;
     private ViewPager viewPager;
@@ -88,8 +90,6 @@ public class MainActivity extends AppCompatActivity implements ProductsDataSyncS
             int currentlySelectedTab = savedInstanceState.getInt("currentlySelectedTab");
             tabLayout.selectTab(tabLayout.getTabAt(currentlySelectedTab));
         }
-
-        NetworkChangeReceiver.setListener(this);
 
 
         Drawable icon = toolbar.getOverflowIcon();
@@ -204,6 +204,27 @@ public class MainActivity extends AppCompatActivity implements ProductsDataSyncS
     protected void onStart() {
         super.onStart();
         tabLayout.selectTab(tabLayout.getTabAt(tabLayout.getSelectedTabPosition()));
+        // Check if there is an active network connection during app launch
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+            if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+                if (buyerAccountChosen){
+                    Intent serviceIntent = new Intent(getApplicationContext(), ProductsDataSyncService.class);
+                    startService(serviceIntent);
+                    bindService(serviceIntent, productsSyncServiceConnection, Context.BIND_AUTO_CREATE);
+                }
+
+            } else {
+                if (buyerAccountChosen){
+                    Intent serviceIntent = new Intent(getApplicationContext(), ProductsDataSyncService.class);
+                    startService(serviceIntent);
+                    bindService(serviceIntent, productsSyncServiceConnection, Context.BIND_AUTO_CREATE);
+                }
+
+            }
+        }
     }
 
     @Override
@@ -236,8 +257,6 @@ public class MainActivity extends AppCompatActivity implements ProductsDataSyncS
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem syncItem = menu.findItem(R.id.action_sync);
         progressBar = syncItem.getActionView().findViewById(R.id.action_sync_progress);
-        UI.hide(progressBar);
-
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -318,33 +337,4 @@ public class MainActivity extends AppCompatActivity implements ProductsDataSyncS
 
     }
 
-    @Override
-    public void onNetworkConnected() {
-        if (buyerAccountChosen){
-            Intent serviceIntent = new Intent(getApplicationContext(), ProductsDataSyncService.class);
-            startService(serviceIntent);
-            UI.show(progressBar);
-            bindService(serviceIntent, productsSyncServiceConnection, Context.BIND_AUTO_CREATE);
-        }
-    }
-
-    @Override
-    public void onWifiConnected() {
-        if (buyerAccountChosen){
-            Intent serviceIntent = new Intent(getApplicationContext(), ProductsDataSyncService.class);
-            startService(serviceIntent);
-            UI.show(progressBar);
-            bindService(serviceIntent, productsSyncServiceConnection, Context.BIND_AUTO_CREATE);
-        }
-    }
-
-    @Override
-    public void onNetworkDisconnected() {
-        if (bound){
-            unbindService(productsSyncServiceConnection);
-            stopService(new Intent(MainActivity.this, ProductsDataSyncService.class));
-            progressBar.setVisibility(View.GONE);
-            bound = false;
-        }
-    }
 }

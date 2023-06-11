@@ -103,8 +103,8 @@ public class EditZoneActivity extends AppCompatActivity {
                 boolean zoneUpdated = updateZoneInDatabase(getIntent().getStringExtra("zoneID"), getUpdatedValuesFromUI());
                 if (zoneUpdated){
                     UI.displayToast(getApplicationContext(), "Collection Zone Updated!!");
-                    clearViews();
                     goToParentActivity();
+                    clearViews();
                     finish();
                 }
             }
