@@ -4,7 +4,6 @@ import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -102,7 +101,7 @@ public class AddNewZoneActivity extends AppCompatActivity {
             if (validated){
                 boolean zoneCreated = zonesDatabaseHelper.addZoneToDatabase(getValuesFromUI());
                 if(zoneCreated) {
-                    clearEditTexts();
+                    clearViews();
                     UI.displaySnackBar(getApplicationContext(), parentView, "Collection Zone Created!!");
                     Intent uploadZoneService = new Intent(AddNewZoneActivity.this, ZoneUploadService.class);
                     startService(uploadZoneService);
@@ -171,7 +170,7 @@ public class AddNewZoneActivity extends AppCompatActivity {
         return formattedTime;
     }
 
-    public void clearEditTexts(){
+    private void clearViews(){
         zoneNameEditText.setText("");
         locationEditText.setText("");
         productsToCollectEditText.setText("");
