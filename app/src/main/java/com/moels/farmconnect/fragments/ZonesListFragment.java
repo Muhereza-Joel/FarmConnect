@@ -90,10 +90,10 @@ public class ZonesListFragment extends Fragment {
         if (view != null) {
             // Access the view and perform any necessary modifications
             if (zoneCardItems.size() > 0) {
-                emptyZonesMessageTextView = view.findViewById(R.id.products_label);
+                emptyZonesMessageTextView = view.findViewById(R.id.zones_label);
                 emptyZonesMessageTextView.setVisibility(View.GONE);
             }else {
-                emptyZonesMessageTextView = view.findViewById(R.id.products_label);
+                emptyZonesMessageTextView = view.findViewById(R.id.zones_label);
                 emptyZonesMessageTextView.setVisibility(View.VISIBLE);
             }
         }

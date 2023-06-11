@@ -38,13 +38,13 @@ public class BuyerAccountZoneFetchService extends Service {
     private final IBinder binder = new ZonesFetchServiceBinder();
     private ContactsDatabaseHelper contactsDatabaseHelper;
     private ZonesDatabaseHelper zonesDatabaseHelper;
-
-    SharedPreferences myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
+    private SharedPreferences myAppPreferences;
 
     @Override
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
+        myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
         contactsDatabaseHelper = new ContactsDatabaseHelper(getApplicationContext());
         zonesDatabaseHelper = new ZonesDatabaseHelper(getApplicationContext());
     }

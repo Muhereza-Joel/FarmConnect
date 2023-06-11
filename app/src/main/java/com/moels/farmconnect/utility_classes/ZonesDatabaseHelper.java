@@ -65,8 +65,13 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
                     "updated TEXT" +
                     ")");
 
-            db.execSQL("INSERT INTO zones " +
-                    "SELECT * FROM temp_zones");
+            db.execSQL("INSERT INTO zones (" +
+                    "_id, remote_id, zoneName, location, products, description, " +
+                    "uploaded, owner, createDate, createTime, status, updated) " +
+                    "SELECT _id, remote_id, zoneName, location, products, description, " +
+                    "uploaded, owner, createDate, createTime, status, NULL " +
+                    "FROM temp_zones");
+
 
             // Step 5: Drop the temporary table
             db.execSQL("DROP TABLE IF EXISTS temp_zones");
@@ -127,8 +132,12 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
         contentValues.put("updated", zoneDetails.get(10));
 
         long rowsInserted = sqLiteDatabase.insertWithOnConflict("zones", null, contentValues, SQLiteDatabase.CONFLICT_IGNORE);
+
         if (rowsInserted != -1){
+            Log.d("FarmConnect", "addZoneToDatabase: Collection zone added to database created");
             rowCreated = true;
+        }else {
+            Log.d("FarmConnect", "addZoneToDatabase: Collection zone already exits in database");
         }
         return rowCreated;
     }

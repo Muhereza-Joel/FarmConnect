@@ -46,8 +46,10 @@ import com.moels.farmconnect.utility_classes.UI;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectContactActivity extends AppCompatActivity implements FetchContactsService.ContactsFetchListener{
+public class SelectContactActivity extends AppCompatActivity implements FetchContactsService.ContactsFetchListener, BuyerAccountZoneFetchService.ZonesFetchListener, FarmerAccountZonesFetchService.ZonesFetchListener{
     private FetchContactsService fetchContactsService;
+    private BuyerAccountZoneFetchService buyerAccountZoneFetchService;
+    private FarmerAccountZonesFetchService farmerAccountZonesFetchService;
     private boolean bound = false;
     private ProgressBar progressBar;
     private static final int REQUEST_PERMISSION_CODE = 100;
@@ -62,6 +64,36 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
     private TextView emptyContactListTextView;
     private boolean isFarmerAccount;
     private boolean isBuyerAccount;
+
+    private ServiceConnection farmerServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            FarmerAccountZonesFetchService.ZonesFetchServiceBinder zonesFetchServiceBinder = (FarmerAccountZonesFetchService.ZonesFetchServiceBinder) binder;
+            farmerAccountZonesFetchService = zonesFetchServiceBinder.getFarmerAccountZonesFetchService();
+            farmerAccountZonesFetchService.setZonesFetchListener(SelectContactActivity.this);
+            bound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            bound = false;
+        }
+    };
+
+    private ServiceConnection buyerServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            BuyerAccountZoneFetchService.ZonesFetchServiceBinder zonesFetchServiceBinder = (BuyerAccountZoneFetchService.ZonesFetchServiceBinder) binder;
+            buyerAccountZoneFetchService = zonesFetchServiceBinder.getBuyerAccountZonesFetchService();
+            buyerAccountZoneFetchService.setZonesFetchListener(SelectContactActivity.this);
+            bound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            bound = false;
+        }
+    };
 
     private final ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -206,13 +238,14 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
         stopService(new Intent(SelectContactActivity.this, FetchContactsService.class));
 
         if (isBuyerAccount){
-            Intent buyerAccountZonesFetchService = new Intent(getApplicationContext(), BuyerAccountZoneFetchService.class);
-            startService(buyerAccountZonesFetchService);
+            Intent intent = new Intent(this, BuyerAccountZoneFetchService.class);
+            startService(intent);
+            bindService(intent, buyerServiceConnection, Context.BIND_AUTO_CREATE);
         }
 
         if (isFarmerAccount){
-            Intent farmerAccountZonesFetchService = new Intent(getApplicationContext(), FarmerAccountZonesFetchService.class);
-            startService(farmerAccountZonesFetchService);
+            Intent serviceIntent = new Intent(getApplicationContext(), FarmerAccountZonesFetchService.class);
+            startService(serviceIntent);
         }
 
 
@@ -232,5 +265,25 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
             }
         }
 
+    }
+
+    @Override
+    public void onBuyerZonesFetchComplete() {
+        if (bound) {
+            unbindService(buyerServiceConnection);
+            bound = false;
+            UI.displayToast(getApplicationContext(), "Collection Zones Updated");
+            stopService(new Intent(SelectContactActivity.this, BuyerAccountZoneFetchService.class));
+        }
+    }
+
+    @Override
+    public void onFarmerZonesFetchComplete() {
+        if (bound) {
+            unbindService(farmerServiceConnection);
+            bound = false;
+            UI.displayToast(getApplicationContext(), "Collection Zones Updated");
+            stopService(new Intent(SelectContactActivity.this, FarmerAccountZonesFetchService.class));
+        }
     }
 }

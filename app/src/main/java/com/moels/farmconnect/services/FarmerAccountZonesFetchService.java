@@ -34,7 +34,6 @@ public class FarmerAccountZonesFetchService extends Service {
     private static final int POLL_INTERVAL = 2000;
     private Handler handler;
     private Runnable runnable;
-    private SQLiteDatabase zonesDatabase, contactsDatabase;
     private ZonesFetchListener zonesFetchListener;
     private final IBinder binder = new ZonesFetchServiceBinder();
     private ContactsDatabaseHelper contactsDatabaseHelper;
@@ -46,8 +45,6 @@ public class FarmerAccountZonesFetchService extends Service {
         handler = new Handler();
         contactsDatabaseHelper = new ContactsDatabaseHelper(getApplicationContext());
         zonesDatabaseHelper = new ZonesDatabaseHelper(getApplicationContext());
-        zonesDatabase = zonesDatabaseHelper.getWritableDatabase();
-        contactsDatabase = contactsDatabaseHelper.getReadableDatabase();
     }
 
     @Override
