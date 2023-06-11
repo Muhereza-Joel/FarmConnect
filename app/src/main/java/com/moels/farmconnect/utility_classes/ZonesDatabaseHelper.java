@@ -56,6 +56,42 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public List<String> getZoneIds(String phoneNumber){
+        List<String> zonesRemoteIds = new ArrayList<>();
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT remote_id FROM zones WHERE owner = '"+ phoneNumber + "'", null);
+        if (cursor.moveToNext()){
+            do {
+                @SuppressLint("Range") String remote_id = cursor.getString(cursor.getColumnIndex("remote_id"));
+                zonesRemoteIds.add(remote_id);
+            }while (cursor.moveToNext());
+        }
+        return zonesRemoteIds;
+    }
+
+    public List<String> getZoneDetails(String zoneID){
+        List<String> zoneDetails = new ArrayList<>();
+        String [] columnsToPick = {"remote_id","zoneName", "location", "products", "description"};
+        Cursor cursor = sqLiteDatabase.query("zones", columnsToPick, "remote_id = ?", new String[]{zoneID}, null, null, null);
+
+        if (cursor.moveToNext()){
+            do {
+                @SuppressLint("Range") String zoneName = cursor.getString(cursor.getColumnIndex("zoneName"));
+                @SuppressLint("Range") String location = cursor.getString(cursor.getColumnIndex("location"));
+                @SuppressLint("Range") String products = cursor.getString(cursor.getColumnIndex("products"));
+                @SuppressLint("Range") String description = cursor.getString(cursor.getColumnIndex("description"));
+
+                zoneDetails.add(zoneName);
+                zoneDetails.add(location);
+                zoneDetails.add(products);
+                zoneDetails.add(description);
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return zoneDetails;
+    }
+
+
     public boolean addZoneToDatabase(List<String> zoneDetails){
         boolean rowCreated = false;
 
@@ -78,17 +114,16 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
         return rowCreated;
     }
 
-    public List<String> getZoneIds(String phoneNumber){
-        List<String> zonesRemoteIds = new ArrayList<>();
-        Cursor cursor = sqLiteDatabase.rawQuery("SELECT remote_id FROM zones WHERE owner = '"+ phoneNumber + "'", null);
-        if (cursor.moveToNext()){
-            do {
-                @SuppressLint("Range") String remote_id = cursor.getString(cursor.getColumnIndex("remote_id"));
-                zonesRemoteIds.add(remote_id);
-            }while (cursor.moveToNext());
+    public boolean updateZone(String zoneID, ContentValues contentValues){
+        boolean zoneUpdated = false;
+        int rowUpdated = sqLiteDatabase.update("zones", contentValues, "remote_id = ?", new String[] {zoneID});
+        if (rowUpdated > 0){
+            zoneUpdated = true;
         }
-        return zonesRemoteIds;
+        return zoneUpdated;
+
     }
+
 
     public void deleteZoneFromDatabase(String _id){
         sqLiteDatabase.delete("zones", "remote_id = ?", new String[] {_id});

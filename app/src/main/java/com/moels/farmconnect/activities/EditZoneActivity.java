@@ -5,13 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.UiModeManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Build;
@@ -19,10 +17,8 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -32,11 +28,13 @@ import com.moels.farmconnect.services.UpdateZoneService;
 import com.moels.farmconnect.utility_classes.UI;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class EditZoneActivity extends AppCompatActivity {
     private Toolbar editZoneActivityToolbar;
     private EditText zoneNameEditText, locationEditText, productsToCollectEditText, descriptionEditText;
     private ZonesDatabaseHelper zonesDatabaseHelper;
-    SQLiteDatabase sqLiteDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,42 +47,8 @@ public class EditZoneActivity extends AppCompatActivity {
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Edit Zone", true);
 
         zonesDatabaseHelper = new ZonesDatabaseHelper(getApplicationContext());
-        sqLiteDatabase = zonesDatabaseHelper.getWritableDatabase();
 
-        getZoneDetailsFromDatabase();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.edit_zone_activity_menu, menu);
-        MenuItem menuItem = menu.findItem(R.id.save_edited_zone_details_btn);
-        SpannableString spannableString = new SpannableString(menuItem.getTitle());
-        spannableString.setSpan(new ForegroundColorSpan(Color.WHITE), 0, spannableString.length(), 0);
-        menuItem.setTitle(spannableString);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.save_edited_zone_details_btn){
-            boolean validated = validateTextViews();
-
-            if (validated == true){
-                boolean zoneUpdated = updateZoneInDatabase();
-                if (zoneUpdated == true){
-                    UI.displayToast(getApplicationContext(), "Collection Zone Updated!!");
-                    Intent resultIntent = new Intent();
-                    resultIntent.putExtra("updatedZoneName", zoneNameEditText.getText().toString());
-                    setResult(Activity.RESULT_OK, resultIntent);
-                    clearEditTexts();
-                    finish();
-                }
-            }
-
-        }
-        return super.onOptionsItemSelected(item);
+        showProductDetails(zonesDatabaseHelper.getZoneDetails(getIntent().getStringExtra("zoneID")));
     }
 
     private void initUI(){
@@ -93,76 +57,6 @@ public class EditZoneActivity extends AppCompatActivity {
         locationEditText = findViewById(R.id.location_edit_text);
         productsToCollectEditText = findViewById(R.id.products_to_collect_edit_text);
         descriptionEditText = findViewById(R.id.description_edit_text);
-    }
-
-    private void getZoneDetailsFromDatabase(){
-        String remote_id = getIntent().getStringExtra("zoneID");
-        String [] columnsToPick = {"remote_id","zoneName", "location", "products", "description"};
-        Cursor cursor = sqLiteDatabase.query("zones", columnsToPick, "remote_id = ?", new String[]{remote_id}, null, null, null);
-
-        if (cursor.moveToNext()){
-            do {
-                @SuppressLint("Range") String zoneName = cursor.getString(cursor.getColumnIndex("zoneName"));
-                @SuppressLint("Range") String location = cursor.getString(cursor.getColumnIndex("location"));
-                @SuppressLint("Range") String products = cursor.getString(cursor.getColumnIndex("products"));
-                @SuppressLint("Range") String description = cursor.getString(cursor.getColumnIndex("description"));
-
-                zoneNameEditText.setText(zoneName);
-                locationEditText.setText(location);
-                productsToCollectEditText.setText(products);
-                descriptionEditText.setText(description);
-
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-    }
-
-    private boolean validateTextViews(){
-        boolean validated = true;
-        if (TextUtils.isEmpty(zoneNameEditText.getText().toString())
-                || TextUtils.isEmpty(locationEditText.getText().toString())
-                || TextUtils.isEmpty(productsToCollectEditText.getText().toString())
-                || TextUtils.isEmpty(descriptionEditText.getText().toString())){
-            UI.displayToast(getApplicationContext(), "All fields are required");
-            validated = false;
-        }
-        return validated;
-    }
-
-    public void clearEditTexts(){
-        zoneNameEditText.setText("");
-        locationEditText.setText("");
-        productsToCollectEditText.setText("");
-        descriptionEditText.setText("");
-    }
-
-    private boolean updateZoneInDatabase(){
-        String zoneName = zoneNameEditText.getText().toString();
-        String location = locationEditText.getText().toString();
-        String products = productsToCollectEditText.getText().toString();
-        String description = descriptionEditText.getText().toString();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("zoneName", zoneName);
-        contentValues.put("location", location);
-        contentValues.put("products", products);
-        contentValues.put("description", description);
-
-        String remote_id = getIntent().getStringExtra("zoneID");
-        sqLiteDatabase.update("zones", contentValues, "remote_id = ?", new String[] {remote_id});
-        startServiceToUpdateZoneInFirebase(remote_id, zoneName, location, products, description);
-
-        return true;
-    }
-
-    private void startServiceToUpdateZoneInFirebase(String remote_id, String zoneName, String zoneLocation, String productsToCollect, String description){
-        Intent updateZoneService = new Intent(EditZoneActivity.this, UpdateZoneService.class);
-        updateZoneService.putExtra("zoneID", remote_id);
-        updateZoneService.putExtra("zoneName", zoneName);
-        updateZoneService.putExtra("location", zoneLocation);
-        updateZoneService.putExtra("productsToCollect", productsToCollect);
-        updateZoneService.putExtra("description", description);
-        startService(updateZoneService);
     }
 
     private void setUpStatusBar() {
@@ -180,4 +74,104 @@ public class EditZoneActivity extends AppCompatActivity {
         }
 
     }
+
+    public void showProductDetails(List<String> productDetails){
+        zoneNameEditText.setText(productDetails.get(0));
+        locationEditText.setText(productDetails.get(1));
+        productsToCollectEditText.setText(productDetails.get(2));
+        descriptionEditText.setText(productDetails.get(3));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.edit_zone_activity_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.save_edited_zone_details_btn);
+        SpannableString spannableString = new SpannableString(menuItem.getTitle());
+        spannableString.setSpan(new ForegroundColorSpan(Color.WHITE), 0, spannableString.length(), 0);
+        menuItem.setTitle(spannableString);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.save_edited_zone_details_btn){
+            boolean viewsValidated = validateViews();
+
+            if (viewsValidated){
+                boolean zoneUpdated = updateZoneInDatabase(getIntent().getStringExtra("zoneID"), getUpdatedValuesFromUI());
+                if (zoneUpdated){
+                    UI.displayToast(getApplicationContext(), "Collection Zone Updated!!");
+                    clearViews();
+                    goToParentActivity();
+                    finish();
+                }
+            }
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private boolean validateViews(){
+        boolean validated = true;
+        if (TextUtils.isEmpty(zoneNameEditText.getText().toString())
+                || TextUtils.isEmpty(locationEditText.getText().toString())
+                || TextUtils.isEmpty(productsToCollectEditText.getText().toString())
+                || TextUtils.isEmpty(descriptionEditText.getText().toString())){
+            UI.displayToast(getApplicationContext(), "All fields are required");
+            validated = false;
+        }
+        return validated;
+    }
+
+    private boolean updateZoneInDatabase(String zoneID, List<String> updatedZoneDetails){
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("zoneName", updatedZoneDetails.get(0));
+        contentValues.put("location", updatedZoneDetails.get(1));
+        contentValues.put("products", updatedZoneDetails.get(2));
+        contentValues.put("description", updatedZoneDetails.get(3));
+
+        boolean zoneUpdated = zonesDatabaseHelper.updateZone(zoneID, contentValues);
+
+        startServiceToUpdateZoneInFirebase(zoneID, updatedZoneDetails);
+
+        return zoneUpdated;
+    }
+
+    private List<String> getUpdatedValuesFromUI(){
+        List<String> zoneDetails = new ArrayList<>();
+
+        //TODO add flag for updated to true
+        zoneDetails.add(zoneNameEditText.getText().toString());
+        zoneDetails.add(locationEditText.getText().toString());
+        zoneDetails.add(productsToCollectEditText.getText().toString());
+        zoneDetails.add(descriptionEditText.getText().toString());
+        return zoneDetails;
+    }
+
+    private void startServiceToUpdateZoneInFirebase(String remote_id, List<String> updatedZoneDetails){
+        Intent updateZoneService = new Intent(EditZoneActivity.this, UpdateZoneService.class);
+        updateZoneService.putExtra("zoneID", remote_id);
+        updateZoneService.putExtra("zoneName", updatedZoneDetails.get(0));
+        updateZoneService.putExtra("location", updatedZoneDetails.get(1));
+        updateZoneService.putExtra("productsToCollect", updatedZoneDetails.get(2));
+        updateZoneService.putExtra("description", updatedZoneDetails.get(3));
+        startService(updateZoneService);
+    }
+
+    public void clearViews(){
+        zoneNameEditText.setText("");
+        locationEditText.setText("");
+        productsToCollectEditText.setText("");
+        descriptionEditText.setText("");
+    }
+
+    private void goToParentActivity(){
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("updatedZoneName", zoneNameEditText.getText().toString());
+        setResult(Activity.RESULT_OK, resultIntent);
+    }
+
 }
