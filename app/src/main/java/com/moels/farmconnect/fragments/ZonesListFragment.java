@@ -40,6 +40,8 @@ public class ZonesListFragment extends Fragment {
     private ZonesDatabaseHelper zonesDatabaseHelper;
     private SQLiteDatabase sqLiteDatabase;
     private List<ZoneCardItem> zoneCardItems;
+    private View view;
+    private TextView emptyZonesMessageTextView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,7 +54,7 @@ public class ZonesListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_zones_list, container, false);
+        view = inflater.inflate(R.layout.fragment_zones_list, container, false);
         UiModeManager uiModeManager = (UiModeManager) getActivity().getSystemService(Context.UI_MODE_SERVICE);
         int currentMode = uiModeManager.getNightMode();
 
@@ -62,8 +64,8 @@ public class ZonesListFragment extends Fragment {
         }
 
         if (zoneCardItems.size() > 0){
-            TextView textView = view.findViewById(R.id.zones_label);
-            textView.setVisibility(View.GONE);
+            emptyZonesMessageTextView = view.findViewById(R.id.zones_label);
+            emptyZonesMessageTextView.setVisibility(View.GONE);
         }
         return view;
     }
@@ -84,6 +86,17 @@ public class ZonesListFragment extends Fragment {
         zoneCardItems = getZonesFromDatabase();
         zoneListRecyclerViewAdapter = new ZoneListRecyclerViewAdapter(zoneCardItems, getContext());
         zonesListRecyclerView.setAdapter(zoneListRecyclerViewAdapter);
+
+        if (view != null) {
+            // Access the view and perform any necessary modifications
+            if (zoneCardItems.size() > 0) {
+                emptyZonesMessageTextView = view.findViewById(R.id.products_label);
+                emptyZonesMessageTextView.setVisibility(View.GONE);
+            }else {
+                emptyZonesMessageTextView = view.findViewById(R.id.products_label);
+                emptyZonesMessageTextView.setVisibility(View.VISIBLE);
+            }
+        }
 
         zoneListRecyclerViewAdapter.setListener(new ZoneListRecyclerViewAdapter.Listener() {
             @Override

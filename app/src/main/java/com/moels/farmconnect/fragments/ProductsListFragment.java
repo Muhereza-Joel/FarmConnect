@@ -34,7 +34,7 @@ public class ProductsListFragment extends Fragment {
     public List<ProductCardItem> productCardItems;
     private SharedPreferences sharedPreferences;
     private String authenticatedPhoneNumber;
-    private TextView textView;
+    private TextView emptyProductsMessageTextView;
     private View view;
     private boolean isFarmerAccount;
     private boolean isBuyerAccount;
@@ -62,8 +62,8 @@ public class ProductsListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_products_list, container, false);
         if (productCardItems.size() > 0){
-            textView = view.findViewById(R.id.products_label);
-            textView.setVisibility(View.GONE);
+            emptyProductsMessageTextView = view.findViewById(R.id.products_label);
+            emptyProductsMessageTextView.setVisibility(View.GONE);
         }
 
         UiModeManager uiModeManager = (UiModeManager) getActivity().getSystemService(Context.UI_MODE_SERVICE);
@@ -101,11 +101,11 @@ public class ProductsListFragment extends Fragment {
         if (view != null) {
             // Access the view and perform any necessary modifications
             if (productCardItems.size() > 0) {
-                textView = view.findViewById(R.id.products_label);
-                textView.setVisibility(View.GONE);
+                emptyProductsMessageTextView = view.findViewById(R.id.products_label);
+                emptyProductsMessageTextView.setVisibility(View.GONE);
             }else {
-                textView = view.findViewById(R.id.products_label);
-                textView.setVisibility(View.VISIBLE);
+                emptyProductsMessageTextView = view.findViewById(R.id.products_label);
+                emptyProductsMessageTextView.setVisibility(View.VISIBLE);
             }
         }
 
