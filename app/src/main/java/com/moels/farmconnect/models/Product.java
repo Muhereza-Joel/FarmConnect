@@ -4,7 +4,7 @@ public class Product {
 
     public Product(){}
 
-    public String productID, productName, quantity,unitPrice, price, imageUrl, owner, createDate, createTime, status, zoneID;
+    private String productID, productName, quantity,unitPrice, price, imageUrl, owner, createDate, createTime, status, zoneID;
 
     public Product(String productID,
                    String productName,
@@ -73,4 +73,6 @@ public class Product {
     public String getZoneID() {
         return zoneID;
     }
+
+
 }
