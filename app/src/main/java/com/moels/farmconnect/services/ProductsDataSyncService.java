@@ -60,36 +60,15 @@ public class ProductsDataSyncService extends Service{
         zonesDatabaseHelper = new ZonesDatabaseHelper(getApplicationContext());
         contactsDatabaseHelper = new ContactsDatabaseHelper(getApplicationContext());
         productsDatabaseHelper = new ProductsDatabaseHelper(getApplicationContext());
-
-        // Create a notification channel for the foreground service
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Foreground Service Channel", NotificationManager.IMPORTANCE_DEFAULT);
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(channel);
-        }
-
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
        boolean productsIdsLoaded = getExistingProductRemoteIDs(productsDatabaseHelper.getProductRemoteIds());
-       if (productsIdsLoaded){
-           startMonitoring();
-
-           // Create a notification for the foreground service
-           Intent notificationIntent = new Intent(this, MainActivity.class);
-           PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
-
-           Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                   .setContentTitle("Synchronizing")
-                   .setContentText("Service is running")
-                   .setSmallIcon(R.drawable.baseline_add_24)
-                   .setContentIntent(pendingIntent)
-                   .build();
-
-           // Start the service as a foreground service
-           startForeground(NOTIFICATION_ID, notification);
-       }
+        if (productsIdsLoaded) {
+            startForeground(NOTIFICATION_ID, createNotification()); // Start the service as a foreground service
+            startMonitoring();
+        }
         return START_STICKY;
     }
 
@@ -98,6 +77,34 @@ public class ProductsDataSyncService extends Service{
         syncedData.addAll(productRemoteIDs); // Add all product remote IDs to the HashSet
         return true;
     }
+
+    private Notification createNotification() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create the notification channel for Android Oreo and above
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Foreground Service Channel",
+                    NotificationManager.IMPORTANCE_LOW); // Use LOW importance to prevent sound
+            channel.setSound(null, null); // Set sound to null
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        // Create the notification for the foreground service
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("FarmConnect")
+                .setContentText("Syncing data...")
+                .setSmallIcon(R.drawable.farmconnectlogo)
+                .setContentIntent(createNotificationIntent())
+                .setAutoCancel(true);
+
+        return notificationBuilder.build();
+
+    }
+
+    private PendingIntent createNotificationIntent() {
+        Intent intent = new Intent(this, MainActivity.class);
+        return PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
 
     private void startMonitoring(){
         runnable = new Runnable() {

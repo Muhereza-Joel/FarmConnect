@@ -212,14 +212,22 @@ public class MainActivity extends AppCompatActivity implements ProductsDataSyncS
             if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
                 if (buyerAccountChosen){
                     Intent serviceIntent = new Intent(getApplicationContext(), ProductsDataSyncService.class);
-                    startService(serviceIntent);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        startForegroundService(serviceIntent);
+                    } else {
+                        startService(serviceIntent);
+                    }
                     bindService(serviceIntent, productsSyncServiceConnection, Context.BIND_AUTO_CREATE);
                 }
 
             } else {
                 if (buyerAccountChosen){
                     Intent serviceIntent = new Intent(getApplicationContext(), ProductsDataSyncService.class);
-                    startService(serviceIntent);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        startForegroundService(serviceIntent);
+                    } else {
+                        startService(serviceIntent);
+                    }
                     bindService(serviceIntent, productsSyncServiceConnection, Context.BIND_AUTO_CREATE);
                 }
 
