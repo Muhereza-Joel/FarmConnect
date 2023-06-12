@@ -6,7 +6,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
@@ -49,6 +51,10 @@ public class ProductsDataSyncService extends Service{
     private final IBinder  binder = new ProductsSyncServiceBinder();
     private static final int NOTIFICATION_ID = 1;
     private static final String CHANNEL_ID = "ForegroundServiceChannel";
+    private String authenticatedPhoneNumber;
+    private SharedPreferences myAppPreferences;
+    private boolean isBuyerAccount;
+    private boolean isFarmerAccount;
 
     public ProductsDataSyncService() {
     }
@@ -60,17 +66,79 @@ public class ProductsDataSyncService extends Service{
         zonesDatabaseHelper = new ZonesDatabaseHelper(getApplicationContext());
         contactsDatabaseHelper = new ContactsDatabaseHelper(getApplicationContext());
         productsDatabaseHelper = new ProductsDatabaseHelper(getApplicationContext());
+
+        myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
+        authenticatedPhoneNumber = myAppPreferences.getString("authenticatedPhoneNumber", "123456789");
+        isBuyerAccount = myAppPreferences.getBoolean("buyerAccountTypeChosen", false);
+        isFarmerAccount = myAppPreferences.getBoolean("farmerAccountTypeChosen", false);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
        boolean productsIdsLoaded = getExistingProductRemoteIDs(productsDatabaseHelper.getProductRemoteIds());
         if (productsIdsLoaded) {
-            startForeground(NOTIFICATION_ID, createNotification()); // Start the service as a foreground service
-            startMonitoring();
+            if (isFarmerAccount){
+                if (getSizeOfSyncedData() == 0){
+                    startForeground(NOTIFICATION_ID, createNotification());
+                    getAllProductsForTheFarmer(authenticatedPhoneNumber);
+                }
+
+            }
+
+            if (isBuyerAccount) {
+                startForeground(NOTIFICATION_ID, createNotification());
+                startMonitoring();
+            }
         }
         return START_STICKY;
     }
+
+    private void getAllProductsForTheFarmer(String phoneNumber) {
+        List<String> zoneIDs = zonesDatabaseHelper.getZoneIds();
+
+        for (String zoneID : zoneIDs) {
+            Log.d("FarmConnect", "getProductsFromDatabase: " + zoneID);
+            productsReference = FirebaseDatabase.getInstance().getReference().child("zones").child(phoneNumber).child(zoneID).child("products");
+
+            productsReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot productSnapshot : snapshot.getChildren()) {
+                        String owner = productSnapshot.child("owner").getValue(String.class);
+                        if (owner != null && owner.equals(phoneNumber)) {
+                            List<String> productDetails = new ArrayList<>();
+
+                            productDetails.add(productSnapshot.child("productID").getValue(String.class));
+                            productDetails.add(productSnapshot.child("productName").getValue(String.class));
+                            productDetails.add(productSnapshot.child("quantity").getValue(String.class));
+                            productDetails.add(productSnapshot.child("unitPrice").getValue(String.class));
+                            productDetails.add(productSnapshot.child("price").getValue(String.class));
+                            productDetails.add(productSnapshot.child("imageUrl").getValue(String.class));
+                            productDetails.add("true");
+                            productDetails.add("false");
+                            productDetails.add(owner);
+                            productDetails.add(productSnapshot.child("createDate").getValue(String.class));
+                            productDetails.add(productSnapshot.child("createTime").getValue(String.class));
+                            productDetails.add(productSnapshot.child("status").getValue(String.class));
+                            productDetails.add(productSnapshot.child("zoneID").getValue(String.class));
+
+                            productsDatabaseHelper.addProductToDatabase(productDetails);
+                            Log.d("FarmConnect", "onDataChange: Product id " + productDetails.get(0) + " Added to database");
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+
+        productsSyncListener.onProductsSyncComplete();
+        stopSelf();
+    }
+
 
     public boolean getExistingProductRemoteIDs(List<String> productRemoteIDs) {
         syncedData.clear(); // Clear the existing data in the HashSet
@@ -159,7 +227,7 @@ public class ProductsDataSyncService extends Service{
                             productDetails.add(productSnapshot.child("zoneID").getValue(String.class));
 
                             productsDatabaseHelper.addProductToDatabase(productDetails);
-                            Log.d("FarmConnect", "onDataChange: Product id" + productDetails.get(0) + "Added to database");
+                            Log.d("FarmConnect", "onDataChange: Product id " + productDetails.get(0) + " Added to database");
 
                         }
                     }

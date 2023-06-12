@@ -210,7 +210,6 @@ public class MainActivity extends AppCompatActivity implements ProductsDataSyncS
 
         if (networkInfo != null && networkInfo.isConnected()) {
             if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
-                if (buyerAccountChosen){
                     Intent serviceIntent = new Intent(getApplicationContext(), ProductsDataSyncService.class);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         startForegroundService(serviceIntent);
@@ -218,10 +217,8 @@ public class MainActivity extends AppCompatActivity implements ProductsDataSyncS
                         startService(serviceIntent);
                     }
                     bindService(serviceIntent, productsSyncServiceConnection, Context.BIND_AUTO_CREATE);
-                }
 
             } else {
-                if (buyerAccountChosen){
                     Intent serviceIntent = new Intent(getApplicationContext(), ProductsDataSyncService.class);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         startForegroundService(serviceIntent);
@@ -229,7 +226,6 @@ public class MainActivity extends AppCompatActivity implements ProductsDataSyncS
                         startService(serviceIntent);
                     }
                     bindService(serviceIntent, productsSyncServiceConnection, Context.BIND_AUTO_CREATE);
-                }
 
             }
         }
