@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,7 +45,7 @@ import com.moels.farmconnect.utility_classes.UI;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectContactActivity extends AppCompatActivity implements FetchContactsService.ContactsFetchListener, BuyerAccountZoneFetchService.ZonesFetchListener, FarmerAccountZonesFetchService.ZonesFetchListener{
+public class SelectContactActivity extends AppCompatActivity implements FetchContactsService.ContactsFetchListener, BuyerAccountZoneFetchService.BuyerZonesFetchListener, FarmerAccountZonesFetchService.FarmerZonesFetchListener {
     private FetchContactsService fetchContactsService;
     private BuyerAccountZoneFetchService buyerAccountZoneFetchService;
     private FarmerAccountZonesFetchService farmerAccountZonesFetchService;
@@ -68,7 +67,7 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
     private ServiceConnection farmerServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder binder) {
-            FarmerAccountZonesFetchService.ZonesFetchServiceBinder zonesFetchServiceBinder = (FarmerAccountZonesFetchService.ZonesFetchServiceBinder) binder;
+            FarmerAccountZonesFetchService.FarmerZonesFetchServiceBinder zonesFetchServiceBinder = (FarmerAccountZonesFetchService.FarmerZonesFetchServiceBinder) binder;
             farmerAccountZonesFetchService = zonesFetchServiceBinder.getFarmerAccountZonesFetchService();
             farmerAccountZonesFetchService.setZonesFetchListener(SelectContactActivity.this);
             bound = true;
@@ -82,8 +81,8 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
 
     private ServiceConnection buyerServiceConnection = new ServiceConnection() {
         @Override
-        public void onServiceConnected(ComponentName name, IBinder binder) {
-            BuyerAccountZoneFetchService.ZonesFetchServiceBinder zonesFetchServiceBinder = (BuyerAccountZoneFetchService.ZonesFetchServiceBinder) binder;
+        public void onServiceConnected(ComponentName name, IBinder binder2) {
+            BuyerAccountZoneFetchService.BuyerZonesFetchServiceBinder zonesFetchServiceBinder = (BuyerAccountZoneFetchService.BuyerZonesFetchServiceBinder) binder2;
             buyerAccountZoneFetchService = zonesFetchServiceBinder.getBuyerAccountZonesFetchService();
             buyerAccountZoneFetchService.setZonesFetchListener(SelectContactActivity.this);
             bound = true;
@@ -257,6 +256,7 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
         if (isFarmerAccount){
             Intent serviceIntent = new Intent(getApplicationContext(), FarmerAccountZonesFetchService.class);
             startService(serviceIntent);
+            bindService(serviceIntent, farmerServiceConnection, Context.BIND_AUTO_CREATE);
         }
 
 
@@ -286,6 +286,7 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
             UI.displayToast(getApplicationContext(), "Collection Zones Updated");
             stopService(new Intent(SelectContactActivity.this, BuyerAccountZoneFetchService.class));
         }
+
     }
 
     @Override
@@ -296,5 +297,11 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
             UI.displayToast(getApplicationContext(), "Collection Zones Updated");
             stopService(new Intent(SelectContactActivity.this, FarmerAccountZonesFetchService.class));
         }
+
+    }
+
+    @Override
+    public void onFarmerZonesFetchError(String errorMessage) {
+        UI.displayToast(getApplicationContext(), "Error " + errorMessage);
     }
 }

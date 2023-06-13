@@ -136,7 +136,9 @@ public class ProductsDataSyncService extends Service{
                         }
 
                         if (isFarmerAccount){
-                            productsSyncListener.onProductsSyncComplete();
+                            if (productsSyncListener != null){
+                                productsSyncListener.onProductsSyncComplete();
+                            }
                             stopSelf();
                         }
 
@@ -192,8 +194,10 @@ public class ProductsDataSyncService extends Service{
 
             }
         }
+        if (productsSyncListener != null){
+            productsSyncListener.onProductsSyncComplete();
+        }
 
-        productsSyncListener.onProductsSyncComplete();
         stopSelf();
 
     }
@@ -240,7 +244,10 @@ public class ProductsDataSyncService extends Service{
             });
         }
 
-        productsSyncListener.onProductsSyncComplete();
+        if (productsSyncListener != null){
+            productsSyncListener.onProductsSyncComplete();
+        }
+
         stopSelf();
     }
 
@@ -398,7 +405,11 @@ public class ProductsDataSyncService extends Service{
 //            productsDatabaseHelper.deleteProductFromDatabase(obsoleteProductId);
             Log.d("FarmConnect", "removeObsoleteProductsFromSyncedData: Product id " + obsoleteProductId + " deleted from database");
         }
-        productsSyncListener.onProductsSyncComplete();
+
+        if (productsSyncListener != null){
+            productsSyncListener.onProductsSyncComplete();
+        }
+
         stopSelf();
 
     }

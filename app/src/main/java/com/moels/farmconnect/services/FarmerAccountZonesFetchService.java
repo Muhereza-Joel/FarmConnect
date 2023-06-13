@@ -1,15 +1,10 @@
 package com.moels.farmconnect.services;
 
-import android.annotation.SuppressLint;
 import android.app.Service;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
-import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -22,20 +17,17 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.moels.farmconnect.models.Zone;
 import com.moels.farmconnect.utility_classes.ContactsDatabaseHelper;
-import com.moels.farmconnect.utility_classes.UI;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class FarmerAccountZonesFetchService extends Service {
     private static final int POLL_INTERVAL = 2000;
     private Handler handler;
     private Runnable runnable;
-    private ZonesFetchListener zonesFetchListener;
-    private final IBinder binder = new ZonesFetchServiceBinder();
+    private FarmerZonesFetchListener zonesFetchListener;
+    private final IBinder binder = new FarmerZonesFetchServiceBinder();
     private ContactsDatabaseHelper contactsDatabaseHelper;
     private ZonesDatabaseHelper zonesDatabaseHelper;
 
@@ -85,16 +77,21 @@ public class FarmerAccountZonesFetchService extends Service {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-                        UI.displayToast(getApplicationContext(), "Error retrieving zone data");
+                        if (zonesFetchListener != null){
+                            zonesFetchListener.onFarmerZonesFetchError(databaseError.getMessage());
+                        }
+
                     }
                 });
             }
 
         }else {
-            zonesFetchListener.onFarmerZonesFetchComplete();
+            if(zonesFetchListener != null) {
+                zonesFetchListener.onFarmerZonesFetchComplete();
+            }
             stopSelf();
             Log.d("FarmConnect", "No Contacts to pick");
-        }
+        }         
 
     }
 
@@ -120,7 +117,9 @@ public class FarmerAccountZonesFetchService extends Service {
                 zonesDatabaseHelper.addZoneToDatabase(zoneDetails);
             }
         }
-        zonesFetchListener.onFarmerZonesFetchComplete();
+        if (zonesFetchListener != null){
+            zonesFetchListener.onFarmerZonesFetchComplete();
+        }
         stopSelf();
     }
 
@@ -129,19 +128,20 @@ public class FarmerAccountZonesFetchService extends Service {
         return binder;
     }
 
-    public class ZonesFetchServiceBinder extends Binder {
+    public class FarmerZonesFetchServiceBinder extends Binder {
         public FarmerAccountZonesFetchService getFarmerAccountZonesFetchService(){
             return FarmerAccountZonesFetchService.this;
         }
 
     }
 
-    public void setZonesFetchListener(ZonesFetchListener zonesFetchListener){
+    public void setZonesFetchListener(FarmerZonesFetchListener zonesFetchListener){
         this.zonesFetchListener = zonesFetchListener;
     }
 
-    public interface ZonesFetchListener{
+    public interface FarmerZonesFetchListener {
         void onFarmerZonesFetchComplete();
+        void onFarmerZonesFetchError(String errorMessage);
     }
 
     @Override

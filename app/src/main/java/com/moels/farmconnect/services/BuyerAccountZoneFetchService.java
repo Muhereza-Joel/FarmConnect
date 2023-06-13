@@ -1,16 +1,12 @@
 package com.moels.farmconnect.services;
 
 import android.app.Service;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -26,16 +22,14 @@ import com.moels.farmconnect.utility_classes.UI;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class BuyerAccountZoneFetchService extends Service {
     private static final int POLL_INTERVAL = 2000;
     private Handler handler;
     private Runnable runnable;
-    private ZonesFetchListener zonesFetchListener;
-    private final IBinder binder = new ZonesFetchServiceBinder();
+    private BuyerZonesFetchListener zonesFetchListener;
+    private final IBinder binder = new BuyerZonesFetchServiceBinder();
     private ContactsDatabaseHelper contactsDatabaseHelper;
     private ZonesDatabaseHelper zonesDatabaseHelper;
     private SharedPreferences myAppPreferences;
@@ -66,28 +60,35 @@ public class BuyerAccountZoneFetchService extends Service {
     }
 
     private void retrieveZoneByPhoneNumber(String phoneNumber) {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
-        Query query = databaseReference.child("zones").child(phoneNumber);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<Zone> zoneList = new ArrayList<>();
+        if (!phoneNumber.equals("")) {
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+            Query query = databaseReference.child("zones").child(phoneNumber);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    List<Zone> zoneList = new ArrayList<>();
 
-                for (DataSnapshot zoneSnapshot : dataSnapshot.getChildren()) {
-                    // Exclude the retrieval of the products field
-                    Zone zone = zoneSnapshot.getValue(Zone.class);
-                    zoneList.add(zone);
+                    for (DataSnapshot zoneSnapshot : dataSnapshot.getChildren()) {
+                        // Exclude the retrieval of the products field
+                        Zone zone = zoneSnapshot.getValue(Zone.class);
+                        zoneList.add(zone);
+                    }
+
+                    // Process the zone list without the products field
+                    getDetailsForEveryZone(zoneList);
                 }
 
-                // Process the zone list without the products field
-                getDetailsForEveryZone(zoneList);
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    UI.displayToast(getApplicationContext(), "Error retrieving zone data");
+                }
+            });
+        }else {
+            if(zonesFetchListener != null) {
+                zonesFetchListener.onBuyerZonesFetchComplete();
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                UI.displayToast(getApplicationContext(), "Error retrieving zone data");
-            }
-        });
+            stopSelf();
+        }
     }
 
     private void getDetailsForEveryZone(List<Zone> zoneList) {
@@ -112,7 +113,10 @@ public class BuyerAccountZoneFetchService extends Service {
                 zonesDatabaseHelper.addZoneToDatabase(zoneDetails);
             }
         }
-        zonesFetchListener.onBuyerZonesFetchComplete();
+        if (zonesFetchListener != null){
+            zonesFetchListener.onBuyerZonesFetchComplete();
+        }
+
         stopSelf();
     }
 
@@ -121,18 +125,18 @@ public class BuyerAccountZoneFetchService extends Service {
         return binder;
     }
 
-    public class ZonesFetchServiceBinder extends Binder {
+    public class BuyerZonesFetchServiceBinder extends Binder {
         public BuyerAccountZoneFetchService getBuyerAccountZonesFetchService(){
             return BuyerAccountZoneFetchService.this;
         }
 
     }
 
-    public void setZonesFetchListener(ZonesFetchListener zonesFetchListener){
+    public void setZonesFetchListener(BuyerZonesFetchListener zonesFetchListener){
         this.zonesFetchListener = zonesFetchListener;
     }
 
-    public interface ZonesFetchListener{
+    public interface BuyerZonesFetchListener {
         void onBuyerZonesFetchComplete();
     }
 

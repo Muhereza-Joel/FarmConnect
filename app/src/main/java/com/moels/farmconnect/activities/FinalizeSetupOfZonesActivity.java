@@ -21,7 +21,7 @@ import com.moels.farmconnect.R;
 import com.moels.farmconnect.services.BuyerAccountZoneFetchService;
 import com.moels.farmconnect.services.FarmerAccountZonesFetchService;
 
-public class FinalizeSetupOfZonesActivity extends AppCompatActivity implements FarmerAccountZonesFetchService.ZonesFetchListener, BuyerAccountZoneFetchService.ZonesFetchListener {
+public class FinalizeSetupOfZonesActivity extends AppCompatActivity implements FarmerAccountZonesFetchService.FarmerZonesFetchListener, BuyerAccountZoneFetchService.BuyerZonesFetchListener {
     private FarmerAccountZonesFetchService farmerAccountZonesFetchService;
     private BuyerAccountZoneFetchService buyerAccountZoneFetchService;
     private boolean bound = false;
@@ -30,7 +30,7 @@ public class FinalizeSetupOfZonesActivity extends AppCompatActivity implements F
     private ServiceConnection farmerServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder binder) {
-            FarmerAccountZonesFetchService.ZonesFetchServiceBinder zonesFetchServiceBinder = (FarmerAccountZonesFetchService.ZonesFetchServiceBinder) binder;
+            FarmerAccountZonesFetchService.FarmerZonesFetchServiceBinder zonesFetchServiceBinder = (FarmerAccountZonesFetchService.FarmerZonesFetchServiceBinder) binder;
             farmerAccountZonesFetchService = zonesFetchServiceBinder.getFarmerAccountZonesFetchService();
             farmerAccountZonesFetchService.setZonesFetchListener(FinalizeSetupOfZonesActivity.this);
             bound = true;
@@ -45,7 +45,7 @@ public class FinalizeSetupOfZonesActivity extends AppCompatActivity implements F
     private ServiceConnection buyerServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder binder) {
-            BuyerAccountZoneFetchService.ZonesFetchServiceBinder zonesFetchServiceBinder = (BuyerAccountZoneFetchService.ZonesFetchServiceBinder) binder;
+            BuyerAccountZoneFetchService.BuyerZonesFetchServiceBinder zonesFetchServiceBinder = (BuyerAccountZoneFetchService.BuyerZonesFetchServiceBinder) binder;
             buyerAccountZoneFetchService = zonesFetchServiceBinder.getBuyerAccountZonesFetchService();
             buyerAccountZoneFetchService.setZonesFetchListener(FinalizeSetupOfZonesActivity.this);
             bound = true;
@@ -123,6 +123,11 @@ public class FinalizeSetupOfZonesActivity extends AppCompatActivity implements F
         }
         progressDialog.dismiss();
         stopService(new Intent(FinalizeSetupOfZonesActivity.this, FarmerAccountZonesFetchService.class));
+    }
+
+    @Override
+    public void onFarmerZonesFetchError(String errorMessage) {
+
     }
 
     private void setUpUIForDarkMode(){
