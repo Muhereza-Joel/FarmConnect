@@ -22,6 +22,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.moels.farmconnect.dialogs.ProgressDialog;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
+import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
 public class DeleteProductService extends Service {
 
@@ -29,6 +30,7 @@ public class DeleteProductService extends Service {
     private Handler handler;
     private Runnable runnable;
     private SharedPreferences sharedPreferences;
+    private ZonesDatabaseHelper zonesDatabaseHelper;
     public DeleteProductService() {
     }
 
@@ -37,6 +39,7 @@ public class DeleteProductService extends Service {
         super.onCreate();
         handler = new Handler();
         sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
+        zonesDatabaseHelper = new ZonesDatabaseHelper(getApplicationContext());
     }
 
     @Override
@@ -73,7 +76,7 @@ public class DeleteProductService extends Service {
     }
 
     private void deleteProductFromFirebase(String zoneID, String productID) {
-        String phoneNumber = sharedPreferences.getString("authenticatedPhoneNumber", "123456789");
+        String phoneNumber = zonesDatabaseHelper.getZoneOwner(zoneID);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference.child("zones").child(phoneNumber).child(zoneID).child("products").child(productID).removeValue()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

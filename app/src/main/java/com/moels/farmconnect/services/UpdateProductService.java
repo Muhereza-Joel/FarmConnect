@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
+import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +26,7 @@ public class UpdateProductService extends Service {
     private Handler handler;
     private Runnable runnable;
     private ProductsDatabaseHelper productsDatabaseHelper;
+    private ZonesDatabaseHelper zonesDatabaseHelper;
     private SharedPreferences sharedPreferences;
 
     public UpdateProductService() {
@@ -35,6 +37,7 @@ public class UpdateProductService extends Service {
         super.onCreate();
         handler = new Handler();
         productsDatabaseHelper = new ProductsDatabaseHelper(getApplicationContext());
+        zonesDatabaseHelper = new ZonesDatabaseHelper(getApplicationContext());
         sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
     }
 
@@ -57,7 +60,6 @@ public class UpdateProductService extends Service {
     }
 
     private void updateProduct(String productID, List<String> updatedProductDetails){
-        String phoneNumber = sharedPreferences.getString("authenticatedPhoneNumber", "123456789");
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
         Log.d("FarmConnect", "updateProduct: " + updatedProductDetails.size());
@@ -65,6 +67,7 @@ public class UpdateProductService extends Service {
         if (updatedProductDetails.size() > 0){
             Map<String, Object> updatedProduct = new HashMap<>();
             String zoneID = updatedProductDetails.get(0);
+            String phoneNumber = zonesDatabaseHelper.getZoneOwner(zoneID);
             updatedProduct.put("productName", updatedProductDetails.get(1));
             updatedProduct.put("quantity", updatedProductDetails.get(2));
             updatedProduct.put("unitPrice", updatedProductDetails.get(3));

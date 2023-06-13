@@ -78,6 +78,19 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    @SuppressLint("Range")
+    public String getZoneOwner(String zoneID){
+        String phoneNumber = "";
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT owner FROM zones WHERE remote_id = '"+ zoneID + "'", null);
+        if (cursor.moveToNext()){
+            do {
+                 phoneNumber = cursor.getString(cursor.getColumnIndex("owner"));
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
+        return phoneNumber;
+    }
+
 
     public List<String> getZoneIds(String phoneNumber){
         List<String> zonesRemoteIds = new ArrayList<>();

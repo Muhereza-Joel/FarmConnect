@@ -14,6 +14,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.moels.farmconnect.models.Product;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
+import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class ProductsUploadService extends Service {
     private Runnable runnable;
     private SharedPreferences sharedPreferences;
     private ProductsDatabaseHelper productsDatabaseHelper;
+    private ZonesDatabaseHelper zonesDatabaseHelper;
 
     public ProductsUploadService() {
     }
@@ -33,6 +35,7 @@ public class ProductsUploadService extends Service {
         handler = new Handler();
         sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
         productsDatabaseHelper = new ProductsDatabaseHelper(getApplicationContext());
+        zonesDatabaseHelper = new ZonesDatabaseHelper(getApplicationContext());
 
     }
 
@@ -56,7 +59,7 @@ public class ProductsUploadService extends Service {
 
     private void checkForProducts(String zoneID) {
         List<Product> products = productsDatabaseHelper.getAllProductsToUpload(zoneID);
-        String phoneNumber = sharedPreferences.getString("authenticatedPhoneNumber", "123456789");
+        String phoneNumber = zonesDatabaseHelper.getZoneOwner(zoneID);
         DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference().child("zones").child(phoneNumber).child(zoneID).child("products");
         for (Product product : products) {
             String productID = product.getProductID();

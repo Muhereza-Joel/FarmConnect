@@ -60,12 +60,12 @@ public class ProductsListFragment extends Fragment {
         }
         else if(isBuyerAccount){
             productCardItems = productsDatabaseHelper.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
-            observerFireBase();
+            observeFireBase();
         }
 
     }
 
-    public void observerFireBase(){
+    public void observeFireBase(){
         Log.d("FarmConnect", "observerFireBase: Observer is running");
         String zoneId = getActivity().getIntent().getStringExtra("zoneID");
         realTimeProductsObserver = new RealTimeProductsObserver(authenticatedPhoneNumber, zoneId);
@@ -203,7 +203,7 @@ public class ProductsListFragment extends Fragment {
         }
         else if(isBuyerAccount){
             productCardItems = productsDatabaseHelper.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
-            observerFireBase();
+            observeFireBase();
         }
 
         productsRecyclerViewAdapter = new ProductsRecyclerViewAdapter(productCardItems, getContext());
@@ -244,7 +244,10 @@ public class ProductsListFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        realTimeProductsObserver.stopListening();
-        Log.d("FarmConnect", "onDestroy: Observer is not running");
+        if (isBuyerAccount){
+            realTimeProductsObserver.stopListening();
+            Log.d("FarmConnect", "onDestroy: Observer is not running");
+        }
+
     }
 }
