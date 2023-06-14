@@ -31,7 +31,7 @@
     <string name="save_menu_item_text">Save</string>
     <string name="uint_price_hint">eg. 10000</string>
     <string name="unit_price_label">Unit Price</string>
-    <string name="price_label">Total Price</string>
+    <string name="price_label">Total Amount</string>
     <string name="auto_price_hint">0</string>
     <string name="product_quantity_hint">eg. 10bags or 50kgs</string>
     <string name="quantity_label">Quantity</string>

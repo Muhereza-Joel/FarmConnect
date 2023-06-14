@@ -117,10 +117,12 @@ public class ProductsListFragment extends Fragment {
 
                 boolean productUpdated = productsDatabaseHelper.updateProduct(productID, contentValues);
                 if (productUpdated){
-                    productCardItems = productsDatabaseHelper.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
-                    productsRecyclerViewAdapter = new ProductsRecyclerViewAdapter(productCardItems, getContext());
-                    productListRecyclerView.setAdapter(productsRecyclerViewAdapter);
-                    Log.d("FarmConnect", "Firebase Observer onProductChanged: ProductID " + productID + " updated");
+                    if (getActivity().getIntent().getStringExtra("zoneID") != null) {
+                        productCardItems = productsDatabaseHelper.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
+                        productsRecyclerViewAdapter = new ProductsRecyclerViewAdapter(productCardItems, getContext());
+                        productListRecyclerView.setAdapter(productsRecyclerViewAdapter);
+                        Log.d("FarmConnect", "Firebase Observer onProductChanged: ProductID " + productID + " updated");
+                    }
                 }
 
                 addClickListenerOnCards();
@@ -128,11 +130,13 @@ public class ProductsListFragment extends Fragment {
 
             @Override
             public void onProductRemoved(String productId) {
-                productsDatabaseHelper.deleteProductFromDatabase(productId);
-                productCardItems = productsDatabaseHelper.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
-                productsRecyclerViewAdapter = new ProductsRecyclerViewAdapter(productCardItems, getContext());
-                productListRecyclerView.setAdapter(productsRecyclerViewAdapter);
-                addClickListenerOnCards();
+                if (getActivity().getIntent().getStringExtra("zoneID") != null) {
+                    productsDatabaseHelper.deleteProductFromDatabase(productId);
+                    productCardItems = productsDatabaseHelper.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
+                    productsRecyclerViewAdapter = new ProductsRecyclerViewAdapter(productCardItems, getContext());
+                    productListRecyclerView.setAdapter(productsRecyclerViewAdapter);
+                    addClickListenerOnCards();
+                }
 
                 if (view != null) {
                     if (productCardItems.size() > 0) {
