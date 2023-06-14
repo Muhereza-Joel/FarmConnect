@@ -92,10 +92,13 @@ public class ProductsListFragment extends Fragment {
 
                 boolean rowCreated = productsDatabaseHelper.addProductToDatabase(productDetails);
                 if (rowCreated){
-                    productCardItems = productsDatabaseHelper.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
-                    productsRecyclerViewAdapter = new ProductsRecyclerViewAdapter(productCardItems, getContext());
-                    productListRecyclerView.setAdapter(productsRecyclerViewAdapter);
-                    Log.d("FarmConnect", "Firebase Observer onProductAdded: ProductID " + product.getProductID() + " added to database");
+                    if (getActivity().getIntent().getStringExtra("zoneID") != null){
+                        productCardItems = productsDatabaseHelper.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
+                        productsRecyclerViewAdapter = new ProductsRecyclerViewAdapter(productCardItems, getContext());
+                        productListRecyclerView.setAdapter(productsRecyclerViewAdapter);
+                        Log.d("FarmConnect", "Firebase Observer onProductAdded: ProductID " + product.getProductID() + " added to database");
+                    }
+
                 }
 
                 addClickListenerOnCards();
