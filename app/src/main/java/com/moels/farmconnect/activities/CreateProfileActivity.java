@@ -27,6 +27,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -72,7 +73,7 @@ public class CreateProfileActivity extends AppCompatActivity {
     RadioGroup accountTypeRadioGroup;
     private RadioButton buyerRadioButton, farmerRadioButton;
     private Spinner genderSpinner;
-
+    private LinearLayout profilePicImageViewContainer;
     private ProgressDialog progressDialog;
     Uri croppedImageUri;
 
@@ -353,6 +354,7 @@ public class CreateProfileActivity extends AppCompatActivity {
         farmerRadioButton = findViewById(R.id.farmer_user_type_radio_button);
         genderSpinner = findViewById(R.id.gender);
         accountTypeRadioGroup = findViewById(R.id.use_type_radio_group);
+        profilePicImageViewContainer = findViewById(R.id.profile_pic_image_view_container);
     }
 
     private void setUpStatusBar() {
@@ -364,6 +366,7 @@ public class CreateProfileActivity extends AppCompatActivity {
             int currentMode = uiModeManager.getNightMode();
             if (currentMode == UiModeManager.MODE_NIGHT_YES) {
                 window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorBlack));
+                profilePicImageViewContainer.setBackgroundColor(ContextCompat.getColor(this, R.color.colorBlack));
             }else {
                 window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
             }

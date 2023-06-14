@@ -203,45 +203,49 @@ public class ProductsDataSyncService extends Service{
     }
 
     private void getAllProductsForTheFarmer(String phoneNumber) {
-        List<String> zoneIDs = zonesDatabaseHelper.getZoneIds();
+        List<String> registeredContactList = contactsDatabaseHelper.getAllRegisteredContacts();
+        for (String registeredContact : registeredContactList) {
+            List<String> zoneIDs = zonesDatabaseHelper.getZoneIds();
+            for (String zoneID : zoneIDs) {
+                Log.d("FarmConnect", "getProductsFromDatabase: " + zoneID);
+                productsReference = FirebaseDatabase.getInstance().getReference().child("zones").child(registeredContact).child(zoneID).child("products");
 
-        for (String zoneID : zoneIDs) {
-            Log.d("FarmConnect", "getProductsFromDatabase: " + zoneID);
-            productsReference = FirebaseDatabase.getInstance().getReference().child("zones").child(phoneNumber).child(zoneID).child("products");
+                productsReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot productSnapshot : snapshot.getChildren()) {
+                            String owner = productSnapshot.child("owner").getValue(String.class);
+                            Log.d("FarmConnect", "onDataChange: " + phoneNumber);
+                            if (owner != null && owner.equals(phoneNumber)) {
+                                List<String> productDetails = new ArrayList<>();
 
-            productsReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for (DataSnapshot productSnapshot : snapshot.getChildren()) {
-                        String owner = productSnapshot.child("owner").getValue(String.class);
-                        if (owner != null && owner.equals(phoneNumber)) {
-                            List<String> productDetails = new ArrayList<>();
+                                productDetails.add(productSnapshot.child("productID").getValue(String.class));
+                                productDetails.add(productSnapshot.child("productName").getValue(String.class));
+                                productDetails.add(productSnapshot.child("quantity").getValue(String.class));
+                                productDetails.add(productSnapshot.child("unitPrice").getValue(String.class));
+                                productDetails.add(productSnapshot.child("price").getValue(String.class));
+                                productDetails.add(productSnapshot.child("imageUrl").getValue(String.class));
+                                productDetails.add("true");
+                                productDetails.add("false");
+                                productDetails.add(owner);
+                                productDetails.add(productSnapshot.child("createDate").getValue(String.class));
+                                productDetails.add(productSnapshot.child("createTime").getValue(String.class));
+                                productDetails.add(productSnapshot.child("status").getValue(String.class));
+                                productDetails.add(productSnapshot.child("zoneID").getValue(String.class));
 
-                            productDetails.add(productSnapshot.child("productID").getValue(String.class));
-                            productDetails.add(productSnapshot.child("productName").getValue(String.class));
-                            productDetails.add(productSnapshot.child("quantity").getValue(String.class));
-                            productDetails.add(productSnapshot.child("unitPrice").getValue(String.class));
-                            productDetails.add(productSnapshot.child("price").getValue(String.class));
-                            productDetails.add(productSnapshot.child("imageUrl").getValue(String.class));
-                            productDetails.add("true");
-                            productDetails.add("false");
-                            productDetails.add(owner);
-                            productDetails.add(productSnapshot.child("createDate").getValue(String.class));
-                            productDetails.add(productSnapshot.child("createTime").getValue(String.class));
-                            productDetails.add(productSnapshot.child("status").getValue(String.class));
-                            productDetails.add(productSnapshot.child("zoneID").getValue(String.class));
-
-                            productsDatabaseHelper.addProductToDatabase(productDetails);
-                            Log.d("FarmConnect", "onDataChange: Product id " + productDetails.get(0) + " Added to database");
+                                productsDatabaseHelper.addProductToDatabase(productDetails);
+                                Log.d("FarmConnect", "onDataChange: Product id " + productDetails.get(0) + " Added to database");
+                            }
                         }
                     }
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-                }
-            });
+                    }
+                });
+            }
+
         }
 
         if (productsSyncListener != null){
