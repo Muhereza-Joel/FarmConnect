@@ -193,9 +193,10 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
                 @SuppressLint("Range") String productQuantity = cursor.getString(cursor.getColumnIndex("quantity"));
                 @SuppressLint("Range") String createTime = cursor.getString(cursor.getColumnIndex("time"));
                 @SuppressLint("Range") String status = cursor.getString(cursor.getColumnIndex("status"));
+                @SuppressLint("Range") String productOwner = cursor.getString(cursor.getColumnIndex("owner"));
 
                 if (!TextUtils.isEmpty(imageUrl) || !TextUtils.isEmpty(productName) || !TextUtils.isEmpty(productQuantity)) {
-                    ProductCardItem productCardItem = new ProductCardItem(productRemoteID, productName, productQuantity, imageUrl, createTime, status);
+                    ProductCardItem productCardItem = new ProductCardItem(productRemoteID, productName, productQuantity, imageUrl, createTime, status, productOwner);
                     items.add(productCardItem);
                 }
             } while (cursor.moveToNext());

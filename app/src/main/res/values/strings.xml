@@ -38,4 +38,8 @@
     <string name="product_inputs_hint">eg. coffee, beans, potatoes</string>
     <string name="product_input_label">Product Name</string>
     <string name="alt_text_for_product_image_view">Product Image</string>
+    <string name="products_to_collect">Products To Collect</string>
+    <string name="description">Description</string>
+    <string name="zone_location">Location such district,village</string>
+    <string name="zone_name">Zone Name</string>
 </resources>

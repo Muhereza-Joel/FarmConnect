@@ -140,10 +140,22 @@ public class ProductDetailsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = new Intent(ProductDetailsActivity.this, AddProductToZoneActivity.class);
-        intent.putExtra("zoneID", getIntent().getStringExtra("zoneID"));
-        intent.putExtra("zoneName", getIntent().getStringExtra("zoneName"));
-        startActivity(intent);
-        finish();
+        if (isBuyerAccount){
+            Intent intent = new Intent(ProductDetailsActivity.this, ProductsInAzoneActivity.class);
+            intent.putExtra("zoneID", getIntent().getStringExtra("zoneID"));
+            intent.putExtra("zoneName", getIntent().getStringExtra("zoneName"));
+            startActivity(intent);
+            finish();
+        }
+
+        if (isFarmerAccount){
+            Intent intent = new Intent(ProductDetailsActivity.this, AddProductToZoneActivity.class);
+            intent.putExtra("zoneID", getIntent().getStringExtra("zoneID"));
+            intent.putExtra("zoneName", getIntent().getStringExtra("zoneName"));
+            startActivity(intent);
+            finish();
+        }
+
+
     }
 }

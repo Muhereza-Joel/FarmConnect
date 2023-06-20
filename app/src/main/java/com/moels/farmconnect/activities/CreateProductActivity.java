@@ -257,6 +257,8 @@ public class CreateProductActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 String ex = e.getLocalizedMessage();
+                progressDialog.dismiss();
+                UI.displayToast(getApplicationContext(), "An Error Occurred");
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override

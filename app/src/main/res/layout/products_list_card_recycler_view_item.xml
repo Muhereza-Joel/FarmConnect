@@ -11,7 +11,9 @@
         android:layout_height="wrap_content"
         android:background="?android:attr/colorBackground"
         android:orientation="horizontal"
-        android:padding="15dp">
+        android:paddingTop="15dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp">
 
         <ImageView
             android:id="@+id/photoImageView"
@@ -70,7 +72,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="right"
                 android:maxLength="20"
-                android:text="Not Picked"
+                android:text="available"
                 android:textAppearance="?android:textAppearanceMedium"
                 android:textColor="@color/colorPrimaryTeal"
                 android:textSize="16sp"
@@ -84,8 +86,40 @@
                 android:text=""
                 android:visibility="gone" />
 
-        </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/owner_tag">
 
+                <ImageView
+                    android:id="@+id/product_creator_image_view"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/avatar"
+                    android:paddingStart="10dp"
+                    android:contentDescription="@string/alt_text_for_product_image_view"/>
+
+                <TextView
+                    android:id="@+id/owner_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:maxLength="10"
+                    android:paddingTop="5dp"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:text="unknown"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="16sp"
+                    android:textStyle="italic|bold" />
+            </LinearLayout>
+
+
+
+        </LinearLayout>
 
     </LinearLayout>
 

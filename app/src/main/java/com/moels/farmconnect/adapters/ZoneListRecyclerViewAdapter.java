@@ -12,8 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.models.ZoneCardItem;
+import com.moels.farmconnect.utility_classes.ContactsDatabaseHelper;
 
 import java.util.List;
 
@@ -22,10 +24,12 @@ public class ZoneListRecyclerViewAdapter extends RecyclerView.Adapter<ZoneListRe
     private List<ZoneCardItem> itemList;
     private Context context;
     private Listener listener;
+    private ContactsDatabaseHelper contactsDatabaseHelper;
 
     public ZoneListRecyclerViewAdapter(List<ZoneCardItem> itemList, Context context) {
         this.itemList = itemList;
         this.context = context;
+        contactsDatabaseHelper = new ContactsDatabaseHelper(context);
     }
 
     @NonNull
@@ -51,6 +55,8 @@ public class ZoneListRecyclerViewAdapter extends RecyclerView.Adapter<ZoneListRe
         holder.zoneLocationTextView.setText(zoneCardItem.getLocation());
         holder.createTimeTextView.setText(zoneCardItem.getCreateTime());
         holder.statusTextView.setText(zoneCardItem.getStatus());
+        holder.zoneCreatorTextView.setText(contactsDatabaseHelper.getOwnerUsername(zoneCardItem.getOwner()));
+        Glide.with(context).load(contactsDatabaseHelper.getOwnerImageUrl(zoneCardItem.getOwner())).circleCrop().into(holder.zoneOwnerImageView);
     }
     //TODO set card background for light and dark mode
 
@@ -64,8 +70,8 @@ public class ZoneListRecyclerViewAdapter extends RecyclerView.Adapter<ZoneListRe
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView zoneLogoImageView;
-        TextView zoneNameTextView, zoneLocationTextView, createTimeTextView, statusTextView, _idTextView;
+        ImageView zoneLogoImageView, zoneOwnerImageView;
+        TextView zoneNameTextView, zoneLocationTextView, createTimeTextView, statusTextView, _idTextView, zoneCreatorTextView;
         CardView zoneListItemCardView;
 
         public ViewHolder(@NonNull View itemView) {
@@ -78,6 +84,8 @@ public class ZoneListRecyclerViewAdapter extends RecyclerView.Adapter<ZoneListRe
             createTimeTextView = itemView.findViewById(R.id.create_time_text_view);
             statusTextView = itemView.findViewById(R.id.status_text_view);
             _idTextView = itemView.findViewById(R.id.zone_id);
+            zoneCreatorTextView = itemView.findViewById(R.id.zone_owner_text_view);
+            zoneOwnerImageView = itemView.findViewById(R.id.zone_creator_image_view);
         }
     }
 

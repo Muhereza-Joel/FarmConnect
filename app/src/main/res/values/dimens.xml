@@ -1,4 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="fab_margin">20dp</dimen>
+
+    <dimen name="layout_padding_top_20">20dp</dimen>
+    <dimen name="layout_padding_start_20">20dp</dimen>
+    <dimen name="layout_padding_end_20">20dp</dimen>
+    <dimen name="layout_padding_bottom_20">20dp</dimen>
+    <dimen name="layout_padding_20">20dp</dimen>
+    <dimen name="layout_padding_10">10dp</dimen>
+
+    <dimen name="layout_margin_top_20">20dp</dimen>
+    <dimen name="layout_margin_start_20">20dp</dimen>
+    <dimen name="layout_margin_end_20">20dp</dimen>
+    <dimen name="layout_margin_bottom_20">20dp</dimen>
+    <dimen name="layout_margin_20">20dp</dimen>
+    <dimen name="layout_margin_top_10">10dp</dimen>
+    <dimen name="layout_margin_start_10">10dp</dimen>
+    <dimen name="layout_margin_end_10">10dp</dimen>
+    <dimen name="layout_margin_bottom_10">10dp</dimen>
+    <dimen name="layout_margin_10">10dp</dimen>
+
+    <dimen name="edit_text_height">48dp</dimen>
+    <dimen name="text_view_height">48dp</dimen>
+
+    <dimen name="text_size_16">16sp</dimen>
+    <dimen name="text_size_20">20sp</dimen>
+    <dimen name="text_size_25">25sp</dimen>
+
 </resources>

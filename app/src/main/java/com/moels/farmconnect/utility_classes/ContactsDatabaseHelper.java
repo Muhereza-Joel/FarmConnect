@@ -79,6 +79,33 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
         return rowCreated;
     }
 
+    public String getOwnerUsername(String phoneNumber){
+        String productOwnerUsername = "~self~";
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT username FROM contacts WHERE phoneNumber = '" + phoneNumber +"'", null);
+        if (cursor.moveToNext()){
+            do {
+                @SuppressLint("Range") String username = cursor.getString(cursor.getColumnIndex("username"));
+                if (!(TextUtils.isEmpty(username))){
+                    productOwnerUsername = username;
+                }
+            }while (cursor.moveToNext());
+        }
+        return productOwnerUsername;
+    }
+
+    public String getOwnerImageUrl(String phoneNumber){
+        String ownerImageUrl = "";
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT imageUrl FROM contacts WHERE phoneNumber = '" + phoneNumber +"'", null);
+        if (cursor.moveToNext()){
+            do {
+                @SuppressLint("Range") String imageUrl = cursor.getString(cursor.getColumnIndex("imageUrl"));
+                if (!(TextUtils.isEmpty(imageUrl))){
+                    ownerImageUrl = imageUrl;
+                }
+            }while (cursor.moveToNext());
+        }
+        return ownerImageUrl;
+    }
 
     public List<String> getAllRegisteredContacts(){
         List<String> phoneNumbers = new ArrayList<>();

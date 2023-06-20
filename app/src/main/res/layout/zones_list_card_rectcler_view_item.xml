@@ -83,6 +83,37 @@
                 android:text=""
                 android:visibility="gone" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/owner_tag">
+
+                <ImageView
+                    android:id="@+id/zone_creator_image_view"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/avatar"
+                    android:paddingStart="10dp"
+                    android:contentDescription="@string/alt_text_for_product_image_view"/>
+
+                <TextView
+                    android:id="@+id/zone_owner_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:maxLength="10"
+                    android:paddingTop="5dp"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:text="~self~"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="16sp"
+                    android:textStyle="italic|bold" />
+            </LinearLayout>
+
         </LinearLayout>
 
 

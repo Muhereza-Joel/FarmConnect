@@ -53,7 +53,7 @@
             android:textAppearance="?android:textAppearanceMedium"
             android:textSize="16sp"
             android:gravity="center"
-            android:textColor="@color/colorPrimaryTeal"
+            android:background="@drawable/owner_tag"
             android:textStyle="bold|italic" />
 
     </LinearLayout>

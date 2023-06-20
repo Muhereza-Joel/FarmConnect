@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.models.ProductCardItem;
+import com.moels.farmconnect.utility_classes.ContactsDatabaseHelper;
 
 import java.util.List;
 
@@ -23,11 +24,13 @@ public class ProductsRecyclerViewAdapter extends RecyclerView.Adapter<ProductsRe
     private List<ProductCardItem> productCardItems;
     private Context context;
     private Listener listener;
+    private ContactsDatabaseHelper contactsDatabaseHelper;
 
 
     public ProductsRecyclerViewAdapter(List<ProductCardItem> productCardItems, Context context) {
         this.productCardItems = productCardItems;
         this.context = context;
+        contactsDatabaseHelper = new ContactsDatabaseHelper(context);
     }
 
     @NonNull
@@ -56,6 +59,8 @@ public class ProductsRecyclerViewAdapter extends RecyclerView.Adapter<ProductsRe
         holder.productQuantityTextView.setText(productCardItem.getQuantity());
         holder.createTimeTextView.setText(productCardItem.getCreateTime());
         holder.statusTextView.setText(productCardItem.getStatus());
+        holder.ownerTextView.setText(contactsDatabaseHelper.getOwnerUsername(productCardItem.getOwner()));
+        Glide.with(context).load(contactsDatabaseHelper.getOwnerImageUrl(productCardItem.getOwner())).circleCrop().into(holder.productCreatorImageView);
 
     }
 
@@ -72,8 +77,8 @@ public class ProductsRecyclerViewAdapter extends RecyclerView.Adapter<ProductsRe
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView productImageView;
-        TextView productNameTextView, productQuantityTextView, createTimeTextView, statusTextView, _idTextView;
+        ImageView productImageView, productCreatorImageView;
+        TextView productNameTextView, productQuantityTextView, createTimeTextView, statusTextView, _idTextView, ownerTextView;
         CardView productListItemCardView;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -85,6 +90,8 @@ public class ProductsRecyclerViewAdapter extends RecyclerView.Adapter<ProductsRe
             statusTextView = itemView.findViewById(R.id.status_text_view);
             _idTextView = itemView.findViewById(R.id.product_id);
             productListItemCardView = itemView.findViewById(R.id.product_list_item_card_view);
+            ownerTextView = itemView.findViewById(R.id.owner_text_view);
+            productCreatorImageView = itemView.findViewById(R.id.product_creator_image_view);
 
         }
         //TODO set card background for light and dark mode

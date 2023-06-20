@@ -18,72 +18,70 @@
             layout="@layout/toolbar"/>
 
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/add_zone_header"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorPrimary"
             android:gravity="center"
-            android:paddingLeft="30dp"
-            android:paddingTop="30dp"
-            android:paddingRight="30dp"
-            android:paddingBottom="30dp"
+            android:padding="@dimen/layout_padding_20"
             android:text="@string/add_zone_activity_header"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.Material3.HeadlineLarge"
             android:textColor="@color/colorWhite"
-            android:textSize="25sp" />
+            android:textSize="@dimen/text_size_25" />
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/zone_name_edit_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="10dp"
+            android:layout_height="@dimen/edit_text_height"
+            android:layout_marginStart="@dimen/layout_margin_start_10"
+            android:layout_marginTop="@dimen/layout_margin_top_10"
+            android:layout_marginEnd="@dimen/layout_margin_end_10"
             android:background="@drawable/edit_text_border"
-            android:hint="Zone Name"
+            android:hint="@string/zone_name"
             android:inputType="text"
             android:maxLength="40"
-            android:padding="10dp" />
+            android:padding="@dimen/layout_padding_10" />
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/location_edit_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_height="@dimen/edit_text_height"
+            android:layout_marginStart="@dimen/layout_margin_start_10"
+            android:layout_marginTop="@dimen/layout_margin_top_10"
+            android:layout_marginEnd="@dimen/layout_margin_end_10"
             android:background="@drawable/edit_text_border"
-            android:hint="Location such district,village"
+            android:hint="@string/zone_location"
             android:inputType="text"
             android:maxLength="40"
-            android:padding="10dp" />
+            android:padding="@dimen/layout_padding_10" />
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/products_to_collect_edit_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_height="@dimen/edit_text_height"
+            android:layout_marginStart="@dimen/layout_margin_start_10"
+            android:layout_marginTop="@dimen/layout_margin_top_10"
+            android:layout_marginEnd="@dimen/layout_margin_end_10"
             android:background="@drawable/edit_text_border"
-            android:hint="Products To Collect"
+            android:hint="@string/products_to_collect"
             android:maxLength="40"
             android:inputType="text"
-            android:padding="10dp" />
+            android:padding="@dimen/layout_padding_10" />
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/description_edit_text"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_margin_start_10"
+            android:layout_marginTop="@dimen/layout_margin_top_10"
+            android:layout_marginEnd="@dimen/layout_margin_end_10"
             android:background="@drawable/edit_text_border"
             android:gravity="top"
-            android:hint="Description"
+            android:hint="@string/description"
             android:inputType="textAutoCorrect|textMultiLine"
             android:lines="8"
-            android:padding="10dp" />
+            android:padding="@dimen/layout_padding_10" />
 
     </LinearLayout>
 

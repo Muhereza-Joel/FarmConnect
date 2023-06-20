@@ -26,6 +26,11 @@
         <item name="android:textColor">@color/colorWhite</item>
         <item name="android:textStyle">normal</item>
     </style>
+    
+    <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxStrokeColor">@color/colorPrimary</item>
+        <item name="boxStrokeWidth">1dp</item>
+    </style>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <item name="android:textColorSecondary">@color/colorWhite</item>

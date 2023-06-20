@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,6 +42,7 @@ public class AddNewZoneActivity extends AppCompatActivity {
     private EditText zoneNameEditText, locationEditText, productsToCollectEditText, descriptionEditText;
     private ZonesDatabaseHelper zonesDatabaseHelper;
     private SharedPreferences myAppPreferences;
+    private TextView zoneHeaderTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +64,7 @@ public class AddNewZoneActivity extends AppCompatActivity {
         zoneNameEditText = findViewById(R.id.zone_name_edit_text);
         productsToCollectEditText = findViewById(R.id.products_to_collect_edit_text);
         descriptionEditText = findViewById(R.id.description_edit_text);
+        zoneHeaderTextView = findViewById(R.id.add_zone_header);
 
     }
     private void setUpStatusBar() {
@@ -73,6 +76,7 @@ public class AddNewZoneActivity extends AppCompatActivity {
             int currentMode = uiModeManager.getNightMode();
             if (currentMode == UiModeManager.MODE_NIGHT_YES) {
                 window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorBlack));
+                zoneHeaderTextView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorBlack));
             }else {
                 window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
             }
@@ -105,6 +109,7 @@ public class AddNewZoneActivity extends AppCompatActivity {
                     UI.displaySnackBar(getApplicationContext(), parentView, "Collection Zone Created!!");
                     Intent uploadZoneService = new Intent(AddNewZoneActivity.this, ZoneUploadService.class);
                     startService(uploadZoneService);
+                    saveFirstZoneCreatedPreference(myAppPreferences);
                 }
             }
         }
@@ -179,4 +184,21 @@ public class AddNewZoneActivity extends AppCompatActivity {
         descriptionEditText.setText("");
     }
 
+    private void saveFirstZoneCreatedPreference(SharedPreferences sharedPreferences){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("FirstZoneCreated", true);
+        editor.apply();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        hideAddZoneBanner(myAppPreferences);
+    }
+
+    private void hideAddZoneBanner(SharedPreferences sharedPreferences){
+        if (sharedPreferences.getBoolean("FirstZoneCreated", false)){
+            UI.hide(zoneHeaderTextView);
+        }
+    }
 }
