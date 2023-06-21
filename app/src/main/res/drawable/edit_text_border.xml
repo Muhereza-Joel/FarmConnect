@@ -6,4 +6,8 @@
         android:width="1dp"
         android:color="@color/colorPrimaryTeal" />
     <corners android:radius="8dp"/>
+    <padding android:top="10dp"
+        android:bottom="10dp"
+        android:left="10dp"
+        android:right="10dp"/>
 </shape>

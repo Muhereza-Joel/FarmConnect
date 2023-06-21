@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent"
     android:orientation="vertical"
@@ -30,58 +31,80 @@
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/text_size_25" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/zone_name_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/edit_text_height"
-            android:layout_marginStart="@dimen/layout_margin_start_10"
-            android:layout_marginTop="@dimen/layout_margin_top_10"
-            android:layout_marginEnd="@dimen/layout_margin_end_10"
-            android:background="@drawable/edit_text_border"
-            android:hint="@string/zone_name"
-            android:inputType="text"
-            android:maxLength="40"
-            android:padding="@dimen/layout_padding_10" />
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/location_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/edit_text_height"
-            android:layout_marginStart="@dimen/layout_margin_start_10"
-            android:layout_marginTop="@dimen/layout_margin_top_10"
-            android:layout_marginEnd="@dimen/layout_margin_end_10"
-            android:background="@drawable/edit_text_border"
-            android:hint="@string/zone_location"
-            android:inputType="text"
-            android:maxLength="40"
-            android:padding="@dimen/layout_padding_10" />
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/products_to_collect_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/edit_text_height"
-            android:layout_marginStart="@dimen/layout_margin_start_10"
-            android:layout_marginTop="@dimen/layout_margin_top_10"
-            android:layout_marginEnd="@dimen/layout_margin_end_10"
-            android:background="@drawable/edit_text_border"
-            android:hint="@string/products_to_collect"
-            android:maxLength="40"
-            android:inputType="text"
-            android:padding="@dimen/layout_padding_10" />
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/description_edit_text"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/layout_margin_start_10"
-            android:layout_marginTop="@dimen/layout_margin_top_10"
             android:layout_marginEnd="@dimen/layout_margin_end_10"
-            android:background="@drawable/edit_text_border"
-            android:gravity="top"
-            android:hint="@string/description"
-            android:inputType="textAutoCorrect|textMultiLine"
-            android:lines="8"
-            android:padding="@dimen/layout_padding_10" />
+            android:layout_marginBottom="@dimen/layout_margin_bottom_10"
+            android:hint="@string/zone_name">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/zone_name_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edit_text_height"
+                android:background="@drawable/edit_text_border"
+                android:inputType="text"
+                android:maxLength="40" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_margin_start_10"
+            android:layout_marginEnd="@dimen/layout_margin_end_10"
+            android:layout_marginBottom="@dimen/layout_margin_bottom_10"
+            android:hint="@string/zone_location">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/location_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edit_text_height"
+                android:background="@drawable/edit_text_border"
+                android:inputType="text"
+                android:maxLength="40" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_margin_start_10"
+            android:layout_marginEnd="@dimen/layout_margin_end_10"
+            android:layout_marginBottom="@dimen/layout_margin_bottom_10"
+            android:hint="@string/products_to_collect">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/products_to_collect_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/edit_text_height"
+                android:background="@drawable/edit_text_border"
+                android:maxLength="40"
+                android:inputType="text" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_margin_start_10"
+            android:layout_marginEnd="@dimen/layout_margin_end_10"
+            android:layout_marginBottom="@dimen/layout_margin_bottom_10"
+            android:hint="@string/description">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/description_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edit_text_border"
+                android:gravity="top"
+                android:inputType="textAutoCorrect|textMultiLine"
+                android:lines="8" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 

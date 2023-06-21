@@ -20,7 +20,7 @@ public class UI {
     public static void hide(View view){
         View ProgressBar = null;
         if (view == ProgressBar) view.setVisibility(View.GONE);
-        else view.setVisibility(View.INVISIBLE);
+        else view.setVisibility(View.GONE);
     }
 
     public static void setUpActionBar(ActionBar actionBar, int drawableID, String title, boolean displayBackArrow){

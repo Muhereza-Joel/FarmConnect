@@ -235,24 +235,13 @@ public class CreateProductActivity extends AppCompatActivity {
     }
 
     private void uploadProductImage(){
-        productImageView.setDrawingCacheEnabled(true);
-        productImageView.buildDrawingCache();
-
-        Bitmap bitmap = ((BitmapDrawable)productImageView.getDrawable()).getBitmap();
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-        byte[] data = byteArrayOutputStream.toByteArray();
+        enableDrawingCacheOnImageView();
 
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         StorageReference storageReference = firebaseStorage.getReference();
+        StorageReference imageReference = storageReference.child("ProductImages").child(sharedPreferences.getString("authenticatedPhoneNumber", "123456789")).child(generateImageName());
 
-        String timestamp = String.valueOf(System.currentTimeMillis());
-        String randomString = UUID.randomUUID().toString();
-        String imageName = timestamp + "_" + randomString + ".png";
-
-        StorageReference imageReference = storageReference.child("ProductImages").child(sharedPreferences.getString("authenticatedPhoneNumber", "123456789")).child(imageName);
-
-        UploadTask uploadTask = imageReference.putBytes(data);
+        UploadTask uploadTask = imageReference.putBytes(getImageFromView());
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
@@ -276,9 +265,10 @@ public class CreateProductActivity extends AppCompatActivity {
                             resetUI();
                             View parentView = findViewById(R.id.parent);
                             UI.displaySnackBar(getApplicationContext(), parentView, "Product Added Successfully!!");
+                            if (getIntent().getStringExtra("zoneID") != null){
+                                startProductsUploadService(getIntent().getStringExtra("zoneID"));
+                            }
 
-                            String zoneID = getIntent().getStringExtra("zoneID");
-                            startProductsUploadService(zoneID);
 
                         }
                     }
@@ -288,32 +278,18 @@ public class CreateProductActivity extends AppCompatActivity {
         });
     }
 
-    private void startProductsUploadService(String zoneID) {
-        if (zoneID != null && !zoneID.isEmpty()) {
-            Intent serviceIntent = new Intent(getApplicationContext(), ProductsUploadService.class);
-            serviceIntent.putExtra("zoneID", zoneID);
-            startService(serviceIntent);
-        }
-    }
-
-
     private boolean validateViews(){
         boolean validated = true;
-
         Drawable productImageDrawable = productImageView.getDrawable();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (productImageDrawable instanceof VectorDrawable) {
                 UI.displayToast(getApplicationContext(), "Please select an image");
                 validated = false;
-            } else if (TextUtils.isEmpty(productNameEditText.getText().toString())
-                    || TextUtils.isEmpty(productQuantityEditText.getText().toString())
-                    || TextUtils.isEmpty(productPriceTextView.getText().toString())
-                    || TextUtils.isEmpty(productUnitPriceEditText.getText().toString())){
-
+            } else if (!validateEditTexts()){
                     UI.displayToast(getApplicationContext(), "All fields are required");
                     validated = false;
 
-            }else if (quantityUnitsSpinner.getSelectedItem().toString().equals("Choose Unit")){
+            }else if (!validateSelectedUnit()){
                 UI.displayToast(getApplicationContext(), "Please Select A Unit");
                 validated = false;
             }
@@ -321,48 +297,76 @@ public class CreateProductActivity extends AppCompatActivity {
         return validated;
     }
 
+    private boolean validateEditTexts(){
+        boolean validated = true;
+        if (TextUtils.isEmpty(productNameEditText.getText().toString())
+                || TextUtils.isEmpty(productQuantityEditText.getText().toString())
+                || TextUtils.isEmpty(productPriceTextView.getText().toString())
+                || TextUtils.isEmpty(productUnitPriceEditText.getText().toString())){
+            validated = false;
+
+        }
+        return validated;
+    }
+
+    private boolean validateSelectedUnit(){
+        boolean validated = true;
+        if (quantityUnitsSpinner.getSelectedItem().toString().equals("Choose Unit")){
+            validated = false;
+        }
+        return validated;
+    }
+
+    private void enableDrawingCacheOnImageView(){
+        productImageView.setDrawingCacheEnabled(true);
+        productImageView.buildDrawingCache();
+    }
+
+    private String generateImageName(){
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        String randomString = UUID.randomUUID().toString();
+        return (timestamp + "_" + randomString + ".png");
+
+    }
+
+    private byte[] getImageFromView(){
+        Bitmap bitmap = ((BitmapDrawable)productImageView.getDrawable()).getBitmap();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] data = byteArrayOutputStream.toByteArray();
+        return data;
+    }
+
     private List<String> getValuesFromUI(String imageUrl){
         List<String> values = new ArrayList<>();
-
-        String productRemoteId = generateUniqueID();
-        String productName = productNameEditText.getText().toString();
-
-        String quantity = productQuantityEditText.getText().toString();
-        String unit = quantityUnitsSpinner.getSelectedItem().toString();
-        String productQuantity = quantity + " " + unit;
-
-        String productUnitPrice = productUnitPriceEditText.getText().toString();
-        String productPrice = productPriceTextView.getText().toString();
-        String url = imageUrl;
         String uploaded = "false";
         String updated = "false";
-        String owner = sharedPreferences.getString("authenticatedPhoneNumber", "123456789");
-        String date = getCurrentDate();
-        String time = getCurrentTime();
         String status = "available";
-        String zoneID = getIntent().getStringExtra("zoneID");
 
-        values.add(productRemoteId);
-        values.add(productName);
-        values.add(productQuantity);
-        values.add(productUnitPrice);
-        values.add(productPrice);
-        values.add(url);
+        values.add(generateUniqueID());
+        values.add(productNameEditText.getText().toString());
+        values.add(combineQuantityWithUnit());
+        values.add(productUnitPriceEditText.getText().toString());
+        values.add(productPriceTextView.getText().toString());
+        values.add(imageUrl);
         values.add(uploaded);
         values.add(updated);
-        values.add(owner);
-        values.add(date);
-        values.add(time);
+        values.add(sharedPreferences.getString("authenticatedPhoneNumber", "123456789"));
+        values.add(getCurrentDate());
+        values.add(getCurrentTime());
         values.add(status);
-        values.add(zoneID);
+        values.add(getIntent().getStringExtra("zoneID"));
 
         return values;
     }
 
-
+    private String combineQuantityWithUnit(){
+        String quantity = productQuantityEditText.getText().toString();
+        String unit = quantityUnitsSpinner.getSelectedItem().toString();
+        return (quantity + " " + unit);
+    }
 
     private static String generateUniqueID(){
-        UUID uuid = UUID.randomUUID();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String currentTime = simpleDateFormat.format(new Date());
 
@@ -384,6 +388,14 @@ public class CreateProductActivity extends AppCompatActivity {
         SimpleDateFormat timeFormat = new SimpleDateFormat("h:mma");
         String formattedTime = timeFormat.format(calendar.getTime());
         return formattedTime;
+    }
+
+    private void startProductsUploadService(String zoneID) {
+        if (zoneID != null && !zoneID.isEmpty()) {
+            Intent serviceIntent = new Intent(getApplicationContext(), ProductsUploadService.class);
+            serviceIntent.putExtra("zoneID", zoneID);
+            startService(serviceIntent);
+        }
     }
 
     private void resetUI(){
