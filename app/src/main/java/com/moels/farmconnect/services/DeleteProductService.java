@@ -39,7 +39,7 @@ public class DeleteProductService extends Service {
         super.onCreate();
         handler = new Handler();
         sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
-        zonesDatabaseHelper = new ZonesDatabaseHelper(getApplicationContext());
+        zonesDatabaseHelper = ZonesDatabaseHelper.getInstance(getApplicationContext());
     }
 
     @Override

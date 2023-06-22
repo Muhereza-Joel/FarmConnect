@@ -101,6 +101,7 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
                 productsRemoteIds.add(productRemoteId);
             }while (cursor.moveToNext());
         }
+        cursor.close();
         return productsRemoteIds;
     }
 
@@ -150,6 +151,7 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
             }
             while (cursor.moveToNext());
         }
+        cursor.close();
         return product;
     }
 
@@ -237,10 +239,8 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
             resultSet.add(productQuantity);
             resultSet.add(unitPrice);
             resultSet.add(productPrice);
-
-            cursor.close();
         }
-
+        cursor.close();
         return resultSet;
     }
 

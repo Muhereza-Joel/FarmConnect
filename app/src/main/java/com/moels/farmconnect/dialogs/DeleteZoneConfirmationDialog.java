@@ -34,7 +34,7 @@ public class DeleteZoneConfirmationDialog extends DialogFragment implements Dial
     @Override
     public void onClick(DialogInterface dialog, int which) {
          String remote_id = getActivity().getIntent().getStringExtra("zoneID");
-         new ZonesDatabaseHelper(getContext()).deleteZoneFromDatabase(remote_id);
+         ZonesDatabaseHelper.getInstance(getContext()).deleteZoneFromDatabase(remote_id);
 
          Intent resultIntent = new Intent();
          getActivity().setResult(Activity.RESULT_OK, resultIntent);

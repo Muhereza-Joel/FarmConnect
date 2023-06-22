@@ -35,7 +35,7 @@ public class ProductsUploadService extends Service {
         handler = new Handler();
         sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
         productsDatabaseHelper = ProductsDatabaseHelper.getInstance(getApplicationContext());
-        zonesDatabaseHelper = new ZonesDatabaseHelper(getApplicationContext());
+        zonesDatabaseHelper = ZonesDatabaseHelper.getInstance(getApplicationContext());
 
     }
 

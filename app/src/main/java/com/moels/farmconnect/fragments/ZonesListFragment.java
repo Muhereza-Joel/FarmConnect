@@ -57,7 +57,7 @@ public class ZonesListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        zonesDatabaseHelper = new ZonesDatabaseHelper(getContext());
+        zonesDatabaseHelper = ZonesDatabaseHelper.getInstance(getContext());
         contactsDatabaseHelper = new ContactsDatabaseHelper(getContext());
         sqLiteDatabase = zonesDatabaseHelper.getReadableDatabase();
         sharedPreferences = getActivity().getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);

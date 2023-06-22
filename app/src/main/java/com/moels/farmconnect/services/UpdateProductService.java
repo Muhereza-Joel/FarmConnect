@@ -37,7 +37,7 @@ public class UpdateProductService extends Service {
         super.onCreate();
         handler = new Handler();
         productsDatabaseHelper = ProductsDatabaseHelper.getInstance(getApplicationContext());
-        zonesDatabaseHelper = new ZonesDatabaseHelper(getApplicationContext());
+        zonesDatabaseHelper = ZonesDatabaseHelper.getInstance(getApplicationContext());
         sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
     }
 

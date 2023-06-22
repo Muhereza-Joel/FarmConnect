@@ -13,16 +13,20 @@ import java.util.List;
 
 public class ZonesDatabaseHelper extends SQLiteOpenHelper {
 
+    private static ZonesDatabaseHelper uniqueInstance;
     private static final String DATABASE_NAME = "FarmConnectZonesDatabase";
-
-    //upgraded from version 3
-    private static final int DATABASE_VERSION = 4;
-
+    private static final int DATABASE_VERSION = 4; //upgraded from version 3
     private SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
-    public ZonesDatabaseHelper(Context context){
+    private ZonesDatabaseHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
 
+    public static ZonesDatabaseHelper getInstance(Context context){
+        if (uniqueInstance == null){
+            uniqueInstance = new ZonesDatabaseHelper(context);
+        }
+        return uniqueInstance;
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -101,6 +105,7 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
                 zonesRemoteIds.add(remote_id);
             }while (cursor.moveToNext());
         }
+        cursor.close();
         return zonesRemoteIds;
     }
 
@@ -113,6 +118,7 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
                 zonesRemoteIds.add(remote_id);
             }while (cursor.moveToNext());
         }
+        cursor.close();
         return zonesRemoteIds;
     }
 

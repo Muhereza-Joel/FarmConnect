@@ -62,7 +62,7 @@ public class ProductsDataSyncService extends Service{
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
-        zonesDatabaseHelper = new ZonesDatabaseHelper(getApplicationContext());
+        zonesDatabaseHelper = ZonesDatabaseHelper.getInstance(getApplicationContext());
         contactsDatabaseHelper = new ContactsDatabaseHelper(getApplicationContext());
         productsDatabaseHelper = ProductsDatabaseHelper.getInstance(getApplicationContext());
 

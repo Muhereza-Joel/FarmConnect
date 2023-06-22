@@ -55,7 +55,7 @@ public class AddNewZoneActivity extends AppCompatActivity {
         setSupportActionBar(addNewZoneActivityToolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Add New Zone", true);
 
-        zonesDatabaseHelper = new ZonesDatabaseHelper(getApplicationContext());
+        zonesDatabaseHelper = ZonesDatabaseHelper.getInstance(getApplicationContext());
     }
 
     private void initUI(){

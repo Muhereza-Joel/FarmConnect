@@ -47,7 +47,7 @@ public class ZoneDetailsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Zone Details", true);
 
-        zonesDatabaseHelper = new ZonesDatabaseHelper(getApplicationContext());
+        zonesDatabaseHelper = ZonesDatabaseHelper.getInstance(getApplicationContext());
         sqLiteDatabase = zonesDatabaseHelper.getWritableDatabase();
 
         getZoneDetailsFromDatabase();

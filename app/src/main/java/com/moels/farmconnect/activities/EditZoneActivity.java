@@ -46,7 +46,7 @@ public class EditZoneActivity extends AppCompatActivity {
         setSupportActionBar(editZoneActivityToolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Edit Zone", true);
 
-        zonesDatabaseHelper = new ZonesDatabaseHelper(getApplicationContext());
+        zonesDatabaseHelper = ZonesDatabaseHelper.getInstance(getApplicationContext());
 
         showProductDetails(zonesDatabaseHelper.getZoneDetails(getIntent().getStringExtra("zoneID")));
     }

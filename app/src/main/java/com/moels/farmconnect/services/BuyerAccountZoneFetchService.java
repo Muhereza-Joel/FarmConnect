@@ -40,7 +40,7 @@ public class BuyerAccountZoneFetchService extends Service {
         handler = new Handler();
         myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
         contactsDatabaseHelper = new ContactsDatabaseHelper(getApplicationContext());
-        zonesDatabaseHelper = new ZonesDatabaseHelper(getApplicationContext());
+        zonesDatabaseHelper = ZonesDatabaseHelper.getInstance(getApplicationContext());
     }
 
     @Override

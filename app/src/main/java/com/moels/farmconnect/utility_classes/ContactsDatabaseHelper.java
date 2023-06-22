@@ -90,6 +90,7 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
                 }
             }while (cursor.moveToNext());
         }
+        cursor.close();
         return productOwnerUsername;
     }
 
@@ -104,6 +105,7 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
                 }
             }while (cursor.moveToNext());
         }
+        cursor.close();
         return ownerImageUrl;
     }
 
@@ -118,6 +120,7 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
                 }
             }while (cursor.moveToNext());
         }
+        cursor.close();
         return phoneNumbers;
     }
 }
