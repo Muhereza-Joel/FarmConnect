@@ -90,7 +90,7 @@ public class EditProductActivity extends AppCompatActivity {
         productQuantityEditText.addTextChangedListener(createTextWatcher());
         productUnitPriceEditText.addTextChangedListener(createTextWatcher());
 
-        productsDatabaseHelper = new ProductsDatabaseHelper(getApplicationContext());
+        productsDatabaseHelper = ProductsDatabaseHelper.getInstance(getApplicationContext());
         sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
 
 

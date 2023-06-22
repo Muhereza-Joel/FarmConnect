@@ -56,11 +56,12 @@
 
     <RelativeLayout
         android:layout_below="@id/top_bar"
-        android:id="@+id/messages_recycler_view"
+        android:id="@+id/messages_recycler_view_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/messages_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -69,7 +70,7 @@
     </RelativeLayout>
 
     <FrameLayout
-        android:layout_alignBottom="@id/messages_recycler_view"
+        android:layout_alignBottom="@id/messages_recycler_view_container"
         android:layout_width="match_parent"
         android:padding="5dp"
         android:layout_height="wrap_content">

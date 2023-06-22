@@ -27,7 +27,7 @@ public class DeleteProductConfirmationDialog extends DialogFragment implements D
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        productsDatabaseHelper = new ProductsDatabaseHelper(getContext());
+        productsDatabaseHelper = ProductsDatabaseHelper.getInstance(getContext());;
         sqLiteDatabase = productsDatabaseHelper.getWritableDatabase();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 

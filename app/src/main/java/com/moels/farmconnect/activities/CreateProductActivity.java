@@ -83,7 +83,7 @@ public class CreateProductActivity extends AppCompatActivity {
         UI.setUpToolbarInDarkMode(getApplicationContext(), toolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Create New Product", true);
 
-        productsDatabaseHelper = new ProductsDatabaseHelper(getApplicationContext());
+        productsDatabaseHelper = ProductsDatabaseHelper.getInstance(getApplicationContext());
         sqLiteDatabase = productsDatabaseHelper.getWritableDatabase();
         sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
 
@@ -196,8 +196,6 @@ public class CreateProductActivity extends AppCompatActivity {
             } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && data != null) {
                 CropImage.ActivityResult result = CropImage.getActivityResult(data);
                 Uri croppedImageURI = result.getUri();
-
-
                 Glide.with(this)
                         .load(croppedImageURI)
                         .into(productImageView);

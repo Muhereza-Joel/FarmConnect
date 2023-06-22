@@ -8,22 +8,28 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 
+import com.moels.farmconnect.models.Card;
 import com.moels.farmconnect.models.Product;
-import com.moels.farmconnect.models.ProductCardItem;
+import com.moels.farmconnect.models.ProductCard;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProductsDatabaseHelper extends SQLiteOpenHelper {
-
+    private static ProductsDatabaseHelper uniqueInstance;
     private static final String DATABASE_NAME = "FarmConnectProductsDatabase";
-
-    //Earlier version number was 2
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 3; //Earlier version number was 2
     private final SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
-    public ProductsDatabaseHelper(Context context){
+    private ProductsDatabaseHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    public static ProductsDatabaseHelper getInstance(Context context){
+        if (uniqueInstance == null){
+            uniqueInstance = new ProductsDatabaseHelper(context);
+        }
+        return uniqueInstance;
     }
 
     @Override
@@ -173,8 +179,8 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
         return products;
     }
 
-    public List<ProductCardItem> getAllProducts(String zoneID, String owner){
-        List<ProductCardItem> items = new ArrayList<>();
+    public List<Card> getAllProducts(String zoneID, String owner){
+        List<Card> items = new ArrayList<>();
         Cursor cursor;
 
         if (owner.equals("")){
@@ -196,8 +202,8 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
                 @SuppressLint("Range") String productOwner = cursor.getString(cursor.getColumnIndex("owner"));
 
                 if (!TextUtils.isEmpty(imageUrl) || !TextUtils.isEmpty(productName) || !TextUtils.isEmpty(productQuantity)) {
-                    ProductCardItem productCardItem = new ProductCardItem(productRemoteID, productName, productQuantity, imageUrl, createTime, status, productOwner);
-                    items.add(productCardItem);
+                    Card card = ProductCard.createProductCard(productRemoteID, productName, productQuantity, imageUrl, createTime, status, productOwner);
+                    items.add(card);
                 }
             } while (cursor.moveToNext());
         }

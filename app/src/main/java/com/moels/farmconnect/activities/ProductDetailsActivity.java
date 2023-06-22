@@ -62,7 +62,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
         isFarmerAccount = sharedPreferences.getBoolean("farmerAccountTypeChosen", false);
         isBuyerAccount = sharedPreferences.getBoolean("buyerAccountTypeChosen", false);
-        productsDatabaseHelper = new ProductsDatabaseHelper(getApplicationContext());
+        productsDatabaseHelper = ProductsDatabaseHelper.getInstance(getApplicationContext());
         showProductDetails(productsDatabaseHelper.getProductDetails(getIntent().getStringExtra("productID")));
     }
 

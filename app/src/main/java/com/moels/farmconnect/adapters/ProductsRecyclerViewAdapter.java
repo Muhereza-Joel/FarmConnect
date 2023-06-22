@@ -14,21 +14,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.models.ProductCardItem;
+import com.moels.farmconnect.models.Card;
+import com.moels.farmconnect.models.ProductCard;
 import com.moels.farmconnect.utility_classes.ContactsDatabaseHelper;
 
 import java.util.List;
 
 public class ProductsRecyclerViewAdapter extends RecyclerView.Adapter<ProductsRecyclerViewAdapter.ViewHolder> {
 
-    private List<ProductCardItem> productCardItems;
+    private List<Card> cardList;
     private Context context;
     private Listener listener;
     private ContactsDatabaseHelper contactsDatabaseHelper;
 
 
-    public ProductsRecyclerViewAdapter(List<ProductCardItem> productCardItems, Context context) {
-        this.productCardItems = productCardItems;
+    public ProductsRecyclerViewAdapter(List<Card> cardList, Context context) {
+        this.cardList = cardList;
         this.context = context;
         contactsDatabaseHelper = new ContactsDatabaseHelper(context);
     }
@@ -52,24 +53,24 @@ public class ProductsRecyclerViewAdapter extends RecyclerView.Adapter<ProductsRe
             }
         });
 
-        ProductCardItem productCardItem = productCardItems.get(position);
-        holder._idTextView.setText(productCardItem.get_id());
-        Glide.with(context).load(productCardItem.getPhotoUrl()).circleCrop().into(holder.productImageView);
-        holder.productNameTextView.setText(productCardItem.getProductName());
-        holder.productQuantityTextView.setText(productCardItem.getQuantity());
-        holder.createTimeTextView.setText(productCardItem.getCreateTime());
-        holder.statusTextView.setText(productCardItem.getStatus());
-        holder.ownerTextView.setText(contactsDatabaseHelper.getOwnerUsername(productCardItem.getOwner()));
-        Glide.with(context).load(contactsDatabaseHelper.getOwnerImageUrl(productCardItem.getOwner())).circleCrop().into(holder.productCreatorImageView);
+        Card card = cardList.get(position);
+        holder._idTextView.setText(card.getId());
+        Glide.with(context).load(((ProductCard) card).getPhotoUrl()).circleCrop().into(holder.productImageView);
+        holder.productNameTextView.setText(((ProductCard) card).getProductName());
+        holder.productQuantityTextView.setText(((ProductCard) card).getQuantity());
+        holder.createTimeTextView.setText(card.getCreateTime());
+        holder.statusTextView.setText(((ProductCard) card).getStatus());
+        holder.ownerTextView.setText(contactsDatabaseHelper.getOwnerUsername(((ProductCard) card).getOwner()));
+        Glide.with(context).load(contactsDatabaseHelper.getOwnerImageUrl(((ProductCard) card).getOwner())).circleCrop().into(holder.productCreatorImageView);
 
     }
 
     @Override
     public int getItemCount() {
-        if (productCardItems == null){
+        if (cardList == null){
             return 0;
         }
-        return productCardItems.size();
+        return cardList.size();
     }
 
     public void setListener(Listener listener){

@@ -10,22 +10,30 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.adapters.ChatMessageAdapter;
+import com.moels.farmconnect.models.Message;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChatActivity extends AppCompatActivity {
-    ImageView profilePic;
-    TextView activeChatTextView;
-    ImageButton backButton, searchIcon;
-
-    RelativeLayout topBar;
+    private ImageView profilePic;
+    private TextView activeChatTextView;
+    private ImageButton backButton, searchIcon;
+    private RecyclerView recyclerView;
+    private RelativeLayout topBar;
+    private ChatMessageAdapter chatMessageAdapter;
+    private List<Message> messages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,10 @@ public class ChatActivity extends AppCompatActivity {
         Glide.with(this).load(profilePictureUrl).circleCrop().into(profilePic);
         activeChatTextView.setText(activeChatUsername);
 
+
+        messages = new ArrayList<>();
+        messages.add(new Message("07765796388", "How are you", "4:20 am"));
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -48,6 +60,11 @@ public class ChatActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        chatMessageAdapter = new ChatMessageAdapter(messages, "0776579631");
+        recyclerView.setAdapter(chatMessageAdapter);
+
     }
 
     private void setUPTopBarForDarkMode(){
@@ -66,6 +83,7 @@ public class ChatActivity extends AppCompatActivity {
         backButton = findViewById(R.id.back_button);
         searchIcon = findViewById(R.id.search_icon);
         topBar = findViewById(R.id.top_bar);
+        recyclerView = findViewById(R.id.messages_recycler_view);
     }
     private void setUpStatusBar() {
         Window window = null;

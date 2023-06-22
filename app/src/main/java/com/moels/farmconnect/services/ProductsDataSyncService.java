@@ -64,7 +64,7 @@ public class ProductsDataSyncService extends Service{
         handler = new Handler();
         zonesDatabaseHelper = new ZonesDatabaseHelper(getApplicationContext());
         contactsDatabaseHelper = new ContactsDatabaseHelper(getApplicationContext());
-        productsDatabaseHelper = new ProductsDatabaseHelper(getApplicationContext());
+        productsDatabaseHelper = ProductsDatabaseHelper.getInstance(getApplicationContext());
 
         myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
         authenticatedPhoneNumber = myAppPreferences.getString("authenticatedPhoneNumber", "123456789");
