@@ -63,7 +63,7 @@ public class ProductsDataSyncService extends Service{
         super.onCreate();
         handler = new Handler();
         zonesDatabaseHelper = ZonesDatabaseHelper.getInstance(getApplicationContext());
-        contactsDatabaseHelper = new ContactsDatabaseHelper(getApplicationContext());
+        contactsDatabaseHelper = ContactsDatabaseHelper.getInstance(getApplicationContext());
         productsDatabaseHelper = ProductsDatabaseHelper.getInstance(getApplicationContext());
 
         myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);

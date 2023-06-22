@@ -120,7 +120,7 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
         UI.setUpToolbarInDarkMode(getApplicationContext(), callActivityToolBar);
         UI.setUpActionBar(getSupportActionBar(), R.drawable.ic_back_arrow, "Select Contact", true);
 
-        contactsDatabaseHelper = new ContactsDatabaseHelper(getApplicationContext());
+        contactsDatabaseHelper = ContactsDatabaseHelper.getInstance(getApplicationContext());
         sqLiteDatabase  = contactsDatabaseHelper.getWritableDatabase();
 
         if (checkRequiredPermissions() == false){

@@ -12,15 +12,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ContactsDatabaseHelper extends SQLiteOpenHelper {
-
+    private static ContactsDatabaseHelper uniqueInstance;
     private static final String DATABASE_NAME = "FarmConnectContactsDatabase";
-
-    //Upgraded database from version 2
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 3; //Upgraded database from version 2
     private SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
-    public ContactsDatabaseHelper(Context context){
+    private ContactsDatabaseHelper(Context context){
         super(context, DATABASE_NAME,null, DATABASE_VERSION );
+    }
+
+    public static ContactsDatabaseHelper getInstance(Context context){
+        if (uniqueInstance == null){
+            uniqueInstance = new ContactsDatabaseHelper(context);
+        }
+        return uniqueInstance;
     }
     @Override
     public void onCreate(SQLiteDatabase db) {

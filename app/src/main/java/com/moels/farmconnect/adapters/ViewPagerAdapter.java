@@ -56,7 +56,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         StringBuilder sb = new StringBuilder();
         for (String word : words) {
             if (!word.isEmpty()) {
-                String capitalizedWord = Character.toUpperCase(word.charAt(0)) + word.substring(1);
+                String capitalizedWord = Character.toLowerCase(word.charAt(0)) + word.substring(1);
                 sb.append(capitalizedWord).append(" ");
             }
         }

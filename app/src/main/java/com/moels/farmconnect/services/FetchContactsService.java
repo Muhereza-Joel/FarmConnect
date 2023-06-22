@@ -50,7 +50,7 @@ public class FetchContactsService extends Service {
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
-        contactsDatabaseHelper = new ContactsDatabaseHelper(getApplicationContext());
+        contactsDatabaseHelper = ContactsDatabaseHelper.getInstance(getApplicationContext());
         sqLiteDatabase  = contactsDatabaseHelper.getWritableDatabase();
         myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
         editor = myAppPreferences.edit();

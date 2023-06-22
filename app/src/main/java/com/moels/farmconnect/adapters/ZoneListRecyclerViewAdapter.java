@@ -29,7 +29,7 @@ public class ZoneListRecyclerViewAdapter extends RecyclerView.Adapter<ZoneListRe
     public ZoneListRecyclerViewAdapter(List<ZoneCardItem> itemList, Context context) {
         this.itemList = itemList;
         this.context = context;
-        contactsDatabaseHelper = new ContactsDatabaseHelper(context);
+        contactsDatabaseHelper = ContactsDatabaseHelper.getInstance(context);
     }
 
     @NonNull

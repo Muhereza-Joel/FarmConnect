@@ -58,7 +58,7 @@ public class ZonesListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         zonesDatabaseHelper = ZonesDatabaseHelper.getInstance(getContext());
-        contactsDatabaseHelper = new ContactsDatabaseHelper(getContext());
+        contactsDatabaseHelper = ContactsDatabaseHelper.getInstance(getContext());
         sqLiteDatabase = zonesDatabaseHelper.getReadableDatabase();
         sharedPreferences = getActivity().getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
         isFarmerAccount = sharedPreferences.getBoolean("farmerAccountTypeChosen", false);

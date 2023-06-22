@@ -35,7 +35,7 @@ public class FarmerAccountZonesFetchService extends Service {
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
-        contactsDatabaseHelper = new ContactsDatabaseHelper(getApplicationContext());
+        contactsDatabaseHelper = ContactsDatabaseHelper.getInstance(getApplicationContext());
         zonesDatabaseHelper = ZonesDatabaseHelper.getInstance(getApplicationContext());
     }
 

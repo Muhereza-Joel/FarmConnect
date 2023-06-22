@@ -31,7 +31,7 @@ public class ProductsRecyclerViewAdapter extends RecyclerView.Adapter<ProductsRe
     public ProductsRecyclerViewAdapter(List<Card> cardList, Context context) {
         this.cardList = cardList;
         this.context = context;
-        contactsDatabaseHelper = new ContactsDatabaseHelper(context);
+        contactsDatabaseHelper = ContactsDatabaseHelper.getInstance(context);
     }
 
     @NonNull
