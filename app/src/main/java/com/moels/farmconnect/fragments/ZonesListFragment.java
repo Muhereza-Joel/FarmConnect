@@ -210,6 +210,7 @@ public class ZonesListFragment extends Fragment {
         zoneCardItems = getZonesFromDatabase();
         zoneListRecyclerViewAdapter = new ZoneListRecyclerViewAdapter(zoneCardItems, getContext());
         zonesListRecyclerView.setAdapter(zoneListRecyclerViewAdapter);
+//        scrollRecycleViewToBottom(zonesListRecyclerView);
 
         if (isFarmerAccount){
             observeZonesInFirebase();
@@ -228,6 +229,16 @@ public class ZonesListFragment extends Fragment {
 
         addClickEventOnZoneCards();
         zoneListRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    private void scrollRecycleViewToBottom(RecyclerView recyclerView){
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        int lastVisibleItemPosition = layoutManager != null ? layoutManager.findLastVisibleItemPosition() : 0;
+        int itemCount = layoutManager != null ? layoutManager.getItemCount() : 0;
+
+        if (lastVisibleItemPosition != (itemCount - 1) || recyclerView.getChildAt(recyclerView.getChildCount() - 1).getBottom() > recyclerView.getHeight()) {
+            recyclerView.scrollToPosition(itemCount - 1);
+        }
     }
 
     public void addClickEventOnZoneCards(){

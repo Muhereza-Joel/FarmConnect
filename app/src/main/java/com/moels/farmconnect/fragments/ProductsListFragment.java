@@ -199,6 +199,7 @@ public class ProductsListFragment extends Fragment {
         productListRecyclerView = getView().findViewById(R.id.products_list_recycler_view);
         productListRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         productListRecyclerView.setAdapter(productsRecyclerViewAdapter);
+//        scrollRecycleViewToBottom(productListRecyclerView);
     }
 
     @Override
@@ -228,6 +229,16 @@ public class ProductsListFragment extends Fragment {
         }
 
         addClickListenerOnCards();
+    }
+
+    private void scrollRecycleViewToBottom(RecyclerView recyclerView){
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        int lastVisibleItemPosition = layoutManager != null ? layoutManager.findLastVisibleItemPosition() : 0;
+        int itemCount = layoutManager != null ? layoutManager.getItemCount() : 0;
+
+        if (lastVisibleItemPosition != (itemCount - 1) || recyclerView.getChildAt(recyclerView.getChildCount() - 1).getBottom() > recyclerView.getHeight()) {
+            recyclerView.scrollToPosition(itemCount - 1);
+        }
     }
 
     @Override

@@ -1,17 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="start"
+    android:padding="@dimen/layout_padding_10"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text_message_content"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:text="How are you doing"
-        android:textSize="16sp" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/receive_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/layout_padding_start_20"
+            android:visibility="gone"
+            android:text="3:10pm"/>
+
+        <TextView
+            android:id="@+id/receiver_message_content"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/layout_padding_10"
+            android:layout_gravity="start"
+            android:background="@drawable/owner_tag"
+            android:textSize="@dimen/text_size_16"
+            android:elevation="5dp"
+            android:visibility="gone"
+            tools:targetApi="lollipop" />
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/sender_message_content"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/layout_padding_10"
+            android:layout_gravity="end"
+            android:background="@drawable/chat_activity_message_input_box"
+            android:textSize="@dimen/text_size_16"
+            android:elevation="5dp"
+            android:visibility="gone"
+            tools:targetApi="lollipop" />
+
+        <TextView
+            android:id="@+id/send_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:visibility="gone"
+            android:paddingEnd="@dimen/layout_padding_end_20"
+            android:text="3:10pm"/>
+    </LinearLayout>
+
 
 </LinearLayout>

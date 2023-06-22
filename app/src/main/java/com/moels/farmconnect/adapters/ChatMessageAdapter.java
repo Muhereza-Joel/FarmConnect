@@ -2,7 +2,7 @@ package com.moels.farmconnect.adapters;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +18,10 @@ import java.util.List;
 public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.ViewHolder> {
     private List<Message> messageList;
     private String currentUserPhoneNumber;
+    private Context context;
 
-    public ChatMessageAdapter(List<Message> messageList, String currentUserPhoneNumber) {
+    public ChatMessageAdapter(Context context, List<Message> messageList, String currentUserPhoneNumber) {
+        this.context = context;
         this.messageList = messageList;
         this.currentUserPhoneNumber = currentUserPhoneNumber;
     }
@@ -34,13 +36,19 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Message message = messageList.get(position);
-        holder.textMessageContent.setText(message.getContent());
-
         // Set the layout gravity based on the message sender
         if (message.getSender().equals(currentUserPhoneNumber)) {
-            holder.itemView.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+            holder.senderMessageContentTextView.setVisibility(View.VISIBLE);
+            holder.senderMessageContentTextView.setText(message.getContent());
+            holder.sendTimeTextView.setText(message.getTime());
+            holder.sendTimeTextView.setVisibility(View.VISIBLE);
+//            holder.senderMessageContentTextView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorBlue));
         } else {
-            holder.itemView.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+            holder.receiverMessageContentTextView.setText(message.getContent());
+            holder.receiverMessageContentTextView.setVisibility(View.VISIBLE);
+            holder.receiveTimeTextView.setText(message.getTime());
+            holder.receiveTimeTextView.setVisibility(View.VISIBLE);
+//            holder.receiverMessageContentTextView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
         }
     }
 
@@ -53,11 +61,14 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView textMessageContent;
+        TextView senderMessageContentTextView, receiverMessageContentTextView, sendTimeTextView, receiveTimeTextView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            textMessageContent = itemView.findViewById(R.id.text_message_content);
+            senderMessageContentTextView = itemView.findViewById(R.id.sender_message_content);
+            receiverMessageContentTextView = itemView.findViewById(R.id.receiver_message_content);
+            sendTimeTextView = itemView.findViewById(R.id.send_time);
+            receiveTimeTextView = itemView.findViewById(R.id.receive_time);
         }
     }
 }

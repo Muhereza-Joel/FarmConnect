@@ -141,7 +141,8 @@
         <activity
             android:name=".activities.ChatActivity"
             android:exported="false"
-            android:parentActivityName=".activities.MainActivity" />
+            android:parentActivityName=".activities.MainActivity"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".activities.SelectContactActivity"
             android:exported="false"

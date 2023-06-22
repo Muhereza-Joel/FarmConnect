@@ -5,9 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -31,6 +34,7 @@ public class ChatActivity extends AppCompatActivity {
     private TextView activeChatTextView;
     private ImageButton backButton, searchIcon;
     private RecyclerView recyclerView;
+    private EditText messageEditText;
     private RelativeLayout topBar;
     private ChatMessageAdapter chatMessageAdapter;
     private List<Message> messages;
@@ -50,7 +54,19 @@ public class ChatActivity extends AppCompatActivity {
 
 
         messages = new ArrayList<>();
-        messages.add(new Message("07765796388", "How are you", "4:20 am"));
+        messages.add(new Message("0776579631", "Hey", "4:20 am"));
+        messages.add(new Message("0776579632", "Hey Joel, long time my friend tell me do you have any news", "4:20 am"));
+        messages.add(new Message("0776579631", "How are you doing dear", "4:20 am"));
+        messages.add(new Message("0776579632", "Am fyn myb you", "4:20 am"));
+        messages.add(new Message("0776579631", "Am just trying... to develop an app", "4:20 am"));
+        messages.add(new Message("0776579632", "How are you doing dear", "4:20 am"));
+        messages.add(new Message("0776579631", "Am fyn myb you", "4:20 am"));
+        messages.add(new Message("0776579632", "Am just trying... to develop an app", "4:20 am"));
+        messages.add(new Message("0776579632", "How are you doing dear", "4:20 am"));
+        messages.add(new Message("0776579631", "Am fyn myb you", "4:20 am"));
+        messages.add(new Message("0776579632", "Am just trying... to develop an app", "4:20 am"));
+
+
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,9 +78,37 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        chatMessageAdapter = new ChatMessageAdapter(messages, "0776579631");
+        chatMessageAdapter = new ChatMessageAdapter(getApplicationContext(),messages, "0776579631");
         recyclerView.setAdapter(chatMessageAdapter);
+        scrollRecycleViewToBottom(recyclerView);
 
+        messageEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                scrollRecycleViewToBottom(recyclerView);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+    }
+
+
+    private void scrollRecycleViewToBottom(RecyclerView recyclerView){
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        int lastVisibleItemPosition = layoutManager != null ? layoutManager.findLastVisibleItemPosition() : 0;
+        int itemCount = layoutManager != null ? layoutManager.getItemCount() : 0;
+
+        if (lastVisibleItemPosition != (itemCount - 1) || recyclerView.getChildAt(recyclerView.getChildCount() - 1).getBottom() > recyclerView.getHeight()) {
+            recyclerView.scrollToPosition(itemCount - 1);
+        }
     }
 
     private void setUPTopBarForDarkMode(){
@@ -84,6 +128,7 @@ public class ChatActivity extends AppCompatActivity {
         searchIcon = findViewById(R.id.search_icon);
         topBar = findViewById(R.id.top_bar);
         recyclerView = findViewById(R.id.messages_recycler_view);
+        messageEditText = findViewById(R.id.message_edit_text);
     }
     private void setUpStatusBar() {
         Window window = null;
