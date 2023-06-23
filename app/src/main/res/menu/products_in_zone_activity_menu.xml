@@ -23,25 +23,26 @@
         android:tooltipText="Edit Zone"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/delete_zone"
-        android:orderInCategory="102"
-        android:title="Delete Zone"
-        android:tooltipText="Delete Zone"
-        app:showAsAction="never" />
 
     <item
         android:id="@+id/zone_participants"
-        android:orderInCategory="103"
+        android:orderInCategory="102"
         android:title="Zone Participants"
         android:tooltipText="Zone Participants"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/invite_seller"
-        android:orderInCategory="104"
+        android:orderInCategory="103"
         android:title="Invite People"
         android:tooltipText="Invite People"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/delete_zone"
+        android:orderInCategory="104"
+        android:title="Delete Zone"
+        android:tooltipText="Delete Zone"
         app:showAsAction="never" />
 
 

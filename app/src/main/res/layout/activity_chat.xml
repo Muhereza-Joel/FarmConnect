@@ -42,7 +42,7 @@
             android:paddingLeft="5dp"
             android:text="Muhereza Joel"
             android:textColor="@color/colorWhite"
-            android:textSize="16sp" />
+            android:textSize="12sp" />
 
             <ImageButton
                 android:id="@+id/search_icon"
@@ -96,6 +96,7 @@
                 android:layout_marginStart="10dp"
                 android:padding="@dimen/layout_padding_10"
                 android:layout_height="wrap_content"
+                android:textSize="12sp"
                 android:background="@drawable/chat_activity_message_input_box"
                 android:hint="Say Something"/>
 

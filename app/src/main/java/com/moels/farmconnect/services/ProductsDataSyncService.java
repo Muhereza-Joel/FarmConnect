@@ -76,6 +76,7 @@ public class ProductsDataSyncService extends Service{
     public int onStartCommand(Intent intent, int flags, int startId) {
        boolean productsIdsLoaded = getExistingProductRemoteIDs(productsDatabaseHelper.getProductRemoteIds());
         if (productsIdsLoaded) {
+            startForeground(NOTIFICATION_ID, createNotification());
             startMonitoring();
         }
         return START_STICKY;
@@ -205,7 +206,7 @@ public class ProductsDataSyncService extends Service{
     private void getAllProductsForTheFarmer(String phoneNumber) {
         List<String> registeredContactList = contactsDatabaseHelper.getAllRegisteredContacts();
         for (String registeredContact : registeredContactList) {
-            List<String> zoneIDs = zonesDatabaseHelper.getZoneIds();
+            List<String> zoneIDs = zonesDatabaseHelper.getZoneIds(registeredContact);
             for (String zoneID : zoneIDs) {
                 Log.d("FarmConnect", "getProductsFromDatabase: " + zoneID);
                 productsReference = FirebaseDatabase.getInstance().getReference().child("zones").child(registeredContact).child(zoneID).child("products");

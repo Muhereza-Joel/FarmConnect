@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/layout_padding_start_20"
             android:visibility="gone"
+            android:textSize="11sp"
             android:text="3:10pm"/>
 
         <TextView
@@ -28,7 +29,7 @@
             android:padding="@dimen/layout_padding_10"
             android:layout_gravity="start"
             android:background="@drawable/owner_tag"
-            android:textSize="@dimen/text_size_16"
+            android:textSize="12sp"
             android:elevation="5dp"
             android:visibility="gone"
             tools:targetApi="lollipop" />
@@ -48,7 +49,7 @@
             android:padding="@dimen/layout_padding_10"
             android:layout_gravity="end"
             android:background="@drawable/chat_activity_message_input_box"
-            android:textSize="@dimen/text_size_16"
+            android:textSize="12sp"
             android:elevation="5dp"
             android:visibility="gone"
             tools:targetApi="lollipop" />
@@ -60,7 +61,8 @@
             android:layout_gravity="end"
             android:visibility="gone"
             android:paddingEnd="@dimen/layout_padding_end_20"
-            android:text="3:10pm"/>
+            android:text="3:10pm"
+            android:textSize="11sp"/>
     </LinearLayout>
 
 

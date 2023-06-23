@@ -109,19 +109,6 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
         return zonesRemoteIds;
     }
 
-    public List<String> getZoneIds(){
-        List<String> zonesRemoteIds = new ArrayList<>();
-        Cursor cursor = sqLiteDatabase.rawQuery("SELECT remote_id FROM zones", null);
-        if (cursor.moveToNext()){
-            do {
-                @SuppressLint("Range") String remote_id = cursor.getString(cursor.getColumnIndex("remote_id"));
-                zonesRemoteIds.add(remote_id);
-            }while (cursor.moveToNext());
-        }
-        cursor.close();
-        return zonesRemoteIds;
-    }
-
     public List<String> getZoneDetails(String zoneID){
         List<String> zoneDetails = new ArrayList<>();
         String [] columnsToPick = {"remote_id","zoneName", "location", "products", "description"};
