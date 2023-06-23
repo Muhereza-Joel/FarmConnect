@@ -136,7 +136,7 @@ public class InitializeAuthenticationActivity extends AppCompatActivity {
         }
 
         progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Connecting!!!");
+        progressDialog.setMessage("Connecting...");
         progressDialog.setCancelable(false);
         progressDialog.show();
         UI.hide(sendOneTimePasswordButton);

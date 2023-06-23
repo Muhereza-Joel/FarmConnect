@@ -70,7 +70,7 @@ public class AuthenticateUserActivity extends AppCompatActivity {
 
         verificationId = getIntent().getStringExtra("verificationId");
         progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Processing!!!");
+        progressDialog.setMessage("Processing...");
         progressDialog.setCancelable(false);
 
         verifyPhoneNumberButton.setOnClickListener(new View.OnClickListener() {

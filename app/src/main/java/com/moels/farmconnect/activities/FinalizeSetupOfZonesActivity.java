@@ -61,7 +61,7 @@ public class FinalizeSetupOfZonesActivity extends AppCompatActivity implements F
     protected void onStart() {
         super.onStart();
         progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Finding collection zones");
+        progressDialog.setMessage("Finding collection zones...");
         progressDialog.setCancelable(false);
         progressDialog.show();
         SharedPreferences sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);

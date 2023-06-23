@@ -58,7 +58,7 @@ public class FinishSetUpActivity extends AppCompatActivity implements FetchConta
         setUpStatusBar();
 
         progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Fetching Contacts List");
+        progressDialog.setMessage("Fetching Contacts List...");
         progressDialog.setCancelable(false);
         progressDialog.show();
     }
