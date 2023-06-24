@@ -1,6 +1,9 @@
 package com.moels.farmconnect.activities;
 
+import static com.moels.farmconnect.easypay.Request.EP_REQUEST_CODE;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -18,14 +21,19 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.dialogs.DeleteProductConfirmationDialog;
+import com.moels.farmconnect.easypay.Request;
 import com.moels.farmconnect.services.DeleteProductService;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.UI;
@@ -36,6 +44,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ImageView productImageView;
     private TextView productNameTextView, productQuantityTextView,productUnitPriceTextView, productPriceTextView;
+    private FloatingActionButton sendMessageFloatingActionButton, makePaymentFloatingActionButton;
     private ProductsDatabaseHelper productsDatabaseHelper;
     private SharedPreferences sharedPreferences;
     private boolean isFarmerAccount;
@@ -64,6 +73,40 @@ public class ProductDetailsActivity extends AppCompatActivity {
         isBuyerAccount = sharedPreferences.getBoolean("buyerAccountTypeChosen", false);
         productsDatabaseHelper = ProductsDatabaseHelper.getInstance(getApplicationContext());
         showProductDetails(productsDatabaseHelper.getProductDetails(getIntent().getStringExtra("productID")));
+
+        addClickEventOnPaymentFab();
+    }
+
+    private void addClickEventOnPaymentFab(){
+        makePaymentFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initPayment();
+            }
+        });
+    }
+
+    private void initPayment(){
+        try {
+            new Request(ProductDetailsActivity.this)
+                    .setAmountToPay(productPriceTextView.getText().toString())
+                    .setCurrency("UGX")
+                    .setPaymentReason("Testing Payment")
+                    .setClientSecret("527b39bd50e77706")
+                    .setClientID("b462d01c06404cb0")
+                    .initialize();
+        }catch (Exception e){
+            UI.displayToast(ProductDetailsActivity.this, e.getMessage());
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == EP_REQUEST_CODE && resultCode == RESULT_OK) {
+            String stringResponse = data.getStringExtra("response");
+            UI.displayToast(getApplicationContext(), stringResponse);
+        }
     }
 
     @Override
@@ -91,6 +134,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
         productQuantityTextView = findViewById(R.id.product_quantity_text_view);
         productUnitPriceTextView = findViewById(R.id.product_unit_text_view);
         productPriceTextView = findViewById(R.id.product_price_text_view);
+        sendMessageFloatingActionButton = findViewById(R.id.send_message_fab);
+        makePaymentFloatingActionButton = findViewById(R.id.make_payment_fab);
     }
 
     @Override

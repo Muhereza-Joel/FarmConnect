@@ -30,7 +30,7 @@
             android:id="@+id/profilePic"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:padding="4dp"
+            android:padding="1dp"
             android:layout_weight="1" />
 
         <TextView
@@ -42,7 +42,7 @@
             android:paddingLeft="5dp"
             android:text="Muhereza Joel"
             android:textColor="@color/colorWhite"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_size_16" />
 
             <ImageButton
                 android:id="@+id/search_icon"

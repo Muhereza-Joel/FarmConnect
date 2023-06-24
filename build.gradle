@@ -2,6 +2,12 @@ buildscript {
     ext {
         agp_version = '7.4.2'
     }
+
+    repositories {
+        google()
+        jcenter()
+    }
+
     dependencies {
         classpath 'com.google.gms:google-services:4.3.14'
         classpath 'com.android.tools.build:gradle:3.4.0'
@@ -14,4 +20,5 @@ plugins {
     id 'com.android.application' version '8.0.2' apply false
     id 'com.android.library' version '7.4.1' apply false
 }
+
 

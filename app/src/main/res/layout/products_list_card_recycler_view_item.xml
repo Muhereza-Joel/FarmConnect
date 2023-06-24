@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:text="Coffe Bags"
                 android:textAppearance="?android:textAppearanceMedium"
-                android:textSize="16sp"
+                android:textSize="@dimen/text_size_20"
                 android:textStyle="bold" />
 
             <TextView
@@ -44,7 +44,7 @@
                 android:maxLength="20"
                 android:text="10 bags"
                 android:textAppearance="?android:textAppearanceMedium"
-                android:textSize="12sp"
+                android:textSize="@dimen/text_size_16"
                 android:textStyle="italic" />
 
         </LinearLayout>
@@ -63,7 +63,7 @@
                 android:gravity="right"
                 android:text="7:23pm"
                 android:textAppearance="?android:textAppearanceMedium"
-                android:textSize="11sp"
+                android:textSize="13sp"
                 android:textStyle="italic|normal" />
 
             <TextView
@@ -75,7 +75,7 @@
                 android:text="available"
                 android:textAppearance="?android:textAppearanceMedium"
                 android:textColor="@color/colorPrimaryTeal"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:textStyle="italic|bold" />
 
             <TextView
@@ -113,7 +113,7 @@
                     android:text="unknown"
                     android:textAppearance="?android:textAppearanceMedium"
                     android:textColor="@color/colorBlack"
-                    android:textSize="10sp"
+                    android:textSize="13sp"
                     android:textStyle="italic|bold" />
             </LinearLayout>
 

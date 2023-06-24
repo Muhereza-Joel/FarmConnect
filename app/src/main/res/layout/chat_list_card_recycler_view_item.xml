@@ -30,7 +30,7 @@
             android:layout_weight="2"
             android:text="username"
             android:textAppearance="?android:textAppearanceMedium"
-            android:textSize="12sp" />
+            android:textSize="@dimen/text_size_16" />
 
         <TextView
             android:id="@+id/timeTextView"
@@ -38,11 +38,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="14dp"
             android:layout_weight="1"
+            android:gravity="end"
             android:text="5:00pm"
             android:textAppearance="?android:textAppearanceSmall"
             android:textColor="@color/colorPrimaryTeal"
             android:textStyle="italic"
-            android:textSize="11sp"/>
+            android:textSize="13sp"/>
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
