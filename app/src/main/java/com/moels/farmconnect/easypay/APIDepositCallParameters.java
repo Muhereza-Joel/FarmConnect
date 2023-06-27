@@ -2,8 +2,8 @@ package com.moels.farmconnect.easypay;
 
 import java.io.Serializable;
 
-public class ApiParameters implements Serializable {
-    public String amountToPay;
+public class APIDepositCallParameters implements Serializable {
+    public String amountToDeposit;
     public String userPhone;
     public String currency="UGX";
     public String clientID;
@@ -11,5 +11,5 @@ public class ApiParameters implements Serializable {
     public String ClientSecret;
     public String paymentReason;
 
-    public ApiParameters(){}
+    public APIDepositCallParameters(){}
 }

@@ -19,13 +19,12 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hbb20.CountryCodePicker;
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.easypay.ApiParameters;
+import com.moels.farmconnect.easypay.APIDepositCallParameters;
 import com.moels.farmconnect.utility_classes.UI;
 
 import org.json.JSONException;
@@ -37,75 +36,51 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static com.moels.farmconnect.easypay.Request.EASY_PAY_PARAMS;
+import static com.moels.farmconnect.easypay.DepositRequest.EASY_PAY_PARAMS;
 
-public class MakeRequest extends AppCompatActivity {
-    private TextView ammountToPay;
-    public static TextView transactionResponse;
+public class MakeDepositRequestActivity extends AppCompatActivity {
+    private TextView amountToPay;
+    public  TextView responseMessage;
     private EditText phone_number_field;
     private CountryCodePicker countryCodePicker;
-    private ApiParameters apiParameters=new ApiParameters();
-    public static ProgressBar progressBar;
+    private APIDepositCallParameters apiParameters=new APIDepositCallParameters();
+    private String amountToDeposit;
     private ProgressDialog progressDialog;
     private LinearLayout container;
     private Toolbar toolbar;
+    private Button payButton;
+    private Boolean viewsValidated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_make_request);
-        phone_number_field=(EditText) findViewById(R.id.phone_number_field);
-        ammountToPay=findViewById(R.id.ammountToPay);
-        countryCodePicker=findViewById(R.id.ccp);
-        transactionResponse=findViewById(R.id.transactionResponse);
-        container = findViewById(R.id.payment_container);
-        toolbar = findViewById(R.id.make_request_activity_toolbar);
+        setContentView(R.layout.activity_make_deposit_request);
+        initUI();
         setUpStatusBar();
         setSupportActionBar(toolbar);
 
         UI.setUpToolbarInDarkMode(getApplicationContext(), toolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Make Payment", true);
 
+        countryCodePicker.registerCarrierNumberEditText(phone_number_field);
+
+        getIntentData();
+        addClickEventOnPayButton();
+
+    }
+
+    private void initUI(){
+        phone_number_field=(EditText) findViewById(R.id.phone_number_field);
+        amountToPay =findViewById(R.id.ammountToPay);
+        countryCodePicker=findViewById(R.id.ccp);
+        responseMessage =findViewById(R.id.transactionResponse);
+        container = findViewById(R.id.payment_container);
+        toolbar = findViewById(R.id.make_withdraw_request_activity_toolbar);
+        payButton = (Button) findViewById(R.id.pay);
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Processing...");
         progressDialog.setCancelable(false);
-
-        progressBar=findViewById(R.id.progressBar);
-        Button mpay=(Button) findViewById(R.id.pay);
-
-        try {
-            apiParameters = (ApiParameters) getIntent().getSerializableExtra(EASY_PAY_PARAMS);
-            ammountToPay.setText("You are paying " + apiParameters.currency+" "+apiParameters.amountToPay + " to");
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-        final String transaction_amount=apiParameters.amountToPay;
-
-        mpay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean pay=true;
-                String countryCode = countryCodePicker.getSelectedCountryCodeWithPlus();
-                final String transaction_phone=countryCode+phone_number_field.getText().toString();
-                phone_number_field.setError(null);
-                if (phone_number_field.getText().toString().isEmpty()){
-                    pay=false;
-                    phone_number_field.setError("Phone Number Is Required");
-                    Toast.makeText(MakeRequest.this, "Phone Number Is Required", Toast.LENGTH_SHORT).show();
-                }
-
-                if (pay) {
-//                    progressBar.setVisibility(View.VISIBLE);
-                    progressDialog.show();
-                    transactionResponse.setVisibility(View.GONE);
-                    CallAPI callAPI = new CallAPI(transaction_amount, transaction_phone, MakeRequest.this);
-                    callAPI.execute();
-                }
-
-            }
-        });
-
     }
 
     private void setUpStatusBar() {
@@ -119,11 +94,57 @@ public class MakeRequest extends AppCompatActivity {
                 window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorBlack));
                 container.setBackgroundColor(ContextCompat.getColor(this, R.color.colorBlack));
                 phone_number_field.setTextColor(ContextCompat.getColor(this, R.color.colorBlack));
+                countryCodePicker.setDialogTextColor(ContextCompat.getColor(this, R.color.colorWhite));
             }else {
                 window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
             }
         }
 
+    }
+
+    private void getIntentData(){
+        try {
+            apiParameters = (APIDepositCallParameters) getIntent().getSerializableExtra(EASY_PAY_PARAMS);
+            amountToPay.setText("You are paying " + apiParameters.currency+" "+apiParameters.amountToDeposit + " to");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        amountToDeposit =apiParameters.amountToDeposit;
+    }
+
+    private void addClickEventOnPayButton(){
+        payButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                validateViews();
+            }
+        });
+    }
+
+    private void validateViews(){
+        if (phone_number_field.getText().toString().isEmpty()){
+            viewsValidated =false;
+            phone_number_field.setError("Phone Number Is Required");
+            Toast.makeText(MakeDepositRequestActivity.this, "Phone Number Is Required", Toast.LENGTH_SHORT).show();
+        }else if (!countryCodePicker.isValidFullNumber()){
+            viewsValidated = false;
+            Toast.makeText(MakeDepositRequestActivity.this, "Invalid Phone Number", Toast.LENGTH_SHORT).show();
+        }else {
+            viewsValidated = true;
+            startPaymentProcess();
+        }
+    }
+    private void startPaymentProcess(){
+        if (viewsValidated){
+            String countryCode = countryCodePicker.getSelectedCountryCodeWithPlus();
+            final String transaction_phone = countryCode+phone_number_field.getText().toString();
+            progressDialog.show();
+            responseMessage.setVisibility(View.GONE);
+            CallAPI callAPI = new CallAPI(amountToDeposit, transaction_phone, MakeDepositRequestActivity.this);
+            callAPI.execute();
+
+        }
     }
 
     public class CallAPI extends AsyncTask<String, String, String> {
@@ -168,13 +189,16 @@ public class MakeRequest extends AppCompatActivity {
                 postConnection.setRequestMethod("POST");
                 postConnection.setRequestProperty("Content-Type", "application/json");
                 postConnection.setDoOutput(true);
+
                 OutputStream os = postConnection.getOutputStream();
                 os.write(POST_PARAMS.getBytes());
                 os.flush();
                 os.close();
+
                 int responseCode = postConnection.getResponseCode();
                 System.out.println("POST Response Code : " + responseCode);
                 System.out.println("POST Response Message : " + postConnection.getResponseMessage());
+
                 BufferedReader in = new BufferedReader(new InputStreamReader(postConnection.getInputStream()));
                 String inputLine;
                 final StringBuffer response = new StringBuffer();
@@ -182,6 +206,7 @@ public class MakeRequest extends AppCompatActivity {
                     response.append(inputLine);
                 }
                 in.close();
+
                 final JSONObject js = new JSONObject(String.valueOf(response));
                 if(js.get("success").toString().equals("0")) {
                     Log.e("FAILED: ", js.get("errormsg").toString());
@@ -189,10 +214,9 @@ public class MakeRequest extends AppCompatActivity {
                         @Override
                         public void run() {
                             try {
-//                                progressBar.setVisibility(View.GONE);
                                 progressDialog.dismiss();
-                                transactionResponse.setVisibility(View.VISIBLE);
-                                transactionResponse.setText(js.get("errormsg").toString());
+                                responseMessage.setVisibility(View.VISIBLE);
+                                responseMessage.setText(js.get("errormsg").toString());
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -205,8 +229,7 @@ public class MakeRequest extends AppCompatActivity {
                         @Override
                         public void run() {
                             try {
-                                transactionResponse.setText(response.toString());
-//                                progressBar.setVisibility(View.GONE);
+                                responseMessage.setText(response.toString());
                                 progressDialog.dismiss();
                                 Intent intent = new Intent();
                                 intent.putExtra("response", response.toString());

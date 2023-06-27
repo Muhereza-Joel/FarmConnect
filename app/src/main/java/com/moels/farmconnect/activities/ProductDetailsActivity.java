@@ -1,6 +1,6 @@
 package com.moels.farmconnect.activities;
 
-import static com.moels.farmconnect.easypay.Request.EP_REQUEST_CODE;
+import static com.moels.farmconnect.easypay.DepositRequest.EP_REQUEST_CODE;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,14 +8,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,8 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,14 +27,19 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.dialogs.DeleteProductConfirmationDialog;
-import com.moels.farmconnect.easypay.Request;
-import com.moels.farmconnect.services.DeleteProductService;
+import com.moels.farmconnect.easypay.DepositRequest;
+import com.moels.farmconnect.easypay.WithdrawRequest;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.UI;
 
 import java.util.List;
 
 public class ProductDetailsActivity extends AppCompatActivity {
+    private final String postUrl = "https://www.easypay.co.ug/api/";
+    private final String APIClientID = "b462d01c06404cb0";
+    private final String APIClientSecret = "527b39bd50e77706";
+    private final String transactionCurrency = "UGX";
+    private final String transactionReference = "nsiimbi_com_" + System.currentTimeMillis();
     private Toolbar toolbar;
     private ImageView productImageView;
     private TextView productNameTextView, productQuantityTextView,productUnitPriceTextView, productPriceTextView;
@@ -81,19 +80,42 @@ public class ProductDetailsActivity extends AppCompatActivity {
         makePaymentFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                initPayment();
+                if (isBuyerAccount){
+                    initDepositRequest();
+                }
+
+                if (isFarmerAccount){
+                    initWithdrawRequest();
+                }
+
             }
         });
     }
 
-    private void initPayment(){
+    private void initDepositRequest(){
         try {
-            new Request(ProductDetailsActivity.this)
+            new DepositRequest(ProductDetailsActivity.this)
                     .setAmountToPay(productPriceTextView.getText().toString())
-                    .setCurrency("UGX")
-                    .setPaymentReason("Testing Payment")
-                    .setClientSecret("527b39bd50e77706")
-                    .setClientID("b462d01c06404cb0")
+                    .setTransactionCurrency(transactionCurrency)
+                    .setPaymentReason("FarmConnect Purchase Payment")
+                    .setAPIClientSecret(APIClientSecret)
+                    .setAPIClientID(APIClientID)
+                    .initialize();
+        }catch (Exception e){
+            UI.displayToast(ProductDetailsActivity.this, e.getMessage());
+        }
+    }
+
+    private void initWithdrawRequest(){
+        try {
+            new WithdrawRequest(ProductDetailsActivity.this)
+                    .setAmountToWithdraw("5000")
+                    .setTransactionCurrency(transactionCurrency)
+                    .setPaymentReason("FarmConnect Purchase Payment")
+                    .setPostUrl(postUrl)
+                    .setAPIClientSecret(APIClientSecret)
+                    .setAPIClientID(APIClientID)
+                    .setTransactionReference(transactionReference)
                     .initialize();
         }catch (Exception e){
             UI.displayToast(ProductDetailsActivity.this, e.getMessage());
