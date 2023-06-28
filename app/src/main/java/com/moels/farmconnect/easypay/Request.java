@@ -3,9 +3,12 @@ package com.moels.farmconnect.easypay;
 import android.app.Activity;
 import android.content.Intent;
 
+import com.moels.farmconnect.activities.MakeDepositRequestActivity;
 import com.moels.farmconnect.activities.MakeWithdrawRequestActivity;
+import com.moels.farmconnect.utility_classes.FarmConnectPreferences;
+import com.moels.farmconnect.utility_classes.Preferences;
 
-public class WithdrawRequest {
+public class Request {
     private Activity activity;
     public String amountToWithdraw;
     public String recipientPhoneNumber;
@@ -18,47 +21,49 @@ public class WithdrawRequest {
     public String paymentReason;
     public static String EASY_PAY_PARAMS="parameters";
     public static int EP_REQUEST_CODE =120;
+    private Preferences preferences;
 
-    public WithdrawRequest(Activity activity) {
+    public Request(Activity activity) {
         this.activity = activity;
+        preferences = FarmConnectPreferences.getInstance(activity.getApplicationContext());
     }
 
-    public WithdrawRequest setAmountToWithdraw(String amountToWithdraw) {
+    public Request setTransactionAmount(String amountToWithdraw) {
         this.amountToWithdraw = amountToWithdraw;
         return this;
     }
 
-    public WithdrawRequest setTransactionCurrency(String transactionCurrency) {
+    public Request setTransactionCurrency(String transactionCurrency) {
         this.transactionCurrency = transactionCurrency;
         return this;
     }
 
-    public WithdrawRequest setTransactionReference(String transactionReference) {
+    public Request setTransactionReference(String transactionReference) {
         this.transactionReference = transactionReference;
         return this;
     }
 
-    public WithdrawRequest setRequestAction(String requestAction) {
+    public Request setRequestAction(String requestAction) {
         this.requestAction = requestAction;
         return this;
     }
 
-    public WithdrawRequest setPostUrl(String postUrl) {
+    public Request setPostUrl(String postUrl) {
         this.postUrl = postUrl;
         return this;
     }
 
-    public WithdrawRequest setPaymentReason(String paymentReason) {
+    public Request setPaymentReason(String paymentReason) {
         this.paymentReason = paymentReason;
         return this;
     }
 
-    public WithdrawRequest setAPIClientID(String APIClientID) {
+    public Request setAPIClientID(String APIClientID) {
         this.APIClientID = APIClientID;
         return this;
     }
 
-    public WithdrawRequest setAPIClientSecret(String ClientSecret) {
+    public Request setAPIClientSecret(String ClientSecret) {
         this.APIClientSecret = ClientSecret;
         return this;
     }
@@ -76,9 +81,16 @@ public class WithdrawRequest {
             apiWithdrawCallParameters.reference = transactionReference;
             apiWithdrawCallParameters.reason = paymentReason;
 
-            Intent intent = new Intent(activity, MakeWithdrawRequestActivity.class);
-            intent.putExtra(EASY_PAY_PARAMS, apiWithdrawCallParameters);
-            activity.startActivityForResult(intent, EP_REQUEST_CODE);
+            if (preferences.isBuyerAccount()){
+                Intent intent = new Intent(activity, MakeDepositRequestActivity.class);
+                intent.putExtra(EASY_PAY_PARAMS, apiWithdrawCallParameters);
+                activity.startActivityForResult(intent, EP_REQUEST_CODE);
+            } else if (preferences.isFarmerAccount()) {
+                Intent intent = new Intent(activity, MakeWithdrawRequestActivity.class);
+                intent.putExtra(EASY_PAY_PARAMS, apiWithdrawCallParameters);
+                activity.startActivityForResult(intent, EP_REQUEST_CODE);
+            }
+
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.moels.farmconnect.activities;
 
-import static com.moels.farmconnect.easypay.DepositRequest.EASY_PAY_PARAMS;
+import static com.moels.farmconnect.easypay.Request.EASY_PAY_PARAMS;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -136,7 +136,7 @@ public class MakeWithdrawRequestActivity extends AppCompatActivity {
                     .setClientID(apiParameters.APIClientId)
                     .setClientSecret(apiParameters.APIClientSecret)
                     .setRequestAction(apiParameters.requestAction)
-                    .setWithdrawAmount("5000")
+                    .setTransactionAmount("500")
                     .setTransactionCurrency(apiParameters.transactionCurrency)
                     .setPhoneNumber(recipientPhoneNumber)
                     .setTransactionReference(apiParameters.reference)

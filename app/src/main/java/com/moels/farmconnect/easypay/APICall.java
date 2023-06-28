@@ -6,7 +6,10 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 
+import com.moels.farmconnect.activities.MakeDepositRequestActivity;
 import com.moels.farmconnect.activities.MakeWithdrawRequestActivity;
+import com.moels.farmconnect.utility_classes.FarmConnectPreferences;
+import com.moels.farmconnect.utility_classes.Preferences;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +32,7 @@ public class APICall extends AsyncTask<String, String, String> {
     private String transactionCurrency;
     private String transactionReason;
     private Activity activity;
+    private Preferences preferences;
 
     public APICall(){}
 
@@ -57,7 +61,7 @@ public class APICall extends AsyncTask<String, String, String> {
         return this;
     }
 
-    public APICall setWithdrawAmount(String withdrawAmount) {
+    public APICall setTransactionAmount(String withdrawAmount) {
         this.withdrawAmount = withdrawAmount;
         return this;
     }
@@ -97,13 +101,30 @@ public class APICall extends AsyncTask<String, String, String> {
                     @Override
                     public void run() {
                         try {
-                            MakeWithdrawRequestActivity.responseMessage.setText(response.toString());
-                            MakeWithdrawRequestActivity.progressDialog.dismiss();
-                            Log.e("FarmConnect: ", jsonObject.get("errormsg").toString());
-                            Intent intent = new Intent();
-                            intent.putExtra("response", response.toString());
-                            activity.setResult(Activity.RESULT_OK, intent);
-                            activity.finish();
+                            preferences = FarmConnectPreferences.getInstance(activity.getApplicationContext());
+
+                            if (preferences.isBuyerAccount()){
+                                MakeDepositRequestActivity.responseMessage.setText(response.toString());
+                                MakeDepositRequestActivity.progressDialog.dismiss();
+                                MakeDepositRequestActivity.responseMessage.setText(jsonObject.get("errormsg").toString());
+
+                                Log.e("FarmConnect: ", jsonObject.get("errormsg").toString());
+                                Intent intent = new Intent();
+                                intent.putExtra("response", response.toString());
+                                activity.setResult(Activity.RESULT_OK, intent);
+                                activity.finish();
+                            } else if (preferences.isFarmerAccount()){
+                                MakeWithdrawRequestActivity.responseMessage.setText(response.toString());
+                                MakeWithdrawRequestActivity.progressDialog.dismiss();
+                                MakeWithdrawRequestActivity.responseMessage.setText(jsonObject.get("errormsg").toString());
+
+                                Log.e("FarmConnect: ", jsonObject.get("errormsg").toString());
+                                Intent intent = new Intent();
+                                intent.putExtra("response", response.toString());
+                                activity.setResult(Activity.RESULT_OK, intent);
+                                activity.finish();
+                            }
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -115,9 +136,18 @@ public class APICall extends AsyncTask<String, String, String> {
                     @Override
                     public void run() {
                         try {
-                            MakeWithdrawRequestActivity.progressDialog.dismiss();
-                            MakeWithdrawRequestActivity.responseMessage.setVisibility(View.VISIBLE);
-                            MakeWithdrawRequestActivity.responseMessage.setText(jsonObject.get("errormsg").toString());
+                            preferences = FarmConnectPreferences.getInstance(activity.getApplicationContext());
+                            if (preferences.isBuyerAccount()){
+                                MakeDepositRequestActivity.responseMessage.setText(response.toString());
+                                MakeDepositRequestActivity.progressDialog.dismiss();
+                                MakeDepositRequestActivity.responseMessage.setText(jsonObject.get("errormsg").toString());
+                            }
+
+                            if (preferences.isFarmerAccount()){
+                                MakeWithdrawRequestActivity.progressDialog.dismiss();
+                                MakeWithdrawRequestActivity.responseMessage.setVisibility(View.VISIBLE);
+                                MakeWithdrawRequestActivity.responseMessage.setText(jsonObject.get("errormsg").toString());
+                            }
                             Log.e("FarmConnect: ", jsonObject.get("errormsg").toString());
 
                         } catch (JSONException e) {
@@ -201,9 +231,12 @@ public class APICall extends AsyncTask<String, String, String> {
     }
 
     private JSONObject getJSONObject(StringBuffer response){
-        JSONObject jsonObject;
+        JSONObject jsonObject = null;
         try {
-            jsonObject = new JSONObject(String.valueOf(response));
+            if (response != null){
+                jsonObject = new JSONObject(String.valueOf(response));
+            }
+            
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -213,11 +246,14 @@ public class APICall extends AsyncTask<String, String, String> {
     private boolean checkTransactionStatus(JSONObject jsonObject){
         boolean transactionWasSuccessful = false;
         try {
-            if(jsonObject.get("success").toString().equals("0")) {
-                transactionWasSuccessful = false;
-            } else if (jsonObject.get("success").toString().equals("1")){
-                transactionWasSuccessful = true;
+            if (jsonObject != null){
+                if(jsonObject.get("success").toString().equals("0")) {
+                    transactionWasSuccessful = false;
+                } else if (jsonObject.get("success").toString().equals("1")){
+                    transactionWasSuccessful = true;
+                }
             }
+
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }

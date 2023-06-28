@@ -1,18 +1,16 @@
 package com.moels.farmconnect.activities;
 
+import static com.moels.farmconnect.easypay.Request.EASY_PAY_PARAMS;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.UiModeManager;
 import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -24,28 +22,18 @@ import android.widget.Toast;
 
 import com.hbb20.CountryCodePicker;
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.easypay.APIDepositCallParameters;
+import com.moels.farmconnect.easypay.APICall;
+import com.moels.farmconnect.easypay.APICallParameters;
 import com.moels.farmconnect.utility_classes.UI;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import static com.moels.farmconnect.easypay.DepositRequest.EASY_PAY_PARAMS;
 
 public class MakeDepositRequestActivity extends AppCompatActivity {
     private TextView amountToPay;
-    public  TextView responseMessage;
+    public static TextView responseMessage;
     private EditText phone_number_field;
     private CountryCodePicker countryCodePicker;
-    private APIDepositCallParameters apiParameters=new APIDepositCallParameters();
+    private APICallParameters apiParameters=new APICallParameters();
     private String amountToDeposit;
-    private ProgressDialog progressDialog;
+    public static ProgressDialog progressDialog;
     private LinearLayout container;
     private Toolbar toolbar;
     private Button payButton;
@@ -104,13 +92,13 @@ public class MakeDepositRequestActivity extends AppCompatActivity {
 
     private void getIntentData(){
         try {
-            apiParameters = (APIDepositCallParameters) getIntent().getSerializableExtra(EASY_PAY_PARAMS);
-            amountToPay.setText("You are paying " + apiParameters.currency+" "+apiParameters.amountToDeposit + " to");
+            apiParameters = (APICallParameters) getIntent().getSerializableExtra(EASY_PAY_PARAMS);
+            amountToPay.setText("You are paying " + apiParameters.transactionCurrency+" "+apiParameters.transactionAmount + " to");
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        amountToDeposit =apiParameters.amountToDeposit;
+        amountToDeposit =apiParameters.transactionAmount;
     }
 
     private void addClickEventOnPayButton(){
@@ -138,118 +126,25 @@ public class MakeDepositRequestActivity extends AppCompatActivity {
     private void startPaymentProcess(){
         if (viewsValidated){
             String countryCode = countryCodePicker.getSelectedCountryCodeWithPlus();
-            final String transaction_phone = countryCode+phone_number_field.getText().toString();
+            final String recipientPhoneNumber = countryCode+phone_number_field.getText().toString();
             progressDialog.show();
             responseMessage.setVisibility(View.GONE);
-            CallAPI callAPI = new CallAPI(amountToDeposit, transaction_phone, MakeDepositRequestActivity.this);
-            callAPI.execute();
+
+            APICall depositAPICall = new APICall()
+                    .setActivity(MakeDepositRequestActivity.this)
+                    .setRequestUrl(apiParameters.postUrl)
+                    .setClientID(apiParameters.APIClientId)
+                    .setClientSecret(apiParameters.APIClientSecret)
+                    .setRequestAction(apiParameters.requestAction)
+                    .setTransactionAmount("500")
+                    .setTransactionCurrency(apiParameters.transactionCurrency)
+                    .setPhoneNumber(recipientPhoneNumber)
+                    .setTransactionReference(apiParameters.reference)
+                    .setTransactionReason(apiParameters.reason);
+
+            depositAPICall.execute();
 
         }
     }
 
-    public class CallAPI extends AsyncTask<String, String, String> {
-
-        private String post_url="https://www.easypay.co.ug/api/";
-        private String client_id=apiParameters.clientID;//change this
-        private String secret=apiParameters.ClientSecret;//change this
-        private String transaction_action="mmdeposit";
-        private String transaction_amount="";
-        private String transaction_phone="";
-        private String currency=apiParameters.currency;
-        private String reference=apiParameters.reference;
-        private String reason=apiParameters.paymentReason;
-        Context context;
-
-        public CallAPI(String transaction_amount, String transaction_phone, Context context){
-            this.transaction_amount=transaction_amount;
-            this.transaction_phone=transaction_phone;
-            this.context=context;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                final String POST_PARAMS = "{" +
-                        "\"username\": \""+client_id+"\"," +
-                        "\"password\": \""+secret+"\"," +
-                        "\"action\": \""+transaction_action+"\"," +
-                        "\"amount\": \"" + transaction_amount + "\"," +
-                        "\"currency\": \""+currency+"\"," +
-                        "\"phone\": \"" + transaction_phone + "\"," +
-                        "\"reference\": \"nsiimbi_com_" + System.currentTimeMillis() + "\"," +
-                        "\"reason\": \"" + reason + "\"}";
-                System.out.println(POST_PARAMS);
-                URL obj = new URL(post_url);
-                HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
-                postConnection.setRequestMethod("POST");
-                postConnection.setRequestProperty("Content-Type", "application/json");
-                postConnection.setDoOutput(true);
-
-                OutputStream os = postConnection.getOutputStream();
-                os.write(POST_PARAMS.getBytes());
-                os.flush();
-                os.close();
-
-                int responseCode = postConnection.getResponseCode();
-                System.out.println("POST Response Code : " + responseCode);
-                System.out.println("POST Response Message : " + postConnection.getResponseMessage());
-
-                BufferedReader in = new BufferedReader(new InputStreamReader(postConnection.getInputStream()));
-                String inputLine;
-                final StringBuffer response = new StringBuffer();
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                in.close();
-
-                final JSONObject js = new JSONObject(String.valueOf(response));
-                if(js.get("success").toString().equals("0")) {
-                    Log.e("FAILED: ", js.get("errormsg").toString());
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                progressDialog.dismiss();
-                                responseMessage.setVisibility(View.VISIBLE);
-                                responseMessage.setText(js.get("errormsg").toString());
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                }else if(js.get("success").toString().equals("1")) {
-                    Log.e("WORKED: ", response.toString());
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                responseMessage.setText(response.toString());
-                                progressDialog.dismiss();
-                                Intent intent = new Intent();
-                                intent.putExtra("response", response.toString());
-                                setResult(Activity.RESULT_OK, intent);
-                                finish();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                }
-            }catch (Exception e){
-                Log.e("WORKED: ",  "Error: "+e);
-            }
-            return "";
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-        }
-    }
 }

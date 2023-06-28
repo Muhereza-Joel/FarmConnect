@@ -1,6 +1,6 @@
 package com.moels.farmconnect.activities;
 
-import static com.moels.farmconnect.easypay.DepositRequest.EP_REQUEST_CODE;
+import static com.moels.farmconnect.easypay.Request.EP_REQUEST_CODE;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,8 +27,9 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.dialogs.DeleteProductConfirmationDialog;
-import com.moels.farmconnect.easypay.DepositRequest;
-import com.moels.farmconnect.easypay.WithdrawRequest;
+import com.moels.farmconnect.easypay.Request;
+import com.moels.farmconnect.utility_classes.FarmConnectPreferences;
+import com.moels.farmconnect.utility_classes.Preferences;
 import com.moels.farmconnect.utility_classes.ProductsDatabase;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.UI;
@@ -47,6 +48,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private FloatingActionButton sendMessageFloatingActionButton, makePaymentFloatingActionButton;
     private ProductsDatabase productsDatabase;
     private SharedPreferences sharedPreferences;
+    private Preferences preferences;
     private boolean isFarmerAccount;
     private boolean isBuyerAccount;
 
@@ -72,6 +74,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         isFarmerAccount = sharedPreferences.getBoolean("farmerAccountTypeChosen", false);
         isBuyerAccount = sharedPreferences.getBoolean("buyerAccountTypeChosen", false);
         productsDatabase = ProductsDatabaseHelper.getInstance(getApplicationContext());
+        preferences = FarmConnectPreferences.getInstance(getApplicationContext());
         showProductDetails(productsDatabase.getProductDetails(getIntent().getStringExtra("productID")));
 
         addClickEventOnPaymentFab();
@@ -95,12 +98,15 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     private void initDepositRequest(){
         try {
-            new DepositRequest(ProductDetailsActivity.this)
-                    .setAmountToPay(productPriceTextView.getText().toString())
+            new Request(ProductDetailsActivity.this)
+                    .setTransactionAmount("500")
                     .setTransactionCurrency(transactionCurrency)
-                    .setPaymentReason("FarmConnect Purchase Payment")
+                    .setPaymentReason("FarmConnect Deposit Payment")
+                    .setRequestAction("mmdeposit")
+                    .setPostUrl(postUrl)
                     .setAPIClientSecret(APIClientSecret)
                     .setAPIClientID(APIClientID)
+                    .setTransactionReference(transactionReference)
                     .initialize();
         }catch (Exception e){
             UI.displayToast(ProductDetailsActivity.this, e.getMessage());
@@ -109,8 +115,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     private void initWithdrawRequest(){
         try {
-            new WithdrawRequest(ProductDetailsActivity.this)
-                    .setAmountToWithdraw("5000")
+            new Request(ProductDetailsActivity.this)
+                    .setTransactionAmount("500")
                     .setTransactionCurrency(transactionCurrency)
                     .setPaymentReason("FarmConnect Purchase Payment")
                     .setRequestAction("mmpayout")
