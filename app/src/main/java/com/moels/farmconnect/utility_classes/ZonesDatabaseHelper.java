@@ -6,12 +6,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 import android.util.Log;
+
+import com.moels.farmconnect.models.ZoneCardItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ZonesDatabaseHelper extends SQLiteOpenHelper {
+public class ZonesDatabaseHelper extends SQLiteOpenHelper implements ZonesDatabase{
 
     private static ZonesDatabaseHelper uniqueInstance;
     private static final String DATABASE_NAME = "FarmConnectZonesDatabase";
@@ -82,6 +85,32 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    @Override
+    public List<ZoneCardItem> getZonesFromDatabase() {
+        List<ZoneCardItem> listOfZoneCardItems = new ArrayList<>();
+        String [] columnsToPick = {"remote_id","zoneName", "location", "createTime", "status", "owner"};
+        Cursor cursor = sqLiteDatabase.query("zones", columnsToPick, null, null, null, null, null);
+
+        if (cursor.moveToNext()) {
+            do {
+                @SuppressLint("Range") String remote_id = cursor.getString(cursor.getColumnIndex("remote_id"));
+                @SuppressLint("Range") String zoneName = cursor.getString(cursor.getColumnIndex("zoneName"));
+                @SuppressLint("Range") String location = cursor.getString(cursor.getColumnIndex("location"));
+                @SuppressLint("Range") String createTime = cursor.getString(cursor.getColumnIndex("createTime"));
+                @SuppressLint("Range") String status = cursor.getString(cursor.getColumnIndex("status"));
+                @SuppressLint("Range") String owner = cursor.getString(cursor.getColumnIndex("owner"));
+
+                if (!TextUtils.isEmpty(zoneName) || !TextUtils.isEmpty(location)) {
+                    ZoneCardItem zoneCardItem = new ZoneCardItem(remote_id, zoneName, location, createTime, status, owner);
+                    listOfZoneCardItems.add(zoneCardItem);
+                }
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return listOfZoneCardItems;
+    }
+
+    @Override
     @SuppressLint("Range")
     public String getZoneOwner(String zoneID){
         String phoneNumber = "";
@@ -95,7 +124,7 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
         return phoneNumber;
     }
 
-
+    @Override
     public List<String> getZoneIds(String phoneNumber){
         List<String> zonesRemoteIds = new ArrayList<>();
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT remote_id FROM zones WHERE owner = '"+ phoneNumber + "'", null);
@@ -109,6 +138,7 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
         return zonesRemoteIds;
     }
 
+    @Override
     public List<String> getZoneDetails(String zoneID){
         List<String> zoneDetails = new ArrayList<>();
         String [] columnsToPick = {"remote_id","zoneName", "location", "products", "description"};
@@ -132,7 +162,7 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
         return zoneDetails;
     }
 
-
+    @Override
     public boolean addZoneToDatabase(List<String> zoneDetails){
         boolean rowCreated = false;
 
@@ -160,6 +190,7 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
         return rowCreated;
     }
 
+    @Override
     public boolean updateZone(String zoneID, ContentValues contentValues){
         boolean zoneUpdated = false;
         int rowUpdated = sqLiteDatabase.update("zones", contentValues, "remote_id = ?", new String[] {zoneID});
@@ -170,7 +201,7 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-
+    @Override
     public void deleteZoneFromDatabase(String _id){
         sqLiteDatabase.delete("zones", "remote_id = ?", new String[] {_id});
     }

@@ -13,7 +13,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.moels.farmconnect.models.Product;
+import com.moels.farmconnect.utility_classes.ProductsDatabase;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
+import com.moels.farmconnect.utility_classes.ZonesDatabase;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
 import java.util.List;
@@ -23,8 +25,8 @@ public class ProductsUploadService extends Service {
     private Handler handler;
     private Runnable runnable;
     private SharedPreferences sharedPreferences;
-    private ProductsDatabaseHelper productsDatabaseHelper;
-    private ZonesDatabaseHelper zonesDatabaseHelper;
+    private ProductsDatabase productsDatabase;
+    private ZonesDatabase zonesDatabase;
 
     public ProductsUploadService() {
     }
@@ -34,8 +36,8 @@ public class ProductsUploadService extends Service {
         super.onCreate();
         handler = new Handler();
         sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
-        productsDatabaseHelper = ProductsDatabaseHelper.getInstance(getApplicationContext());
-        zonesDatabaseHelper = ZonesDatabaseHelper.getInstance(getApplicationContext());
+        productsDatabase = ProductsDatabaseHelper.getInstance(getApplicationContext());
+        zonesDatabase = ZonesDatabaseHelper.getInstance(getApplicationContext());
 
     }
 
@@ -58,8 +60,8 @@ public class ProductsUploadService extends Service {
     }
 
     private void checkForProducts(String zoneID) {
-        List<Product> products = productsDatabaseHelper.getAllProductsToUpload(zoneID);
-        String phoneNumber = zonesDatabaseHelper.getZoneOwner(zoneID);
+        List<Product> products = productsDatabase.getAllProductsToUpload(zoneID);
+        String phoneNumber = zonesDatabase.getZoneOwner(zoneID);
         DatabaseReference productsReference = FirebaseDatabase.getInstance().getReference().child("zones").child(phoneNumber).child(zoneID).child("products");
         for (Product product : products) {
             String productID = product.getProductID();
@@ -77,10 +79,10 @@ public class ProductsUploadService extends Service {
                             @Override
                             public void onComplete(DatabaseError error, DatabaseReference ref) {
                                 if (error == null) {
-                                    productsDatabaseHelper.updateProductUploaded(productID, true);
+                                    productsDatabase.updateProductUploadStatus(productID, true);
                                     stopSelf();
                                 } else {
-                                    productsDatabaseHelper.updateProductUploaded(productID,false);
+                                    productsDatabase.updateProductUploadStatus(productID,false);
                                     stopSelf();
                                 }
                             }

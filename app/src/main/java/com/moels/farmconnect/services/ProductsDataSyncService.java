@@ -25,8 +25,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.activities.MainActivity;
+import com.moels.farmconnect.utility_classes.ContactsDatabase;
 import com.moels.farmconnect.utility_classes.ContactsDatabaseHelper;
+import com.moels.farmconnect.utility_classes.ProductsDatabase;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
+import com.moels.farmconnect.utility_classes.ZonesDatabase;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
 import java.util.ArrayList;
@@ -40,9 +43,9 @@ public class ProductsDataSyncService extends Service{
     private static final int POLL_INTERVAL = 1000;
     private Handler handler;
     private Runnable runnable;
-    private ZonesDatabaseHelper zonesDatabaseHelper;
-    private ContactsDatabaseHelper contactsDatabaseHelper;
-    private ProductsDatabaseHelper productsDatabaseHelper;
+    private ZonesDatabase zonesDatabase;
+    private ContactsDatabase contactsDatabase;
+    private ProductsDatabase productsDatabase;
 
     private DatabaseReference zonesDatabaseReference;
     private DatabaseReference productsReference;
@@ -62,9 +65,9 @@ public class ProductsDataSyncService extends Service{
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
-        zonesDatabaseHelper = ZonesDatabaseHelper.getInstance(getApplicationContext());
-        contactsDatabaseHelper = ContactsDatabaseHelper.getInstance(getApplicationContext());
-        productsDatabaseHelper = ProductsDatabaseHelper.getInstance(getApplicationContext());
+        zonesDatabase = ZonesDatabaseHelper.getInstance(getApplicationContext());
+        contactsDatabase = ContactsDatabaseHelper.getInstance(getApplicationContext());
+        productsDatabase = ProductsDatabaseHelper.getInstance(getApplicationContext());
 
         myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
         authenticatedPhoneNumber = myAppPreferences.getString("authenticatedPhoneNumber", "123456789");
@@ -74,7 +77,7 @@ public class ProductsDataSyncService extends Service{
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-       boolean productsIdsLoaded = getExistingProductRemoteIDs(productsDatabaseHelper.getProductRemoteIds());
+       boolean productsIdsLoaded = getExistingProductRemoteIDs(productsDatabase.getProductRemoteIds());
         if (productsIdsLoaded) {
             startForeground(NOTIFICATION_ID, createNotification());
             startMonitoring();
@@ -152,9 +155,9 @@ public class ProductsDataSyncService extends Service{
     }
 
     private void getAllProductsFromDatabase(){
-        List<String> registeredContactList = contactsDatabaseHelper.getAllRegisteredContacts();
+        List<String> registeredContactList = contactsDatabase.getAllRegisteredContacts();
         for (String phoneNumber : registeredContactList){
-            List<String> zoneIDs = zonesDatabaseHelper.getZoneIds(phoneNumber);
+            List<String> zoneIDs = zonesDatabase.getZoneIds(phoneNumber);
 
             for (String zoneID : zoneIDs){
                 Log.d("FarmConnect", "getProductsFromDatabase: " + zoneID);
@@ -180,7 +183,7 @@ public class ProductsDataSyncService extends Service{
                             productDetails.add(productSnapshot.child("status").getValue(String.class));
                             productDetails.add(productSnapshot.child("zoneID").getValue(String.class));
 
-                            productsDatabaseHelper.addProductToDatabase(productDetails);
+                            productsDatabase.addProduct(productDetails);
                             Log.d("FarmConnect", "onDataChange: Product id " + productDetails.get(0) + " Added to database");
 
                         }
@@ -204,9 +207,9 @@ public class ProductsDataSyncService extends Service{
     }
 
     private void getAllProductsForTheFarmer(String phoneNumber) {
-        List<String> registeredContactList = contactsDatabaseHelper.getAllRegisteredContacts();
+        List<String> registeredContactList = contactsDatabase.getAllRegisteredContacts();
         for (String registeredContact : registeredContactList) {
-            List<String> zoneIDs = zonesDatabaseHelper.getZoneIds(registeredContact);
+            List<String> zoneIDs = zonesDatabase.getZoneIds(registeredContact);
             for (String zoneID : zoneIDs) {
                 Log.d("FarmConnect", "getProductsFromDatabase: " + zoneID);
                 productsReference = FirebaseDatabase.getInstance().getReference().child("zones").child(registeredContact).child(zoneID).child("products");
@@ -234,7 +237,7 @@ public class ProductsDataSyncService extends Service{
                                 productDetails.add(productSnapshot.child("status").getValue(String.class));
                                 productDetails.add(productSnapshot.child("zoneID").getValue(String.class));
 
-                                productsDatabaseHelper.addProductToDatabase(productDetails);
+                                productsDatabase.addProduct(productDetails);
                                 Log.d("FarmConnect", "onDataChange: Product id " + productDetails.get(0) + " Added to database");
                             }
                         }
@@ -257,9 +260,9 @@ public class ProductsDataSyncService extends Service{
     }
 
     private boolean getNewProductsFromFirebaseDatabase(){
-            List<String> registeredContactList = contactsDatabaseHelper.getAllRegisteredContacts();
+            List<String> registeredContactList = contactsDatabase.getAllRegisteredContacts();
             for (String phoneNumber : registeredContactList) {
-                List<String> zoneIDs = zonesDatabaseHelper.getZoneIds(phoneNumber);
+                List<String> zoneIDs = zonesDatabase.getZoneIds(phoneNumber);
 
                 for (String zoneID : zoneIDs) {
                     productsReference = FirebaseDatabase.getInstance().getReference().child("zones").child(phoneNumber).child(zoneID).child("products");
@@ -287,7 +290,7 @@ public class ProductsDataSyncService extends Service{
                                     productDetails.add(productSnapshot.child("status").getValue(String.class));
                                     productDetails.add(productSnapshot.child("zoneID").getValue(String.class));
 
-                                    boolean productAdded = productsDatabaseHelper.addProductToDatabase(productDetails);
+                                    boolean productAdded = productsDatabase.addProduct(productDetails);
                                     if (productAdded){
                                         syncedData.add(productRemoteId); // Add the productRemoteId to the HashSet
                                         Log.d("FarmConnect", "onDataChange: New product with  Product id " + productRemoteId + " added to database");
@@ -311,9 +314,9 @@ public class ProductsDataSyncService extends Service{
     }
 
     private boolean updateProductDetails() {
-        List<String> registeredContactList = contactsDatabaseHelper.getAllRegisteredContacts();
+        List<String> registeredContactList = contactsDatabase.getAllRegisteredContacts();
         for (String phoneNumber : registeredContactList) {
-            List<String> zoneIDs = zonesDatabaseHelper.getZoneIds(phoneNumber);
+            List<String> zoneIDs = zonesDatabase.getZoneIds(phoneNumber);
 
             for (String zoneID : zoneIDs) {
                 productsReference = FirebaseDatabase.getInstance().getReference().child("zones").child(phoneNumber).child(zoneID).child("products");
@@ -325,7 +328,7 @@ public class ProductsDataSyncService extends Service{
                             String productRemoteId = productSnapshot.child("productID").getValue(String.class);
 
                             // Get the product details from the database
-                            List<String> productDetails = productsDatabaseHelper.getProductDetails(productRemoteId);
+                            List<String> productDetails = productsDatabase.getProductDetails(productRemoteId);
 
                             // Check if the product exists in the database
                             if (productDetails != null) {
@@ -357,7 +360,7 @@ public class ProductsDataSyncService extends Service{
                                     contentValues.put("unitPrice", remoteUnitPrice);
                                     contentValues.put("price", remotePrice);
 
-                                    productsDatabaseHelper.updateProduct(productRemoteId, contentValues);
+                                    productsDatabase.updateProduct(productRemoteId, contentValues);
                                     Log.d("FarmConnect", "onDataChange: Product id " + productRemoteId + " updated");
                                 }
                             }
@@ -377,9 +380,9 @@ public class ProductsDataSyncService extends Service{
     }
 
     private void removeObsoleteProductsFromSyncedData() {
-        List<String> registeredContactList = contactsDatabaseHelper.getAllRegisteredContacts();
+        List<String> registeredContactList = contactsDatabase.getAllRegisteredContacts();
         for (String phoneNumber : registeredContactList) {
-            List<String> zoneIDs = zonesDatabaseHelper.getZoneIds(phoneNumber);
+            List<String> zoneIDs = zonesDatabase.getZoneIds(phoneNumber);
             for (String zoneID : zoneIDs) {
                 productsReference = FirebaseDatabase.getInstance().getReference().child("zones").child(phoneNumber).child(zoneID).child("products");
                 productsReference.addListenerForSingleValueEvent(new ValueEventListener() {

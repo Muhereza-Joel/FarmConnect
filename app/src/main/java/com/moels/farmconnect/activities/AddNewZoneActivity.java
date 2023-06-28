@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.services.ZoneUploadService;
 import com.moels.farmconnect.utility_classes.UI;
+import com.moels.farmconnect.utility_classes.ZonesDatabase;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
 import java.text.SimpleDateFormat;
@@ -40,7 +41,7 @@ public class AddNewZoneActivity extends AppCompatActivity {
 
     private Toolbar addNewZoneActivityToolbar;
     private EditText zoneNameEditText, locationEditText, productsToCollectEditText, descriptionEditText;
-    private ZonesDatabaseHelper zonesDatabaseHelper;
+    private ZonesDatabase zonesDatabase;
     private SharedPreferences myAppPreferences;
     private TextView zoneHeaderTextView;
     @Override
@@ -55,7 +56,7 @@ public class AddNewZoneActivity extends AppCompatActivity {
         setSupportActionBar(addNewZoneActivityToolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Add New Zone", true);
 
-        zonesDatabaseHelper = ZonesDatabaseHelper.getInstance(getApplicationContext());
+        zonesDatabase = ZonesDatabaseHelper.getInstance(getApplicationContext());
     }
 
     private void initUI(){
@@ -103,7 +104,7 @@ public class AddNewZoneActivity extends AppCompatActivity {
 
             boolean validated = validateViews();
             if (validated){
-                boolean zoneCreated = zonesDatabaseHelper.addZoneToDatabase(getValuesFromUI());
+                boolean zoneCreated = zonesDatabase.addZoneToDatabase(getValuesFromUI());
                 if(zoneCreated) {
                     clearViews();
                     UI.displaySnackBar(getApplicationContext(), parentView, "Collection Zone Created!!");

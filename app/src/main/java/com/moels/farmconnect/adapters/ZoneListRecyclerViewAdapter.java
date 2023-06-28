@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.models.ZoneCardItem;
+import com.moels.farmconnect.utility_classes.ContactsDatabase;
 import com.moels.farmconnect.utility_classes.ContactsDatabaseHelper;
 
 import java.util.List;
@@ -24,12 +25,12 @@ public class ZoneListRecyclerViewAdapter extends RecyclerView.Adapter<ZoneListRe
     private List<ZoneCardItem> itemList;
     private Context context;
     private Listener listener;
-    private ContactsDatabaseHelper contactsDatabaseHelper;
+    private ContactsDatabase contactsDatabase;
 
     public ZoneListRecyclerViewAdapter(List<ZoneCardItem> itemList, Context context) {
         this.itemList = itemList;
         this.context = context;
-        contactsDatabaseHelper = ContactsDatabaseHelper.getInstance(context);
+        contactsDatabase = ContactsDatabaseHelper.getInstance(context);
     }
 
     @NonNull
@@ -55,8 +56,8 @@ public class ZoneListRecyclerViewAdapter extends RecyclerView.Adapter<ZoneListRe
         holder.zoneLocationTextView.setText(zoneCardItem.getLocation());
         holder.createTimeTextView.setText(zoneCardItem.getCreateTime());
         holder.statusTextView.setText(zoneCardItem.getStatus());
-        holder.zoneCreatorTextView.setText(contactsDatabaseHelper.getOwnerUsername(zoneCardItem.getOwner()));
-        Glide.with(context).load(contactsDatabaseHelper.getOwnerImageUrl(zoneCardItem.getOwner())).circleCrop().into(holder.zoneOwnerImageView);
+        holder.zoneCreatorTextView.setText(contactsDatabase.getOwnerUsername(zoneCardItem.getOwner()));
+        Glide.with(context).load(contactsDatabase.getOwnerImageUrl(zoneCardItem.getOwner())).circleCrop().into(holder.zoneOwnerImageView);
     }
     //TODO set card background for light and dark mode
 

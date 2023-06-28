@@ -17,18 +17,16 @@ import androidx.fragment.app.DialogFragment;
 
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.services.DeleteProductService;
-import com.moels.farmconnect.services.DeleteZoneService;
+import com.moels.farmconnect.utility_classes.ProductsDatabase;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
 
 public class DeleteProductConfirmationDialog extends DialogFragment implements DialogInterface.OnClickListener {
-    private ProductsDatabaseHelper productsDatabaseHelper;
-    private SQLiteDatabase sqLiteDatabase;
+    private ProductsDatabase productsDatabase;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        productsDatabaseHelper = ProductsDatabaseHelper.getInstance(getContext());;
-        sqLiteDatabase = productsDatabaseHelper.getWritableDatabase();
+        productsDatabase = ProductsDatabaseHelper.getInstance(getContext());;
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         return (builder.setTitle("Continue To Delete Product")
@@ -41,9 +39,9 @@ public class DeleteProductConfirmationDialog extends DialogFragment implements D
     public void onClick(DialogInterface dialog, int which) {
         String zoneID = getActivity().getIntent().getStringExtra("zoneID");
         String productID = getActivity().getIntent().getStringExtra("productID");
-        String url = getImageUrl(productID);
+        String url = productsDatabase.getProductImageUrl(productID);
         if (!TextUtils.isEmpty(url)){
-            boolean productIsDeleted = productsDatabaseHelper.deleteProductFromDatabase(productID);
+            boolean productIsDeleted = productsDatabase.deleteProductFromDatabase(productID);
             if (productIsDeleted){
                 Intent deleteProductService = new Intent(getActivity(), DeleteProductService.class);
                 deleteProductService.putExtra("zoneID", zoneID);
@@ -57,17 +55,6 @@ public class DeleteProductConfirmationDialog extends DialogFragment implements D
             }
         }
 
-    }
-
-    @SuppressLint("Range")
-    private String getImageUrl(String productID){
-        String url = "";
-        Cursor cursor = sqLiteDatabase.rawQuery("SELECT imageUrl FROM products WHERE productRemoteId = " + productID, null);
-        if (cursor.moveToNext()){
-            url = cursor.getString(cursor.getColumnIndex("imageUrl"));
-        }
-        cursor.close();
-        return url;
     }
 
     @Override

@@ -15,7 +15,7 @@ import com.moels.farmconnect.models.ProductCard;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductsDatabaseHelper extends SQLiteOpenHelper {
+public class ProductsDatabaseHelper extends SQLiteOpenHelper implements ProductsDatabase{
     private static ProductsDatabaseHelper uniqueInstance;
     private static final String DATABASE_NAME = "FarmConnectProductsDatabase";
     private static final int DATABASE_VERSION = 3; //Earlier version number was 2
@@ -92,6 +92,7 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    @Override
     public List<String> getProductRemoteIds(){
         List<String> productsRemoteIds = new ArrayList<>();
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT productRemoteId FROM products", null);
@@ -105,7 +106,8 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
         return productsRemoteIds;
     }
 
-    public boolean addProductToDatabase(List<String> productDetails){
+    @Override
+    public boolean addProduct(List<String> productDetails){
         boolean rowCreated = false;
 
         ContentValues contentValues = new ContentValues();
@@ -130,9 +132,10 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
         return rowCreated;
     }
 
-    public List<String> getUpdatedProduct(String currentProductId){
+    @Override
+    public List<String> getUpdatedProduct(String updatedProductID){
         List<String> product = new ArrayList<>();
-        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM products WHERE updated = 'true' AND productRemoteId = '" + currentProductId + "'", null);
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM products WHERE updated = 'true' AND productRemoteId = '" + updatedProductID + "'", null);
         if (cursor.moveToNext()){
             do {
                 @SuppressLint("Range") String zoneID = cursor.getString(cursor.getColumnIndex("zoneID"));
@@ -155,6 +158,7 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
         return product;
     }
 
+    @Override
     public List<Product> getAllProductsToUpload(String currentZoneId){
         List<Product> products = new ArrayList<>();
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM products WHERE uploaded = 'false' AND zoneID = '" + currentZoneId + "'", null);
@@ -181,6 +185,7 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
         return products;
     }
 
+    @Override
     public List<Card> getAllProducts(String zoneID, String owner){
         List<Card> items = new ArrayList<>();
         Cursor cursor;
@@ -214,6 +219,7 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    @Override
     public List<String> getProductDetails(String productID) {
         List<String> resultSet = new ArrayList<>();
 
@@ -245,8 +251,9 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    @Override
     @SuppressLint("Range")
-    public String getImageUrl(String productID){
+    public String getProductImageUrl(String productID){
         String productImageUrl = "";
         Cursor cursor = sqLiteDatabase.query("products", new String[]{"imageUrl"},
                 "productRemoteId = ?", new String[]{productID}, null, null, null);
@@ -257,6 +264,7 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
         return productImageUrl;
     }
 
+    @Override
     public boolean updateProduct(String productID, ContentValues contentValues){
         boolean productUpdated = false;
         int rowsUpdated = sqLiteDatabase.update("products", contentValues, "productRemoteId = ?", new String[]{productID});
@@ -266,19 +274,21 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper {
         return productUpdated;
     }
 
-    public void updateProductUploaded(String productID, boolean uploaded) {
+    @Override
+    public void updateProductUploadStatus(String productID, boolean uploaded) {
         ContentValues values = new ContentValues();
         values.put("uploaded", uploaded ? "true" : "false");
         sqLiteDatabase.update("products", values, "productRemoteId = ?", new String[]{productID});
     }
 
+    @Override
     public void updateProductUpdateStatus(String productID, boolean uploaded) {
         ContentValues values = new ContentValues();
         values.put("uploaded", uploaded ? "true" : "false");
         sqLiteDatabase.update("products", values, "productRemoteId = ?", new String[]{productID});
     }
 
-
+    @Override
     public boolean deleteProductFromDatabase(String _id){
         boolean productDeleted = false;
         int rowsDeleted = sqLiteDatabase.delete("products", "productRemoteId = ?", new String[] {_id});

@@ -30,8 +30,10 @@ import com.moels.farmconnect.activities.ProductsInAzoneActivity;
 import com.moels.farmconnect.adapters.ZoneListRecyclerViewAdapter;
 import com.moels.farmconnect.models.Zone;
 import com.moels.farmconnect.models.ZoneCardItem;
+import com.moels.farmconnect.utility_classes.ContactsDatabase;
 import com.moels.farmconnect.utility_classes.ContactsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.RealTimeZonesObserver;
+import com.moels.farmconnect.utility_classes.ZonesDatabase;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
 import java.util.ArrayList;
@@ -42,9 +44,8 @@ public class ZonesListFragment extends Fragment {
     private static final int ZONE_DELETE_REQUEST_CODE = 2;
     private RecyclerView zonesListRecyclerView;
     private ZoneListRecyclerViewAdapter zoneListRecyclerViewAdapter;
-    private ZonesDatabaseHelper zonesDatabaseHelper;
-    private ContactsDatabaseHelper contactsDatabaseHelper;
-    private SQLiteDatabase sqLiteDatabase;
+    private ZonesDatabase zonesDatabase;
+    private ContactsDatabase contactsDatabase;
     private List<ZoneCardItem> zoneCardItems;
     private View view;
     private TextView emptyZonesMessageTextView;
@@ -57,13 +58,12 @@ public class ZonesListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        zonesDatabaseHelper = ZonesDatabaseHelper.getInstance(getContext());
-        contactsDatabaseHelper = ContactsDatabaseHelper.getInstance(getContext());
-        sqLiteDatabase = zonesDatabaseHelper.getReadableDatabase();
+        zonesDatabase = ZonesDatabaseHelper.getInstance(getContext());
+        contactsDatabase = ContactsDatabaseHelper.getInstance(getContext());
         sharedPreferences = getActivity().getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
         isFarmerAccount = sharedPreferences.getBoolean("farmerAccountTypeChosen", false);
         isBuyerAccount = sharedPreferences.getBoolean("buyerAccountTypeChosen", false);
-        zoneCardItems = getZonesFromDatabase();
+        zoneCardItems = zonesDatabase.getZonesFromDatabase();
 
         if (isFarmerAccount){
             observeZonesInFirebase();
@@ -73,7 +73,7 @@ public class ZonesListFragment extends Fragment {
 
     public void observeZonesInFirebase(){
         Log.d("FarmConnect", "ZonesFireBaseObserver: Observer is running");
-        realTimeZonesObserver = new RealTimeZonesObserver(contactsDatabaseHelper.getAllRegisteredContacts());
+        realTimeZonesObserver = new RealTimeZonesObserver(contactsDatabase.getAllRegisteredContacts());
         realTimeZonesObserver.startListening(new RealTimeZonesObserver.OnZoneUpdateListener() {
             @Override
             public void onZoneAdded(Zone zone) {
@@ -94,9 +94,9 @@ public class ZonesListFragment extends Fragment {
                     zoneDetails.add(zone.getStatus());
                     zoneDetails.add(updated);
 
-                    zonesDatabaseHelper.addZoneToDatabase(zoneDetails);
+                    zonesDatabase.addZoneToDatabase(zoneDetails);
 
-                    zoneCardItems = getZonesFromDatabase();
+                    zoneCardItems = zonesDatabase.getZonesFromDatabase();
                     zoneListRecyclerViewAdapter = new ZoneListRecyclerViewAdapter(zoneCardItems, getContext());
                     zonesListRecyclerView.setAdapter(zoneListRecyclerViewAdapter);
 
@@ -125,8 +125,8 @@ public class ZonesListFragment extends Fragment {
                     contentValues.put("products",zone.getProductsToCollect());
                     contentValues.put("description", zone.getDescription());
 
-                    zonesDatabaseHelper.updateZone(zoneID, contentValues);
-                    zoneCardItems = getZonesFromDatabase();
+                    zonesDatabase.updateZone(zoneID, contentValues);
+                    zoneCardItems = zonesDatabase.getZonesFromDatabase();
                     zoneListRecyclerViewAdapter = new ZoneListRecyclerViewAdapter(zoneCardItems, getContext());
                     zonesListRecyclerView.setAdapter(zoneListRecyclerViewAdapter);
 
@@ -149,8 +149,8 @@ public class ZonesListFragment extends Fragment {
             @Override
             public void onZoneRemoved(String zoneID) {
                 Log.d("farmconnect", "onZoneRemoved: " + zoneID);
-                zonesDatabaseHelper.deleteZoneFromDatabase(zoneID);
-                zoneCardItems = getZonesFromDatabase();
+                zonesDatabase.deleteZoneFromDatabase(zoneID);
+                zoneCardItems = zonesDatabase.getZonesFromDatabase();
                 zoneListRecyclerViewAdapter = new ZoneListRecyclerViewAdapter(zoneCardItems, getContext());
                 zonesListRecyclerView.setAdapter(zoneListRecyclerViewAdapter);
 
@@ -207,7 +207,7 @@ public class ZonesListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        zoneCardItems = getZonesFromDatabase();
+        zoneCardItems = zonesDatabase.getZonesFromDatabase();
         zoneListRecyclerViewAdapter = new ZoneListRecyclerViewAdapter(zoneCardItems, getContext());
         zonesListRecyclerView.setAdapter(zoneListRecyclerViewAdapter);
 //        scrollRecycleViewToBottom(zonesListRecyclerView);
@@ -271,30 +271,6 @@ public class ZonesListFragment extends Fragment {
         if (requestCode == ZONE_DELETE_REQUEST_CODE && requestCode == Activity.RESULT_OK){
             new MainActivity().tabLayout.getTabAt(2).select();
         }
-    }
-
-    private List<ZoneCardItem> getZonesFromDatabase(){
-        List<ZoneCardItem> listOfZoneCardItems = new ArrayList<>();
-        String [] columnsToPick = {"remote_id","zoneName", "location", "createTime", "status", "owner"};
-        Cursor cursor = sqLiteDatabase.query("zones", columnsToPick, null, null, null, null, null);
-
-        if (cursor.moveToNext()) {
-            do {
-                @SuppressLint("Range") String remote_id = cursor.getString(cursor.getColumnIndex("remote_id"));
-                @SuppressLint("Range") String zoneName = cursor.getString(cursor.getColumnIndex("zoneName"));
-                @SuppressLint("Range") String location = cursor.getString(cursor.getColumnIndex("location"));
-                @SuppressLint("Range") String createTime = cursor.getString(cursor.getColumnIndex("createTime"));
-                @SuppressLint("Range") String status = cursor.getString(cursor.getColumnIndex("status"));
-                @SuppressLint("Range") String owner = cursor.getString(cursor.getColumnIndex("owner"));
-
-                if (!TextUtils.isEmpty(zoneName) || !TextUtils.isEmpty(location)) {
-                    ZoneCardItem zoneCardItem = new ZoneCardItem(remote_id, zoneName, location, createTime, status, owner);
-                    listOfZoneCardItems.add(zoneCardItem);
-                }
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        return listOfZoneCardItems;
     }
 
     @Override

@@ -44,7 +44,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.services.UpdateProductService;
-import com.moels.farmconnect.services.UpdateZoneService;
+import com.moels.farmconnect.utility_classes.ProductsDatabase;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.UI;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -65,7 +65,7 @@ public class EditProductActivity extends AppCompatActivity {
     private EditText productNameEditText, productQuantityEditText, productUnitPriceEditText;
     private Spinner quantityUnitsSpinner;
     private TextView productPriceTextView;
-    private ProductsDatabaseHelper productsDatabaseHelper;
+    private ProductsDatabase productsDatabase;
     private ProgressDialog progressDialog;
     private SharedPreferences sharedPreferences;
 
@@ -90,11 +90,11 @@ public class EditProductActivity extends AppCompatActivity {
         productQuantityEditText.addTextChangedListener(createTextWatcher());
         productUnitPriceEditText.addTextChangedListener(createTextWatcher());
 
-        productsDatabaseHelper = ProductsDatabaseHelper.getInstance(getApplicationContext());
+        productsDatabase = ProductsDatabaseHelper.getInstance(getApplicationContext());
         sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
 
 
-        showProductDetails(productsDatabaseHelper.getProductDetails(getIntent().getStringExtra("productID")));
+        showProductDetails(productsDatabase.getProductDetails(getIntent().getStringExtra("productID")));
         productImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -327,7 +327,7 @@ public class EditProductActivity extends AppCompatActivity {
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         StorageReference storageReference = firebaseStorage.getReference();
 
-        String existingImageUrl = productsDatabaseHelper.getImageUrl(getIntent().getStringExtra("productID"));
+        String existingImageUrl = productsDatabase.getProductImageUrl(getIntent().getStringExtra("productID"));
 
         // Get the existing image reference
         StorageReference existingImageReference = storageReference.getStorage().getReferenceFromUrl(existingImageUrl);
@@ -406,7 +406,7 @@ public class EditProductActivity extends AppCompatActivity {
         contentValues.put("price", values.get(4));
         contentValues.put("updated", values.get(5));
 
-        boolean productIsUpdated = productsDatabaseHelper.updateProduct(productID, contentValues);
+        boolean productIsUpdated = productsDatabase.updateProduct(productID, contentValues);
         if (productIsUpdated){
             UI.displayToast(getApplicationContext(), "Product Updated");
             Intent serviceIntent = new Intent(getApplicationContext(), UpdateProductService.class);

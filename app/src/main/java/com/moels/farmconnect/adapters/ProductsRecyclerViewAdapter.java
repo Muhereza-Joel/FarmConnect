@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.models.Card;
 import com.moels.farmconnect.models.ProductCard;
+import com.moels.farmconnect.utility_classes.ContactsDatabase;
 import com.moels.farmconnect.utility_classes.ContactsDatabaseHelper;
 
 import java.util.List;
@@ -25,13 +26,13 @@ public class ProductsRecyclerViewAdapter extends RecyclerView.Adapter<ProductsRe
     private List<Card> cardList;
     private Context context;
     private Listener listener;
-    private ContactsDatabaseHelper contactsDatabaseHelper;
+    private ContactsDatabase contactsDatabase;
 
 
     public ProductsRecyclerViewAdapter(List<Card> cardList, Context context) {
         this.cardList = cardList;
         this.context = context;
-        contactsDatabaseHelper = ContactsDatabaseHelper.getInstance(context);
+        contactsDatabase = ContactsDatabaseHelper.getInstance(context);
     }
 
     @NonNull
@@ -60,8 +61,8 @@ public class ProductsRecyclerViewAdapter extends RecyclerView.Adapter<ProductsRe
         holder.productQuantityTextView.setText(((ProductCard) card).getQuantity());
         holder.createTimeTextView.setText(card.getCreateTime());
         holder.statusTextView.setText(((ProductCard) card).getStatus());
-        holder.ownerTextView.setText(contactsDatabaseHelper.getOwnerUsername(((ProductCard) card).getOwner()));
-        Glide.with(context).load(contactsDatabaseHelper.getOwnerImageUrl(((ProductCard) card).getOwner())).circleCrop().into(holder.productCreatorImageView);
+        holder.ownerTextView.setText(contactsDatabase.getOwnerUsername(((ProductCard) card).getOwner()));
+        Glide.with(context).load(contactsDatabase.getOwnerImageUrl(((ProductCard) card).getOwner())).circleCrop().into(holder.productCreatorImageView);
 
     }
 

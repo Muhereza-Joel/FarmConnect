@@ -16,7 +16,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.moels.farmconnect.models.Zone;
+import com.moels.farmconnect.utility_classes.ContactsDatabase;
 import com.moels.farmconnect.utility_classes.ContactsDatabaseHelper;
+import com.moels.farmconnect.utility_classes.ZonesDatabase;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
 import java.util.ArrayList;
@@ -28,15 +30,15 @@ public class FarmerAccountZonesFetchService extends Service {
     private Runnable runnable;
     private FarmerZonesFetchListener zonesFetchListener;
     private final IBinder binder = new FarmerZonesFetchServiceBinder();
-    private ContactsDatabaseHelper contactsDatabaseHelper;
-    private ZonesDatabaseHelper zonesDatabaseHelper;
+    private ContactsDatabase contactsDatabase;
+    private ZonesDatabase zonesDatabase;
 
     @Override
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
-        contactsDatabaseHelper = ContactsDatabaseHelper.getInstance(getApplicationContext());
-        zonesDatabaseHelper = ZonesDatabaseHelper.getInstance(getApplicationContext());
+        contactsDatabase = ContactsDatabaseHelper.getInstance(getApplicationContext());
+        zonesDatabase = ZonesDatabaseHelper.getInstance(getApplicationContext());
     }
 
     @Override
@@ -49,7 +51,7 @@ public class FarmerAccountZonesFetchService extends Service {
         runnable = new Runnable() {
             @Override
             public void run() {
-                retrieveZonesByPhoneNumbers(contactsDatabaseHelper.getAllRegisteredContacts());
+                retrieveZonesByPhoneNumbers(contactsDatabase.getAllRegisteredContacts());
             }
         };
         handler.postDelayed(runnable, POLL_INTERVAL);
@@ -114,7 +116,7 @@ public class FarmerAccountZonesFetchService extends Service {
                 zoneDetails.add(zone.getStatus());
                 zoneDetails.add(updated);
 
-                zonesDatabaseHelper.addZoneToDatabase(zoneDetails);
+                zonesDatabase.addZoneToDatabase(zoneDetails);
             }
         }
         if (zonesFetchListener != null){

@@ -10,7 +10,6 @@ import android.app.UiModeManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,6 +25,7 @@ import android.widget.EditText;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.services.UpdateZoneService;
 import com.moels.farmconnect.utility_classes.UI;
+import com.moels.farmconnect.utility_classes.ZonesDatabase;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ import java.util.List;
 public class EditZoneActivity extends AppCompatActivity {
     private Toolbar editZoneActivityToolbar;
     private EditText zoneNameEditText, locationEditText, productsToCollectEditText, descriptionEditText;
-    private ZonesDatabaseHelper zonesDatabaseHelper;
+    private ZonesDatabase zonesDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,9 +46,9 @@ public class EditZoneActivity extends AppCompatActivity {
         setSupportActionBar(editZoneActivityToolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Edit Zone", true);
 
-        zonesDatabaseHelper = ZonesDatabaseHelper.getInstance(getApplicationContext());
+        zonesDatabase = ZonesDatabaseHelper.getInstance(getApplicationContext());
 
-        showProductDetails(zonesDatabaseHelper.getZoneDetails(getIntent().getStringExtra("zoneID")));
+        showProductDetails(zonesDatabase.getZoneDetails(getIntent().getStringExtra("zoneID")));
     }
 
     private void initUI(){
@@ -134,7 +134,7 @@ public class EditZoneActivity extends AppCompatActivity {
         contentValues.put("description", updatedZoneDetails.get(3));
         contentValues.put("updated", updatedZoneDetails.get(4));
 
-        boolean zoneUpdated = zonesDatabaseHelper.updateZone(zoneID, contentValues);
+        boolean zoneUpdated = zonesDatabase.updateZone(zoneID, contentValues);
 
         startServiceToUpdateZoneInFirebase(zoneID, updatedZoneDetails);
 

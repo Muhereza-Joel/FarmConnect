@@ -1,15 +1,11 @@
 package com.moels.farmconnect.services;
 
-import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.IBinder;
-import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -20,8 +16,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.moels.farmconnect.dialogs.ProgressDialog;
-import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
+import com.moels.farmconnect.utility_classes.ZonesDatabase;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
 public class DeleteProductService extends Service {
@@ -30,7 +25,7 @@ public class DeleteProductService extends Service {
     private Handler handler;
     private Runnable runnable;
     private SharedPreferences sharedPreferences;
-    private ZonesDatabaseHelper zonesDatabaseHelper;
+    private ZonesDatabase zonesDatabase;
     public DeleteProductService() {
     }
 
@@ -39,7 +34,7 @@ public class DeleteProductService extends Service {
         super.onCreate();
         handler = new Handler();
         sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
-        zonesDatabaseHelper = ZonesDatabaseHelper.getInstance(getApplicationContext());
+        zonesDatabase = ZonesDatabaseHelper.getInstance(getApplicationContext());
     }
 
     @Override
@@ -76,7 +71,7 @@ public class DeleteProductService extends Service {
     }
 
     private void deleteProductFromFirebase(String zoneID, String productID) {
-        String phoneNumber = zonesDatabaseHelper.getZoneOwner(zoneID);
+        String phoneNumber = zonesDatabase.getZoneOwner(zoneID);
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference.child("zones").child(phoneNumber).child(zoneID).child("products").child(productID).removeValue()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

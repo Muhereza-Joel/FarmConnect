@@ -13,7 +13,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -44,6 +43,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.services.ProductsUploadService;
+import com.moels.farmconnect.utility_classes.ProductsDatabase;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.UI;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -68,9 +68,7 @@ public class CreateProductActivity extends AppCompatActivity {
     private Spinner quantityUnitsSpinner;
     private TextView productPriceTextView;
     private ProgressDialog progressDialog;
-    private SQLiteDatabase sqLiteDatabase;
-    private ProductsDatabaseHelper productsDatabaseHelper;
-
+    private ProductsDatabase productsDatabase;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -83,8 +81,7 @@ public class CreateProductActivity extends AppCompatActivity {
         UI.setUpToolbarInDarkMode(getApplicationContext(), toolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Create New Product", true);
 
-        productsDatabaseHelper = ProductsDatabaseHelper.getInstance(getApplicationContext());
-        sqLiteDatabase = productsDatabaseHelper.getWritableDatabase();
+        productsDatabase = ProductsDatabaseHelper.getInstance(getApplicationContext());
         sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
 
         productImageView.setOnClickListener(new View.OnClickListener() {
@@ -258,7 +255,7 @@ public class CreateProductActivity extends AppCompatActivity {
                         String url = uri.toString();
                         progressDialog.dismiss();
 
-                        boolean productIsCreated = productsDatabaseHelper.addProductToDatabase(getValuesFromUI(url));
+                        boolean productIsCreated = productsDatabase.addProduct(getValuesFromUI(url));
                         if (productIsCreated){
                             resetUI();
                             View parentView = findViewById(R.id.parent);

@@ -3,12 +3,10 @@ package com.moels.farmconnect.services;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Handler;
@@ -24,12 +22,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.moels.farmconnect.activities.CreateProfileActivity;
-import com.moels.farmconnect.activities.FinishSetUpActivity;
-import com.moels.farmconnect.activities.MainActivity;
-import com.moels.farmconnect.dialogs.ProgressDialog;
+import com.moels.farmconnect.utility_classes.ContactsDatabase;
 import com.moels.farmconnect.utility_classes.ContactsDatabaseHelper;
-import com.moels.farmconnect.utility_classes.UI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +35,7 @@ public class FetchContactsService extends Service {
     private static final int POLL_INTERVAL = 1000;
     private Handler handler;
     private Runnable runnable;
-    private SQLiteDatabase sqLiteDatabase;
-    private ContactsDatabaseHelper contactsDatabaseHelper;
+    private ContactsDatabase contactsDatabase;
     private final IBinder binder = new FetchContactsServiceBinder();
     private ContactsFetchListener contactsFetchListener;
 
@@ -50,8 +43,7 @@ public class FetchContactsService extends Service {
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
-        contactsDatabaseHelper = ContactsDatabaseHelper.getInstance(getApplicationContext());
-        sqLiteDatabase  = contactsDatabaseHelper.getWritableDatabase();
+        contactsDatabase = ContactsDatabaseHelper.getInstance(getApplicationContext());
         myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
         editor = myAppPreferences.edit();
     }
@@ -129,7 +121,7 @@ public class FetchContactsService extends Service {
                             contactDetails.add(accountType);
                             contactDetails.add(uploaded);
                             contactDetails.add(updated);
-                            contactsDatabaseHelper.addContactToDatabase(contactDetails);
+                            contactsDatabase.addContactToDatabase(contactDetails);
                             isMatchFound = true; // Set the flag to true if a match is found
                             break; // Exit the inner loop
                         }
@@ -189,22 +181,5 @@ public class FetchContactsService extends Service {
 
         return listOfContactsOnPhone;
     }
-
-    private void insertContactToDatabase(String username, String phoneNumber){
-        String query = "SELECT * FROM contacts WHERE phoneNumber = ?";
-        Cursor cursor = sqLiteDatabase.rawQuery(query, new String[]{phoneNumber});
-        if (cursor.getCount() > 0){
-            Log.d("FarmConnect", "Phone Number Exists In Database Already");
-        } else {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put("username", username);
-            contentValues.put("phoneNumber", phoneNumber);
-            sqLiteDatabase.insert("contacts", null, contentValues);
-            Log.d("FarmConnect", "Contact Inserted");
-        }
-    }
-
-
-
 
 }

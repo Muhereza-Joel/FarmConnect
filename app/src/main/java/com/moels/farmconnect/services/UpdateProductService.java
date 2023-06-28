@@ -14,7 +14,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.moels.farmconnect.utility_classes.ProductsDatabase;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
+import com.moels.farmconnect.utility_classes.ZonesDatabase;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
 import java.util.HashMap;
@@ -25,8 +27,8 @@ public class UpdateProductService extends Service {
     private static final int POLL_INTERVAL = 1000;
     private Handler handler;
     private Runnable runnable;
-    private ProductsDatabaseHelper productsDatabaseHelper;
-    private ZonesDatabaseHelper zonesDatabaseHelper;
+    private ProductsDatabase productsDatabase;
+    private ZonesDatabase zonesDatabase;
     private SharedPreferences sharedPreferences;
 
     public UpdateProductService() {
@@ -36,8 +38,8 @@ public class UpdateProductService extends Service {
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
-        productsDatabaseHelper = ProductsDatabaseHelper.getInstance(getApplicationContext());
-        zonesDatabaseHelper = ZonesDatabaseHelper.getInstance(getApplicationContext());
+        productsDatabase = ProductsDatabaseHelper.getInstance(getApplicationContext());
+        zonesDatabase = ZonesDatabaseHelper.getInstance(getApplicationContext());
         sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
     }
 
@@ -53,7 +55,7 @@ public class UpdateProductService extends Service {
         runnable = new Runnable() {
             @Override
             public void run() {
-                updateProduct(productID, productsDatabaseHelper.getUpdatedProduct(productID));
+                updateProduct(productID, productsDatabase.getUpdatedProduct(productID));
             }
         };
         handler.postDelayed(runnable, POLL_INTERVAL);
@@ -67,7 +69,7 @@ public class UpdateProductService extends Service {
         if (updatedProductDetails.size() > 0){
             Map<String, Object> updatedProduct = new HashMap<>();
             String zoneID = updatedProductDetails.get(0);
-            String phoneNumber = zonesDatabaseHelper.getZoneOwner(zoneID);
+            String phoneNumber = zonesDatabase.getZoneOwner(zoneID);
             updatedProduct.put("productName", updatedProductDetails.get(1));
             updatedProduct.put("quantity", updatedProductDetails.get(2));
             updatedProduct.put("unitPrice", updatedProductDetails.get(3));
@@ -80,13 +82,13 @@ public class UpdateProductService extends Service {
                         @Override
                         public void onSuccess(Void unused) {
                             Log.d("FarmConnect", "Product Updated");
-                            productsDatabaseHelper.updateProductUpdateStatus(productID, false);
+                            productsDatabase.updateProductUpdateStatus(productID, false);
                             stopSelf();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            productsDatabaseHelper.updateProductUpdateStatus(productID, true);
+                            productsDatabase.updateProductUpdateStatus(productID, true);
                             stopSelf();
                             Log.d("FarmConnect", "Product Updated Failed");
                         }

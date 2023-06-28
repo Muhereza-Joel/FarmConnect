@@ -29,6 +29,7 @@ import com.moels.farmconnect.R;
 import com.moels.farmconnect.dialogs.DeleteProductConfirmationDialog;
 import com.moels.farmconnect.easypay.DepositRequest;
 import com.moels.farmconnect.easypay.WithdrawRequest;
+import com.moels.farmconnect.utility_classes.ProductsDatabase;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.UI;
 
@@ -44,7 +45,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private ImageView productImageView;
     private TextView productNameTextView, productQuantityTextView,productUnitPriceTextView, productPriceTextView;
     private FloatingActionButton sendMessageFloatingActionButton, makePaymentFloatingActionButton;
-    private ProductsDatabaseHelper productsDatabaseHelper;
+    private ProductsDatabase productsDatabase;
     private SharedPreferences sharedPreferences;
     private boolean isFarmerAccount;
     private boolean isBuyerAccount;
@@ -70,8 +71,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
         isFarmerAccount = sharedPreferences.getBoolean("farmerAccountTypeChosen", false);
         isBuyerAccount = sharedPreferences.getBoolean("buyerAccountTypeChosen", false);
-        productsDatabaseHelper = ProductsDatabaseHelper.getInstance(getApplicationContext());
-        showProductDetails(productsDatabaseHelper.getProductDetails(getIntent().getStringExtra("productID")));
+        productsDatabase = ProductsDatabaseHelper.getInstance(getApplicationContext());
+        showProductDetails(productsDatabase.getProductDetails(getIntent().getStringExtra("productID")));
 
         addClickEventOnPaymentFab();
     }
@@ -134,7 +135,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        showProductDetails(productsDatabaseHelper.getProductDetails(getIntent().getStringExtra("productID")));
+        showProductDetails(productsDatabase.getProductDetails(getIntent().getStringExtra("productID")));
     }
 
     @Override

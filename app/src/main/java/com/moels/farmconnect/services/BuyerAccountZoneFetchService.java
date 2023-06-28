@@ -17,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.moels.farmconnect.models.Zone;
+import com.moels.farmconnect.utility_classes.ContactsDatabase;
 import com.moels.farmconnect.utility_classes.ContactsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.UI;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
@@ -30,7 +31,7 @@ public class BuyerAccountZoneFetchService extends Service {
     private Runnable runnable;
     private BuyerZonesFetchListener zonesFetchListener;
     private final IBinder binder = new BuyerZonesFetchServiceBinder();
-    private ContactsDatabaseHelper contactsDatabaseHelper;
+    private ContactsDatabase contactsDatabaseHelper;
     private ZonesDatabaseHelper zonesDatabaseHelper;
     private SharedPreferences myAppPreferences;
 

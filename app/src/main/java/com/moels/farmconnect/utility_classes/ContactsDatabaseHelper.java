@@ -11,7 +11,7 @@ import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContactsDatabaseHelper extends SQLiteOpenHelper {
+public class ContactsDatabaseHelper extends SQLiteOpenHelper implements ContactsDatabase{
     private static ContactsDatabaseHelper uniqueInstance;
     private static final String DATABASE_NAME = "FarmConnectContactsDatabase";
     private static final int DATABASE_VERSION = 3; //Upgraded database from version 2
@@ -66,24 +66,7 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean addContactToDatabase(List<String> contactDetails){
-        boolean rowCreated = false;
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("username", contactDetails.get(0));
-        contentValues.put("phoneNumber", contactDetails.get(1));
-        contentValues.put("imageUrl", contactDetails.get(2));
-        contentValues.put("accountType", contactDetails.get(3));
-        contentValues.put("uploaded", contactDetails.get(4));
-        contentValues.put("updated", contactDetails.get(5));
-
-        long rowsInserted = sqLiteDatabase.insertWithOnConflict("contacts", null, contentValues, SQLiteDatabase.CONFLICT_IGNORE);
-        if (rowsInserted != -1) {
-            rowCreated = true;
-        }
-        return rowCreated;
-    }
-
+    @Override
     public String getOwnerUsername(String phoneNumber){
         String productOwnerUsername = "~self~";
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT username FROM contacts WHERE phoneNumber = '" + phoneNumber +"'", null);
@@ -99,6 +82,7 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
         return productOwnerUsername;
     }
 
+    @Override
     public String getOwnerImageUrl(String phoneNumber){
         String ownerImageUrl = "";
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT imageUrl FROM contacts WHERE phoneNumber = '" + phoneNumber +"'", null);
@@ -114,6 +98,7 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
         return ownerImageUrl;
     }
 
+    @Override
     public List<String> getAllRegisteredContacts(){
         List<String> phoneNumbers = new ArrayList<>();
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT phoneNumber FROM contacts", null);
@@ -127,5 +112,23 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         return phoneNumbers;
+    }
+
+    @Override
+    public boolean addContactToDatabase(List<String> contactDetails) {
+        boolean rowCreated = false;
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("username", contactDetails.get(0));
+        contentValues.put("phoneNumber", contactDetails.get(1));
+        contentValues.put("imageUrl", contactDetails.get(2));
+        contentValues.put("accountType", contactDetails.get(3));
+        contentValues.put("uploaded", contactDetails.get(4));
+        contentValues.put("updated", contactDetails.get(5));
+
+        long rowsInserted = sqLiteDatabase.insertWithOnConflict("contacts", null, contentValues, SQLiteDatabase.CONFLICT_IGNORE);
+        if (rowsInserted != -1) {
+            rowCreated = true;
+        }
+        return rowCreated;
     }
 }

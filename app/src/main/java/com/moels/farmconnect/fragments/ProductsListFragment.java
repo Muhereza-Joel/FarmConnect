@@ -25,6 +25,7 @@ import com.moels.farmconnect.activities.ProductDetailsActivity;
 import com.moels.farmconnect.adapters.ProductsRecyclerViewAdapter;
 import com.moels.farmconnect.models.Card;
 import com.moels.farmconnect.models.Product;
+import com.moels.farmconnect.utility_classes.ProductsDatabase;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.RealTimeProductsObserver;
 
@@ -35,7 +36,7 @@ public class ProductsListFragment extends Fragment {
     private static final int PRODUCT_DELETE_REQUEST_CODE = 3;
     private RecyclerView productListRecyclerView;
     private ProductsRecyclerViewAdapter productsRecyclerViewAdapter;
-    private ProductsDatabaseHelper productsDatabaseHelper;
+    private ProductsDatabase productsDatabase;
     public List<Card> cardList;
     private SharedPreferences sharedPreferences;
     private String authenticatedPhoneNumber;
@@ -49,17 +50,17 @@ public class ProductsListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        productsDatabaseHelper = ProductsDatabaseHelper.getInstance(getContext());
+        productsDatabase = ProductsDatabaseHelper.getInstance(getContext());
         sharedPreferences = getActivity().getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
         authenticatedPhoneNumber = sharedPreferences.getString("authenticatedPhoneNumber", "123456789");
         isFarmerAccount = sharedPreferences.getBoolean("farmerAccountTypeChosen", false);
         isBuyerAccount = sharedPreferences.getBoolean("buyerAccountTypeChosen", false);
 
         if (isFarmerAccount){
-            cardList = productsDatabaseHelper.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), authenticatedPhoneNumber);
+            cardList = productsDatabase.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), authenticatedPhoneNumber);
         }
         else if(isBuyerAccount){
-            cardList = productsDatabaseHelper.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
+            cardList = productsDatabase.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
             observeFireBase();
         }
 
@@ -90,10 +91,10 @@ public class ProductsListFragment extends Fragment {
                 productDetails.add(product.getStatus());
                 productDetails.add(product.getZoneID());
 
-                boolean rowCreated = productsDatabaseHelper.addProductToDatabase(productDetails);
+                boolean rowCreated = productsDatabase.addProduct(productDetails);
                 if (rowCreated){
                     if (getActivity().getIntent().getStringExtra("zoneID") != null){
-                        cardList = productsDatabaseHelper.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
+                        cardList = productsDatabase.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
                         productsRecyclerViewAdapter = new ProductsRecyclerViewAdapter(cardList, getContext());
                         productListRecyclerView.setAdapter(productsRecyclerViewAdapter);
                         Log.d("FarmConnect", "Firebase Observer onProductAdded: ProductID " + product.getProductID() + " added to database");
@@ -115,10 +116,10 @@ public class ProductsListFragment extends Fragment {
                 contentValues.put("unitPrice", product.getUnitPrice());
                 contentValues.put("price", product.getPrice());
 
-                boolean productUpdated = productsDatabaseHelper.updateProduct(productID, contentValues);
+                boolean productUpdated = productsDatabase.updateProduct(productID, contentValues);
                 if (productUpdated){
                     if (getActivity().getIntent().getStringExtra("zoneID") != null) {
-                        cardList = productsDatabaseHelper.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
+                        cardList = productsDatabase.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
                         productsRecyclerViewAdapter = new ProductsRecyclerViewAdapter(cardList, getContext());
                         productListRecyclerView.setAdapter(productsRecyclerViewAdapter);
                         Log.d("FarmConnect", "Firebase Observer onProductChanged: ProductID " + productID + " updated");
@@ -131,8 +132,8 @@ public class ProductsListFragment extends Fragment {
             @Override
             public void onProductRemoved(String productId) {
                 if (getActivity().getIntent().getStringExtra("zoneID") != null) {
-                    productsDatabaseHelper.deleteProductFromDatabase(productId);
-                    cardList = productsDatabaseHelper.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
+                    productsDatabase.deleteProductFromDatabase(productId);
+                    cardList = productsDatabase.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
                     productsRecyclerViewAdapter = new ProductsRecyclerViewAdapter(cardList, getContext());
                     productListRecyclerView.setAdapter(productsRecyclerViewAdapter);
                     addClickListenerOnCards();
@@ -207,10 +208,10 @@ public class ProductsListFragment extends Fragment {
         super.onResume();
 
         if (isFarmerAccount){
-            cardList = productsDatabaseHelper.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), authenticatedPhoneNumber);
+            cardList = productsDatabase.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), authenticatedPhoneNumber);
         }
         else if(isBuyerAccount){
-            cardList = productsDatabaseHelper.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
+            cardList = productsDatabase.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
             observeFireBase();
         }
 
@@ -248,10 +249,10 @@ public class ProductsListFragment extends Fragment {
             String updatedZoneName = data.getStringExtra("updatedZoneName");
 
             if (isFarmerAccount){
-                cardList = productsDatabaseHelper.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), authenticatedPhoneNumber);
+                cardList = productsDatabase.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), authenticatedPhoneNumber);
             }
             else if(isBuyerAccount){
-                cardList = productsDatabaseHelper.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
+                cardList = productsDatabase.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
             }
 
             productsRecyclerViewAdapter = new ProductsRecyclerViewAdapter(cardList, getContext());
