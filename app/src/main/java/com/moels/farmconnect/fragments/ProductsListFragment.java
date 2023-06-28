@@ -27,6 +27,7 @@ import com.moels.farmconnect.models.Card;
 import com.moels.farmconnect.models.Product;
 import com.moels.farmconnect.utility_classes.ProductsDatabase;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
+import com.moels.farmconnect.utility_classes.ProductsObserver;
 import com.moels.farmconnect.utility_classes.RealTimeProductsObserver;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class ProductsListFragment extends Fragment {
     private View view;
     private boolean isFarmerAccount;
     private boolean isBuyerAccount;
-    private RealTimeProductsObserver realTimeProductsObserver;
+    private ProductsObserver productsObserver;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,8 +70,8 @@ public class ProductsListFragment extends Fragment {
     public void observeFireBase(){
         Log.d("FarmConnect", "observerFireBase: Observer is running");
         String zoneId = getActivity().getIntent().getStringExtra("zoneID");
-        realTimeProductsObserver = new RealTimeProductsObserver(authenticatedPhoneNumber, zoneId);
-        realTimeProductsObserver.startListening(new RealTimeProductsObserver.OnProductUpdateListener() {
+        productsObserver = RealTimeProductsObserver.getInstance(authenticatedPhoneNumber, zoneId);
+        productsObserver.startListening(new RealTimeProductsObserver.OnProductUpdateListener() {
             @Override
             public void onProductAdded(Product product) {
                 List<String> productDetails = new ArrayList<>();
@@ -264,7 +265,7 @@ public class ProductsListFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         if (isBuyerAccount){
-            realTimeProductsObserver.stopListening();
+            productsObserver.stopListening();
             Log.d("FarmConnect", "onDestroy: Observer is not running");
         }
 

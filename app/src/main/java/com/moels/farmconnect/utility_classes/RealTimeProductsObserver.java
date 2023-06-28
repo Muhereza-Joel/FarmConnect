@@ -10,11 +10,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.moels.farmconnect.models.Product;
 
-public class RealTimeProductsObserver {
+public class RealTimeProductsObserver implements ProductsObserver {
     private DatabaseReference productsReference;
     private ChildEventListener productsChildEventListener;
 
-    public RealTimeProductsObserver(String phoneNumber, String zoneID){
+    private RealTimeProductsObserver(String phoneNumber, String zoneID){
         productsReference = FirebaseDatabase.getInstance().getReference()
                 .child("zones")
                 .child(phoneNumber)
@@ -23,6 +23,11 @@ public class RealTimeProductsObserver {
 
     }
 
+    public static RealTimeProductsObserver getInstance(String phoneNumber, String zoneID){
+        return new RealTimeProductsObserver(phoneNumber, zoneID);
+    }
+
+    @Override
     public void startListening(final OnProductUpdateListener listener){
         productsChildEventListener = new ChildEventListener() {
             @Override
@@ -58,6 +63,7 @@ public class RealTimeProductsObserver {
 
     }
 
+    @Override
     public void stopListening(){
         if (productsChildEventListener != null){
             productsReference.removeEventListener(productsChildEventListener);

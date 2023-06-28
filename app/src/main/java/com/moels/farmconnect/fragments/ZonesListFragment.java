@@ -1,16 +1,12 @@
 package com.moels.farmconnect.fragments;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.UiModeManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +31,7 @@ import com.moels.farmconnect.utility_classes.ContactsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.RealTimeZonesObserver;
 import com.moels.farmconnect.utility_classes.ZonesDatabase;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
+import com.moels.farmconnect.utility_classes.ZonesObserver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +50,7 @@ public class ZonesListFragment extends Fragment {
     private SharedPreferences sharedPreferences;
     private boolean isFarmerAccount;
     private boolean isBuyerAccount;
-    private RealTimeZonesObserver realTimeZonesObserver;
+    private ZonesObserver zonesObserver;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,8 +70,8 @@ public class ZonesListFragment extends Fragment {
 
     public void observeZonesInFirebase(){
         Log.d("FarmConnect", "ZonesFireBaseObserver: Observer is running");
-        realTimeZonesObserver = new RealTimeZonesObserver(contactsDatabase.getAllRegisteredContacts());
-        realTimeZonesObserver.startListening(new RealTimeZonesObserver.OnZoneUpdateListener() {
+        zonesObserver = RealTimeZonesObserver.getInstance(contactsDatabase.getAllRegisteredContacts());
+        zonesObserver.startListening(new RealTimeZonesObserver.OnZoneUpdateListener() {
             @Override
             public void onZoneAdded(Zone zone) {
                 if (zone != null){
@@ -277,7 +274,7 @@ public class ZonesListFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         if (isFarmerAccount){
-            realTimeZonesObserver.stopListening();
+            zonesObserver.stopListening();
         }
     }
 }

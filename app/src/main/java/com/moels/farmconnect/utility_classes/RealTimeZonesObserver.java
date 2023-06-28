@@ -13,17 +13,21 @@ import com.moels.farmconnect.models.Zone;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RealTimeZonesObserver {
+public class RealTimeZonesObserver implements ZonesObserver{
     private List<DatabaseReference> zoneReferences;
     private ChildEventListener zonesChildEventListener;
 
-    public RealTimeZonesObserver(List<String> phoneNumbers){
+    private RealTimeZonesObserver(List<String> phoneNumbers){
         zoneReferences = new ArrayList<>();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("zones");
         for (String phoneNumber : phoneNumbers){
             DatabaseReference phoneNumberRef = databaseReference.child(phoneNumber);
             zoneReferences.add(phoneNumberRef);
         }
+    }
+
+    public static RealTimeZonesObserver getInstance(List<String> phoneNumbers){
+        return new RealTimeZonesObserver(phoneNumbers);
     }
 
     public void startListening(final OnZoneUpdateListener listener){
@@ -62,6 +66,7 @@ public class RealTimeZonesObserver {
         }
     }
 
+    @Override
     public void stopListening(){
         if (zonesChildEventListener != null){
             for (DatabaseReference reference : zoneReferences) {
