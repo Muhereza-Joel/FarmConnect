@@ -22,19 +22,16 @@ import android.widget.Toast;
 
 import com.hbb20.CountryCodePicker;
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.easypay.APIWithdrawCallParameters;
-import com.moels.farmconnect.easypay.WithdrawAPICall;
+import com.moels.farmconnect.easypay.APICallParameters;
+import com.moels.farmconnect.easypay.APICall;
 import com.moels.farmconnect.utility_classes.UI;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class MakeWithdrawRequestActivity extends AppCompatActivity {
     private TextView amountToPay;
     public  static TextView responseMessage;
     private EditText phone_number_field;
     private CountryCodePicker countryCodePicker;
-    private APIWithdrawCallParameters apiParameters=new APIWithdrawCallParameters();
+    private APICallParameters apiParameters=new APICallParameters();
     private String amountToWithdraw;
 
     public static ProgressDialog progressDialog;
@@ -94,13 +91,13 @@ public class MakeWithdrawRequestActivity extends AppCompatActivity {
 
     private void getIntentData(){
         try {
-            apiParameters = (APIWithdrawCallParameters) getIntent().getSerializableExtra(EASY_PAY_PARAMS);
-            amountToPay.setText("You are withdrawing " + apiParameters.transactionCurrency +" "+apiParameters.amountToWithdraw);
+            apiParameters = (APICallParameters) getIntent().getSerializableExtra(EASY_PAY_PARAMS);
+            amountToPay.setText("You are withdrawing " + apiParameters.transactionCurrency +" "+apiParameters.transactionAmount);
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        amountToWithdraw =apiParameters.amountToWithdraw;
+        amountToWithdraw =apiParameters.transactionAmount;
     }
 
     private void addClickEventOnWithdrawButton(){
@@ -133,17 +130,17 @@ public class MakeWithdrawRequestActivity extends AppCompatActivity {
             progressDialog.show();
             responseMessage.setVisibility(View.GONE);
 
-            WithdrawAPICall withdrawAPICall = new WithdrawAPICall()
+            APICall withdrawAPICall = new APICall()
                     .setActivity(MakeWithdrawRequestActivity.this)
                     .setRequestUrl(apiParameters.postUrl)
                     .setClientID(apiParameters.APIClientId)
                     .setClientSecret(apiParameters.APIClientSecret)
-                    .setRequestAction("mmpayout")
+                    .setRequestAction(apiParameters.requestAction)
                     .setWithdrawAmount("5000")
                     .setTransactionCurrency(apiParameters.transactionCurrency)
                     .setPhoneNumber(recipientPhoneNumber)
                     .setTransactionReference(apiParameters.reference)
-                    .setTransactionReason(apiParameters.withdrawReason);
+                    .setTransactionReason(apiParameters.reason);
 
             withdrawAPICall.execute();
 

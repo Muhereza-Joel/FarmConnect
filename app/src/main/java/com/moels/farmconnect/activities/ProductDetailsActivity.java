@@ -113,6 +113,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
                     .setAmountToWithdraw("5000")
                     .setTransactionCurrency(transactionCurrency)
                     .setPaymentReason("FarmConnect Purchase Payment")
+                    .setRequestAction("mmpayout")
                     .setPostUrl(postUrl)
                     .setAPIClientSecret(APIClientSecret)
                     .setAPIClientID(APIClientID)

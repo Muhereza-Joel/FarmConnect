@@ -11,6 +11,7 @@ public class WithdrawRequest {
     public String recipientPhoneNumber;
     public String transactionCurrency;
     public String transactionReference;
+    private String requestAction;
     public String postUrl;
     public String APIClientID;
     public String APIClientSecret;
@@ -37,6 +38,11 @@ public class WithdrawRequest {
         return this;
     }
 
+    public WithdrawRequest setRequestAction(String requestAction) {
+        this.requestAction = requestAction;
+        return this;
+    }
+
     public WithdrawRequest setPostUrl(String postUrl) {
         this.postUrl = postUrl;
         return this;
@@ -59,15 +65,16 @@ public class WithdrawRequest {
 
     public void initialize() {
         if (activity != null) {
-            APIWithdrawCallParameters apiWithdrawCallParameters=new APIWithdrawCallParameters();
-            apiWithdrawCallParameters.amountToWithdraw = amountToWithdraw;
+            APICallParameters apiWithdrawCallParameters=new APICallParameters();
+            apiWithdrawCallParameters.transactionAmount = amountToWithdraw;
             apiWithdrawCallParameters.recipientPhoneNumber = recipientPhoneNumber;
             apiWithdrawCallParameters.transactionCurrency = transactionCurrency;
             apiWithdrawCallParameters.postUrl = postUrl;
+            apiWithdrawCallParameters.requestAction = requestAction;
             apiWithdrawCallParameters.APIClientId = APIClientID;
             apiWithdrawCallParameters.APIClientSecret = APIClientSecret;
             apiWithdrawCallParameters.reference = transactionReference;
-            apiWithdrawCallParameters.withdrawReason = paymentReason;
+            apiWithdrawCallParameters.reason = paymentReason;
 
             Intent intent = new Intent(activity, MakeWithdrawRequestActivity.class);
             intent.putExtra(EASY_PAY_PARAMS, apiWithdrawCallParameters);

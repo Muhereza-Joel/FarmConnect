@@ -17,7 +17,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class WithdrawAPICall extends AsyncTask<String, String, String> {
+public class APICall extends AsyncTask<String, String, String> {
 
     private String requestUrl;
     private String client_id;
@@ -30,54 +30,54 @@ public class WithdrawAPICall extends AsyncTask<String, String, String> {
     private String transactionReason;
     private Activity activity;
 
-    public WithdrawAPICall(){}
+    public APICall(){}
 
-    public WithdrawAPICall setRequestUrl(String requestUrl) {
+    public APICall setRequestUrl(String requestUrl) {
         this.requestUrl = requestUrl;
         return this;
     }
 
-    public WithdrawAPICall setClientID(String client_id) {
+    public APICall setClientID(String client_id) {
         this.client_id = client_id;
         return this;
     }
 
-    public WithdrawAPICall setClientSecret(String client_secret) {
+    public APICall setClientSecret(String client_secret) {
         this.client_secret = client_secret;
         return this;
     }
 
-    public WithdrawAPICall setPhoneNumber(String phoneNumber) {
+    public APICall setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
         return this;
     }
 
-    public WithdrawAPICall setRequestAction(String requestAction) {
+    public APICall setRequestAction(String requestAction) {
         this.requestAction = requestAction;
         return this;
     }
 
-    public WithdrawAPICall setWithdrawAmount(String withdrawAmount) {
+    public APICall setWithdrawAmount(String withdrawAmount) {
         this.withdrawAmount = withdrawAmount;
         return this;
     }
 
-    public WithdrawAPICall setTransactionReference(String transactionReference) {
+    public APICall setTransactionReference(String transactionReference) {
         this.transactionReference = transactionReference;
         return this;
     }
 
-    public WithdrawAPICall setTransactionCurrency(String transactionCurrency) {
+    public APICall setTransactionCurrency(String transactionCurrency) {
         this.transactionCurrency = transactionCurrency;
         return this;
     }
 
-    public WithdrawAPICall setTransactionReason(String transactionReason) {
+    public APICall setTransactionReason(String transactionReason) {
         this.transactionReason = transactionReason;
         return this;
     }
 
-    public WithdrawAPICall setActivity(Activity activity) {
+    public APICall setActivity(Activity activity) {
         this.activity = activity;
         return this;
     }
