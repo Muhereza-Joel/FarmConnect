@@ -159,14 +159,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
+            android:layout_marginStart="@dimen/layout_margin_start_10"
+            android:layout_marginEnd="@dimen/layout_margin_end_10"
             android:gravity="center"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/din_t_receive_opt"
-                android:textSize="14sp" />
+                android:text="@string/din_t_receive_opt" />
 
             <Button
                 android:id="@+id/resend_otp"
@@ -174,7 +175,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/resend_otp"
                 android:textColor="@color/colorAccent"
-                android:textSize="15sp"
+                android:textAllCaps="false"
                 android:textStyle="bold" />
 
         </LinearLayout>

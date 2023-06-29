@@ -66,7 +66,7 @@ public class AuthenticateUserActivity extends AppCompatActivity {
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Phone Number Verification", true);
         preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
 
-        phoneNumberToAuthenticate.setText(String.format("+256-%s", getIntent().getStringExtra("phoneNumber")));
+        phoneNumberToAuthenticate.setText(getIntent().getStringExtra("phoneNumber"));
 
         setUpOTPInputs();
 

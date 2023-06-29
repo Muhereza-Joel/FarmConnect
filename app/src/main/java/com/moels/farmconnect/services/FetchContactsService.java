@@ -27,8 +27,12 @@ import com.moels.farmconnect.utility_classes.ContactsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
 import com.moels.farmconnect.utility_classes.Preferences;
 
+import org.apache.commons.text.similarity.LevenshteinDistance;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FetchContactsService extends Service {
 
@@ -91,10 +95,11 @@ public class FetchContactsService extends Service {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                String countryCode = "+256"; // Assuming the default country code is +1 (you can change it as per your requirement)
+                LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
                 for (String phoneNumber : phoneBookList) {
                     boolean isMatchFound = false; // Flag to track if a match is found for a phone number
 
-                    // Clean phone number by removing non-digit characters
                     String cleanedPhoneNumber = phoneNumber.replaceAll("[^0-9]", "");
 
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -107,10 +112,13 @@ public class FetchContactsService extends Service {
                         String updated = "false";
 
                         String cleanedFirebasePhoneNumber = firebasePhoneNumber.replaceAll("[^0-9]", "");
+                        // Calculate the Levenshtein distance between the phone numbers
+                        int distance = levenshteinDistance.apply(cleanedPhoneNumber, cleanedFirebasePhoneNumber);
 
-                        // Compare phone numbers without country codes
-                        if (cleanedPhoneNumber.endsWith(cleanedFirebasePhoneNumber)
-                                || cleanedFirebasePhoneNumber.endsWith(cleanedPhoneNumber)) {
+                        // Adjust the threshold as needed based on the tolerance for matching
+                        int threshold = 5;
+
+                        if (distance <= threshold) {
                             Log.d("Firebase Phone Number", firebasePhoneNumber);
 
                             List<String> contactDetails = new ArrayList<>();
@@ -121,9 +129,11 @@ public class FetchContactsService extends Service {
                             contactDetails.add(uploaded);
                             contactDetails.add(updated);
                             contactsDatabase.addContactToDatabase(contactDetails);
+                            Log.d("Farmconnect", "onDataChange: " + firebasePhoneNumber);
                             isMatchFound = true; // Set the flag to true if a match is found
                             break; // Exit the inner loop
                         }
+
                     }
 
                     if (!isMatchFound) {
@@ -137,8 +147,8 @@ public class FetchContactsService extends Service {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 preferences.putBoolean("contactListFetched", false);
-                Log.e("Firebase", "Error: " + error.getMessage());
-                stopSelf();
+                        Log.e("Firebase", "Error: " + error.getMessage());
+                        stopSelf();
             }
 
             // Other overridden methods of ValueEventListener
@@ -169,7 +179,7 @@ public class FetchContactsService extends Service {
             while (cursor.moveToNext()) {
                 @SuppressLint("Range") String phoneNumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                 listOfContactsOnPhone.add(phoneNumber);
-                Log.d("Phone Number", phoneNumber);
+//                Log.d("Phone Number", phoneNumber);
             }
             cursor.close();
             // Use the phone numbers retrieved from the ContentProvider

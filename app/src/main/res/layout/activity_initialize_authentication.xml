@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:overScrollMode="never"
     android:scrollbars="vertical"
     tools:context=".activities.InitializeAuthenticationActivity">
@@ -31,43 +32,31 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="60dp"
-            android:layout_marginEnd="60dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/textfield_background"
             android:gravity="center"
             android:orientation="horizontal">
 
-            <TextView
+            <com.hbb20.CountryCodePicker
+                android:id="@+id/ccp"
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:gravity="center"
-                android:text="@string/country_code"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_height="wrap_content"
+                app:ccp_textSize="@dimen/text_size_16"
+                android:layout_marginLeft="5dp"
+                app:ccp_defaultNameCode="UG" />
 
             <EditText
                 android:id="@+id/phone_number_to_authenticate"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:background="@null"
-                android:gravity="start|center_vertical"
-                android:hint="@string/_123456789"
-                android:imeOptions="actionDone"
-                android:importantForAutofill="no"
-                android:inputType="number"
-                android:maxLength="10"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:hint="Your Number"
+                android:inputType="phone"
+                android:singleLine="true" />
         </LinearLayout>
-        
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginStart="70dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="70dp"
-            android:background="@color/colorDivider" />
         
         <FrameLayout
             android:layout_width="match_parent"

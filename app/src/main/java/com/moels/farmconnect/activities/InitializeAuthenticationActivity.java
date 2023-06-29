@@ -32,6 +32,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.hbb20.CountryCodePicker;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.utility_classes.UI;
 
@@ -41,6 +42,7 @@ public class InitializeAuthenticationActivity extends AppCompatActivity {
     private EditText phoneNumberToAuthenticate;
     private Button sendOneTimePasswordButton;
     private ProgressBar progressBar;
+    private CountryCodePicker countryCodePicker;
     private ProgressDialog progressDialog;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = null;
     private FirebaseAuth mAuth;
@@ -58,6 +60,7 @@ public class InitializeAuthenticationActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         UI.setUpToolbarInDarkMode(getApplicationContext(), toolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Sign Up", true);
+        countryCodePicker.registerCarrierNumberEditText(phoneNumberToAuthenticate);
 
         if (savedInstanceState != null) {
             String phoneNumber = savedInstanceState.getString("phoneNumberToAuthenticate");
@@ -137,6 +140,9 @@ public class InitializeAuthenticationActivity extends AppCompatActivity {
         if (phoneNumberToAuthenticate.getText().toString().trim().isEmpty()) {
             UI.displayToast(InitializeAuthenticationActivity.this, "Phone Number Is Required");
             return;
+        } else if (!countryCodePicker.isValidFullNumber()) {
+            UI.displayToast(InitializeAuthenticationActivity.this, "Invalid Phone Number");
+            return;
         }
 
         progressDialog = new ProgressDialog(this);
@@ -171,7 +177,7 @@ public class InitializeAuthenticationActivity extends AppCompatActivity {
                 UI.show(sendOneTimePasswordButton);
 
                 Intent goToAuthenticateUserActivityIntent = new Intent(InitializeAuthenticationActivity.this, AuthenticateUserActivity.class);
-                goToAuthenticateUserActivityIntent.putExtra("phoneNumber", phoneNumberToAuthenticate.getText().toString());
+                goToAuthenticateUserActivityIntent.putExtra("phoneNumber", countryCodePicker.getFormattedFullNumber());
                 goToAuthenticateUserActivityIntent.putExtra("verificationId", verificationId);
                 Log.d("Verification Started", "Phone Number Verification Started " + verificationId);
 
@@ -180,7 +186,7 @@ public class InitializeAuthenticationActivity extends AppCompatActivity {
         };
         mAuth = FirebaseAuth.getInstance();
         PhoneAuthOptions options = PhoneAuthOptions.newBuilder(mAuth).
-                setPhoneNumber("+256" + phoneNumberToAuthenticate.getText().toString()).
+                setPhoneNumber(countryCodePicker.getFormattedFullNumber()).
                 setActivity(InitializeAuthenticationActivity.this).
                 setTimeout(60L, TimeUnit.SECONDS).
                 setCallbacks(mCallbacks).build();
@@ -194,6 +200,7 @@ public class InitializeAuthenticationActivity extends AppCompatActivity {
         sendOneTimePasswordButton = findViewById(R.id.send_otp_button);
         progressBar = findViewById(R.id.progress_bar);
         toolbar = findViewById(R.id.initialize_authentication_toolbar);
+        countryCodePicker=findViewById(R.id.ccp);
     }
 
     private void setUpStatusBar() {
@@ -205,6 +212,8 @@ public class InitializeAuthenticationActivity extends AppCompatActivity {
             int currentMode = uiModeManager.getNightMode();
             if (currentMode == UiModeManager.MODE_NIGHT_YES) {
                 window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorBlack));
+                phoneNumberToAuthenticate.setTextColor(ContextCompat.getColor(this, R.color.colorBlack));
+                countryCodePicker.setDialogTextColor(ContextCompat.getColor(this, R.color.colorWhite));
             }else {
                 window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
             }
