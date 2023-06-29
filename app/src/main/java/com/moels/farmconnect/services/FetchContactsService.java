@@ -130,8 +130,9 @@ public class FetchContactsService extends Service {
                             contactDetails.add(updated);
                             contactsDatabase.addContactToDatabase(contactDetails);
                             Log.d("Farmconnect", "onDataChange: " + firebasePhoneNumber);
-                            isMatchFound = true; // Set the flag to true if a match is found
+                            isMatchFound = true; //TODO remove contacts that no longer exist in user accounts;
                             break; // Exit the inner loop
+
                         }
 
                     }
