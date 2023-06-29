@@ -28,7 +28,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.dialogs.DeleteProductConfirmationDialog;
 import com.moels.farmconnect.easypay.Request;
-import com.moels.farmconnect.utility_classes.FarmConnectPreferences;
+import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
 import com.moels.farmconnect.utility_classes.Preferences;
 import com.moels.farmconnect.utility_classes.ProductsDatabase;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
@@ -47,10 +47,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private TextView productNameTextView, productQuantityTextView,productUnitPriceTextView, productPriceTextView;
     private FloatingActionButton sendMessageFloatingActionButton, makePaymentFloatingActionButton;
     private ProductsDatabase productsDatabase;
-    private SharedPreferences sharedPreferences;
     private Preferences preferences;
-    private boolean isFarmerAccount;
-    private boolean isBuyerAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,11 +67,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
             }
         }
 
-        sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
-        isFarmerAccount = sharedPreferences.getBoolean("farmerAccountTypeChosen", false);
-        isBuyerAccount = sharedPreferences.getBoolean("buyerAccountTypeChosen", false);
         productsDatabase = ProductsDatabaseHelper.getInstance(getApplicationContext());
-        preferences = FarmConnectPreferences.getInstance(getApplicationContext());
+        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
         showProductDetails(productsDatabase.getProductDetails(getIntent().getStringExtra("productID")));
 
         addClickEventOnPaymentFab();
@@ -84,11 +78,11 @@ public class ProductDetailsActivity extends AppCompatActivity {
         makePaymentFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isBuyerAccount){
+                if (preferences.isBuyerAccount()){
                     initDepositRequest();
                 }
 
-                if (isFarmerAccount){
+                if (preferences.isFarmerAccount()){
                     initWithdrawRequest();
                 }
 
@@ -147,10 +141,10 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (isFarmerAccount){
+        if (preferences.isFarmerAccount()){
             getMenuInflater().inflate(R.menu.product_details_activity_menu, menu);
         }
-        else if (isBuyerAccount){
+        else if (preferences.isBuyerAccount()){
             getMenuInflater().inflate(R.menu.product_details_activity_menu_for_buyer, menu);
         }
 
@@ -215,7 +209,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if (isBuyerAccount){
+        if (preferences.isBuyerAccount()){
             Intent intent = new Intent(ProductDetailsActivity.this, ProductsInAzoneActivity.class);
             intent.putExtra("zoneID", getIntent().getStringExtra("zoneID"));
             intent.putExtra("zoneName", getIntent().getStringExtra("zoneName"));
@@ -223,7 +217,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
             finish();
         }
 
-        if (isFarmerAccount){
+        if (preferences.isFarmerAccount()){
             Intent intent = new Intent(ProductDetailsActivity.this, AddProductToZoneActivity.class);
             intent.putExtra("zoneID", getIntent().getStringExtra("zoneID"));
             intent.putExtra("zoneName", getIntent().getStringExtra("zoneName"));

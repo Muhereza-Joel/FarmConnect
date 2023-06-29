@@ -7,7 +7,6 @@ package com.moels.farmconnect.activities;
 import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
+import com.moels.farmconnect.utility_classes.Preferences;
 
 public class SplashScreenActivity extends AppCompatActivity {
     Handler handler = new Handler();
@@ -31,21 +32,17 @@ public class SplashScreenActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                Preferences preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
 
-                SharedPreferences myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
-                boolean userAuthenticated = myAppPreferences.getBoolean("phoneNumberAuthenticated", false);
-                boolean profileCreated = myAppPreferences.getBoolean("profileCreated", false);
-                System.out.println(profileCreated);
+                if (preferences.userIsAuthenticated()) {
 
-                if (userAuthenticated == true) {
-
-                    if (profileCreated == true) {
+                    if (preferences.userProfileIsCreated()) {
                         Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
                     } else {
                         Intent intent = new Intent(SplashScreenActivity.this, CreateProfileActivity.class);
-                        intent.putExtra("phoneNumber", myAppPreferences.getString("authenticatedPhoneNumber", "123456789"));
+                        intent.putExtra("phoneNumber", preferences.getAuthenticatedPhoneNumber());
                         startActivity(intent);
                         finish();
                     }
@@ -53,7 +50,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 }
 
 
-                if (userAuthenticated == false){
+                if (!preferences.userIsAuthenticated()){
                     Intent intent = new Intent(SplashScreenActivity.this, WelcomeActivity.class);
                     startActivity(intent);
                     finish();

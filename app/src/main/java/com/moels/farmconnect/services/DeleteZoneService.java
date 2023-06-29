@@ -3,7 +3,6 @@ package com.moels.farmconnect.services;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.IBinder;
@@ -14,21 +13,20 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
+import com.moels.farmconnect.utility_classes.Preferences;
 
 public class DeleteZoneService extends Service {
    private static final int POLL_INTERVAL = 2000;
    private Handler handler;
    private Runnable runnable;
-
-   private SQLiteDatabase database;
-   private SharedPreferences myAppPreferences;
+   private Preferences preferences;
 
     @Override
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
-        database = openOrCreateDatabase("FarmConnectZonesDatabase", MODE_PRIVATE, null);
-        myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
+        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
     }
 
     @Override
@@ -42,7 +40,7 @@ public class DeleteZoneService extends Service {
         runnable = new Runnable() {
             @Override
             public void run() {
-                String phoneNumber = myAppPreferences.getString("authenticatedPhoneNumber", "123456789");
+                String phoneNumber = preferences.getString("authenticatedPhoneNumber");
 
                 DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
                 databaseRef.child("zones").child(phoneNumber).child(remote_id).removeValue()
@@ -75,6 +73,5 @@ public class DeleteZoneService extends Service {
     public void onDestroy() {
         super.onDestroy();
         handler.removeCallbacks(runnable);
-        database.close(); //Close database since there is process that needs to access it again
     }
 }

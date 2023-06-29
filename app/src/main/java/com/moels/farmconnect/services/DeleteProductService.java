@@ -3,7 +3,6 @@ package com.moels.farmconnect.services;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
@@ -16,6 +15,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
+import com.moels.farmconnect.utility_classes.Preferences;
 import com.moels.farmconnect.utility_classes.ZonesDatabase;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
@@ -24,7 +25,6 @@ public class DeleteProductService extends Service {
     private static final int POLL_INTERVAL = 1000;
     private Handler handler;
     private Runnable runnable;
-    private SharedPreferences sharedPreferences;
     private ZonesDatabase zonesDatabase;
     public DeleteProductService() {
     }
@@ -33,7 +33,6 @@ public class DeleteProductService extends Service {
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
-        sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
         zonesDatabase = ZonesDatabaseHelper.getInstance(getApplicationContext());
     }
 

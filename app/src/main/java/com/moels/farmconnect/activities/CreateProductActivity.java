@@ -12,7 +12,6 @@ import android.app.UiModeManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -43,6 +42,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.services.ProductsUploadService;
+import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
+import com.moels.farmconnect.utility_classes.Preferences;
 import com.moels.farmconnect.utility_classes.ProductsDatabase;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.UI;
@@ -69,7 +70,7 @@ public class CreateProductActivity extends AppCompatActivity {
     private TextView productPriceTextView;
     private ProgressDialog progressDialog;
     private ProductsDatabase productsDatabase;
-    private SharedPreferences sharedPreferences;
+    private Preferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +83,7 @@ public class CreateProductActivity extends AppCompatActivity {
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Create New Product", true);
 
         productsDatabase = ProductsDatabaseHelper.getInstance(getApplicationContext());
-        sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
+        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
 
         productImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -234,7 +235,7 @@ public class CreateProductActivity extends AppCompatActivity {
 
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         StorageReference storageReference = firebaseStorage.getReference();
-        StorageReference imageReference = storageReference.child("ProductImages").child(sharedPreferences.getString("authenticatedPhoneNumber", "123456789")).child(generateImageName());
+        StorageReference imageReference = storageReference.child("ProductImages").child(preferences.getString("authenticatedPhoneNumber")).child(generateImageName());
 
         UploadTask uploadTask = imageReference.putBytes(getImageFromView());
         uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -346,7 +347,7 @@ public class CreateProductActivity extends AppCompatActivity {
         values.add(imageUrl);
         values.add(uploaded);
         values.add(updated);
-        values.add(sharedPreferences.getString("authenticatedPhoneNumber", "123456789"));
+        values.add(preferences.getString("authenticatedPhoneNumber"));
         values.add(getCurrentDate());
         values.add(getCurrentTime());
         values.add(status);

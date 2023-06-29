@@ -3,7 +3,6 @@ package com.moels.farmconnect.services;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 
@@ -13,6 +12,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.moels.farmconnect.models.Product;
+import com.moels.farmconnect.utility_classes.Preferences;
 import com.moels.farmconnect.utility_classes.ProductsDatabase;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.ZonesDatabase;
@@ -24,7 +24,6 @@ public class ProductsUploadService extends Service {
     private static final int POLL_INTERVAL = 1000;
     private Handler handler;
     private Runnable runnable;
-    private SharedPreferences sharedPreferences;
     private ProductsDatabase productsDatabase;
     private ZonesDatabase zonesDatabase;
 
@@ -35,7 +34,6 @@ public class ProductsUploadService extends Service {
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
-        sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
         productsDatabase = ProductsDatabaseHelper.getInstance(getApplicationContext());
         zonesDatabase = ZonesDatabaseHelper.getInstance(getApplicationContext());
 

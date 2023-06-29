@@ -5,7 +5,6 @@ import android.app.UiModeManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -25,6 +24,8 @@ import com.moels.farmconnect.activities.ProductDetailsActivity;
 import com.moels.farmconnect.adapters.ProductsRecyclerViewAdapter;
 import com.moels.farmconnect.models.Card;
 import com.moels.farmconnect.models.Product;
+import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
+import com.moels.farmconnect.utility_classes.Preferences;
 import com.moels.farmconnect.utility_classes.ProductsDatabase;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.ProductsObserver;
@@ -39,12 +40,10 @@ public class ProductsListFragment extends Fragment {
     private ProductsRecyclerViewAdapter productsRecyclerViewAdapter;
     private ProductsDatabase productsDatabase;
     public List<Card> cardList;
-    private SharedPreferences sharedPreferences;
+    private Preferences preferences;
     private String authenticatedPhoneNumber;
     private TextView emptyProductsMessageTextView;
     private View view;
-    private boolean isFarmerAccount;
-    private boolean isBuyerAccount;
     private ProductsObserver productsObserver;
 
     @Override
@@ -52,15 +51,13 @@ public class ProductsListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         productsDatabase = ProductsDatabaseHelper.getInstance(getContext());
-        sharedPreferences = getActivity().getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
-        authenticatedPhoneNumber = sharedPreferences.getString("authenticatedPhoneNumber", "123456789");
-        isFarmerAccount = sharedPreferences.getBoolean("farmerAccountTypeChosen", false);
-        isBuyerAccount = sharedPreferences.getBoolean("buyerAccountTypeChosen", false);
+        preferences = FarmConnectAppPreferences.getInstance(getContext());
+        authenticatedPhoneNumber = preferences.getString("authenticatedPhoneNumber");
 
-        if (isFarmerAccount){
+        if (preferences.isFarmerAccount()){
             cardList = productsDatabase.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), authenticatedPhoneNumber);
         }
-        else if(isBuyerAccount){
+        else if(preferences.isBuyerAccount()){
             cardList = productsDatabase.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
             observeFireBase();
         }
@@ -208,10 +205,10 @@ public class ProductsListFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if (isFarmerAccount){
+        if (preferences.isFarmerAccount()){
             cardList = productsDatabase.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), authenticatedPhoneNumber);
         }
-        else if(isBuyerAccount){
+        else if(preferences.isBuyerAccount()){
             cardList = productsDatabase.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
             observeFireBase();
         }
@@ -249,10 +246,10 @@ public class ProductsListFragment extends Fragment {
         if (requestCode == PRODUCT_DELETE_REQUEST_CODE && resultCode == Activity.RESULT_OK){
             String updatedZoneName = data.getStringExtra("updatedZoneName");
 
-            if (isFarmerAccount){
+            if (preferences.isFarmerAccount()){
                 cardList = productsDatabase.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), authenticatedPhoneNumber);
             }
-            else if(isBuyerAccount){
+            else if(preferences.isBuyerAccount()){
                 cardList = productsDatabase.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
             }
 
@@ -264,7 +261,7 @@ public class ProductsListFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (isBuyerAccount){
+        if (preferences.isBuyerAccount()){
             productsObserver.stopListening();
             Log.d("FarmConnect", "onDestroy: Observer is not running");
         }

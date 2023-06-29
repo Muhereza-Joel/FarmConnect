@@ -13,7 +13,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -44,6 +43,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.services.UpdateProductService;
+import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
+import com.moels.farmconnect.utility_classes.Preferences;
 import com.moels.farmconnect.utility_classes.ProductsDatabase;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.UI;
@@ -67,7 +68,7 @@ public class EditProductActivity extends AppCompatActivity {
     private TextView productPriceTextView;
     private ProductsDatabase productsDatabase;
     private ProgressDialog progressDialog;
-    private SharedPreferences sharedPreferences;
+    private Preferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +92,7 @@ public class EditProductActivity extends AppCompatActivity {
         productUnitPriceEditText.addTextChangedListener(createTextWatcher());
 
         productsDatabase = ProductsDatabaseHelper.getInstance(getApplicationContext());
-        sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
+        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
 
 
         showProductDetails(productsDatabase.getProductDetails(getIntent().getStringExtra("productID")));
@@ -341,7 +342,7 @@ public class EditProductActivity extends AppCompatActivity {
                 String timestamp = String.valueOf(System.currentTimeMillis());
                 String randomString = UUID.randomUUID().toString();
                 String imageName = timestamp + "_" + randomString + ".png";
-                StorageReference imageReference = storageReference.child("ProductImages").child(sharedPreferences.getString("authenticatedPhoneNumber", "123456789")).child(imageName);
+                StorageReference imageReference = storageReference.child("ProductImages").child(preferences.getString("authenticatedPhoneNumber")).child(imageName);
 
                 UploadTask uploadTask = imageReference.putBytes(data);
                 uploadTask.addOnFailureListener(new OnFailureListener() {

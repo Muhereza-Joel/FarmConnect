@@ -20,6 +20,8 @@ import android.widget.LinearLayout;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.services.BuyerAccountZoneFetchService;
 import com.moels.farmconnect.services.FarmerAccountZonesFetchService;
+import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
+import com.moels.farmconnect.utility_classes.Preferences;
 
 public class FinalizeSetupOfZonesActivity extends AppCompatActivity implements FarmerAccountZonesFetchService.FarmerZonesFetchListener, BuyerAccountZoneFetchService.BuyerZonesFetchListener {
     private FarmerAccountZonesFetchService farmerAccountZonesFetchService;
@@ -64,10 +66,10 @@ public class FinalizeSetupOfZonesActivity extends AppCompatActivity implements F
         progressDialog.setMessage("Finding collection zones...");
         progressDialog.setCancelable(false);
         progressDialog.show();
-        SharedPreferences sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
+        Preferences preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
 
         // Start and bind the corresponding service
-        if (sharedPreferences.getBoolean("buyerAccountTypeChosen", false) == true) {
+        if (preferences.isBuyerAccount()) {
             Intent buyerService = new Intent(this, BuyerAccountZoneFetchService.class);
             startService(buyerService);
             bindService(buyerService, buyerServiceConnection, Context.BIND_AUTO_CREATE);

@@ -29,7 +29,6 @@ public class UpdateProductService extends Service {
     private Runnable runnable;
     private ProductsDatabase productsDatabase;
     private ZonesDatabase zonesDatabase;
-    private SharedPreferences sharedPreferences;
 
     public UpdateProductService() {
     }
@@ -40,7 +39,6 @@ public class UpdateProductService extends Service {
         handler = new Handler();
         productsDatabase = ProductsDatabaseHelper.getInstance(getApplicationContext());
         zonesDatabase = ZonesDatabaseHelper.getInstance(getApplicationContext());
-        sharedPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
     }
 
     @Override

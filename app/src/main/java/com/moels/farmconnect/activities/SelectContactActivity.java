@@ -7,7 +7,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -40,6 +39,8 @@ import com.moels.farmconnect.services.BuyerAccountZoneFetchService;
 import com.moels.farmconnect.services.FarmerAccountZonesFetchService;
 import com.moels.farmconnect.services.FetchContactsService;
 import com.moels.farmconnect.utility_classes.ContactsDatabaseHelper;
+import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
+import com.moels.farmconnect.utility_classes.Preferences;
 import com.moels.farmconnect.utility_classes.UI;
 
 import java.util.ArrayList;
@@ -59,10 +60,8 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
     private Button createNewContactButton;
     private ContactsDatabaseHelper contactsDatabaseHelper;
     private SQLiteDatabase sqLiteDatabase;
-    private SharedPreferences myAppPreferences;
+    private Preferences preferences;
     private TextView emptyContactListTextView;
-    private boolean isFarmerAccount;
-    private boolean isBuyerAccount;
 
     private ServiceConnection farmerServiceConnection = new ServiceConnection() {
         @Override
@@ -122,19 +121,15 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
 
         contactsDatabaseHelper = ContactsDatabaseHelper.getInstance(getApplicationContext());
         sqLiteDatabase  = contactsDatabaseHelper.getWritableDatabase();
+        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
 
         if (checkRequiredPermissions() == false){
             requestPermissions();
             return;
         }
 
-        myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
-        isBuyerAccount = myAppPreferences.getBoolean("buyerAccountTypeChosen", false);
-        isFarmerAccount = myAppPreferences.getBoolean("farmerAccountTypeChosen", false);
-        boolean contactListFetched = myAppPreferences.getBoolean("contactListFetched", false);
 
-
-        if (contactListFetched == true){
+        if (preferences.getBoolean("contactListFetched")){
             getContactsFromDatabase();
         }
 
@@ -195,6 +190,7 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
     }
 
     private void getContactsFromDatabase(){
+        //TODO remove database functionality from this activity
         ContactCardItem contactCardItem;
         contactsList = new ArrayList<>();
         String [] columnsToPick = {"_id","username", "phoneNumber", "imageUrl","accountType"};
@@ -224,6 +220,7 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
                 }
 
             } while (cursor.moveToNext());
+            cursor.close();
         }
             else {
             emptyContactListTextView.setVisibility(View.VISIBLE);
@@ -247,13 +244,13 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
         UI.displayToast(getApplicationContext(), "Contact List Updated");
         stopService(new Intent(SelectContactActivity.this, FetchContactsService.class));
 
-        if (isBuyerAccount){
+        if (preferences.isBuyerAccount()){
             Intent intent = new Intent(this, BuyerAccountZoneFetchService.class);
             startService(intent);
             bindService(intent, buyerServiceConnection, Context.BIND_AUTO_CREATE);
         }
 
-        if (isFarmerAccount){
+        if (preferences.isFarmerAccount()){
             Intent serviceIntent = new Intent(getApplicationContext(), FarmerAccountZonesFetchService.class);
             startService(serviceIntent);
             bindService(serviceIntent, farmerServiceConnection, Context.BIND_AUTO_CREATE);

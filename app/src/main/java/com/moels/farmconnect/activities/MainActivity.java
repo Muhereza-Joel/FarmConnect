@@ -6,10 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -23,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
@@ -36,13 +31,13 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.database.FirebaseDatabase;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.adapters.ViewPagerAdapter;
 import com.moels.farmconnect.fragments.ChatListFragment;
 import com.moels.farmconnect.fragments.ZonesListFragment;
-import com.moels.farmconnect.receivers.NetworkChangeReceiver;
 import com.moels.farmconnect.services.ProductsDataSyncService;
+import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
+import com.moels.farmconnect.utility_classes.Preferences;
 import com.moels.farmconnect.utility_classes.UI;
 
 import java.util.Objects;
@@ -54,9 +49,7 @@ public class MainActivity extends AppCompatActivity implements ProductsDataSyncS
     private FloatingActionButton startNewChatFloatingActionButton, addNewZoneFloatingActionButton, startNewCallFloatingActionButton;
     private Toolbar toolbar;
     private ViewPagerAdapter viewPagerAdapter;
-    private SharedPreferences myAppPreferences;
-    private boolean buyerAccountChosen;
-    private boolean farmerAccountChosen;
+    private Preferences preferences;
     private Bundle bundle  = new Bundle();
     private ProgressBar progressBar;
     private ProductsDataSyncService productsDataSyncService;
@@ -179,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements ProductsDataSyncS
                         break;
                 }
 
-                if (farmerAccountChosen == true) {
+                if (preferences.isFarmerAccount()) {
                     addNewZoneFloatingActionButton.hide();
                 }
             }
@@ -189,6 +182,49 @@ public class MainActivity extends AppCompatActivity implements ProductsDataSyncS
 
             }
         });
+
+    }
+
+    private void initUI(){
+        toolbar = findViewById(R.id.my_toolbar);
+        tabLayout = findViewById(R.id.tab_layout);
+        viewPager = findViewById(R.id.viewPager);
+        startNewChatFloatingActionButton = findViewById(R.id.start_new_chart_fab);
+        addNewZoneFloatingActionButton = findViewById(R.id.add_new_zone_fab);
+        startNewCallFloatingActionButton = findViewById(R.id.start_new_call_fab);
+
+    }
+
+    private void setUpStatusBar() {
+        Window window = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            UiModeManager uiModeManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
+            int currentMode = uiModeManager.getNightMode();
+            if (currentMode == UiModeManager.MODE_NIGHT_YES) {
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorBlack));
+            }else {
+                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+            }
+        }
+
+    }
+
+    private void initTabLayout(){
+        //Add fragments to the adapter
+        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
+
+        if (preferences.isBuyerAccount()) {
+            viewPagerAdapter.addFragment(new ChatListFragment(), "Chats");
+            viewPagerAdapter.addFragment(new ZonesListFragment(), "Zones");
+            viewPagerAdapter.addFragment(new ChatListFragment(), "Calls");
+
+        } else if(preferences.isFarmerAccount()) {
+            viewPagerAdapter.addFragment(new ChatListFragment(), "Chats");
+            viewPagerAdapter.addFragment(new ZonesListFragment(), "Zones");
+            viewPagerAdapter.addFragment(new ChatListFragment(), "Calls");
+        }
 
     }
 
@@ -280,58 +316,8 @@ public class MainActivity extends AppCompatActivity implements ProductsDataSyncS
         return super.onOptionsItemSelected(item);
     }
 
-    private void initUI(){
-        toolbar = findViewById(R.id.my_toolbar);
-        tabLayout = findViewById(R.id.tab_layout);
-        viewPager = findViewById(R.id.viewPager);
-        startNewChatFloatingActionButton = findViewById(R.id.start_new_chart_fab);
-        addNewZoneFloatingActionButton = findViewById(R.id.add_new_zone_fab);
-        startNewCallFloatingActionButton = findViewById(R.id.start_new_call_fab);
 
-    }
 
-    private void setUpStatusBar() {
-        Window window = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            UiModeManager uiModeManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
-            int currentMode = uiModeManager.getNightMode();
-            if (currentMode == UiModeManager.MODE_NIGHT_YES) {
-                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorBlack));
-            }else {
-                window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
-            }
-        }
-
-    }
-    private void initTabLayout(){
-        //Add fragments to the adapter
-        myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
-        buyerAccountChosen = myAppPreferences.getBoolean("buyerAccountTypeChosen", false);
-        farmerAccountChosen = myAppPreferences.getBoolean("farmerAccountTypeChosen", false);
-        SharedPreferences.Editor editor = myAppPreferences.edit();
-
-        if (buyerAccountChosen == true) {
-            viewPagerAdapter.addFragment(new ChatListFragment(), "Chats");
-            viewPagerAdapter.addFragment(new ZonesListFragment(), "Zones");
-            viewPagerAdapter.addFragment(new ChatListFragment(), "Calls");
-
-            editor.putBoolean("buyerAccountTypeChosen", true);
-            editor.putBoolean("farmerAccountTypeChosen", false);
-            editor.apply();
-
-        } else if(farmerAccountChosen == true) {
-            viewPagerAdapter.addFragment(new ChatListFragment(), "Chats");
-            viewPagerAdapter.addFragment(new ZonesListFragment(), "Zones");
-            viewPagerAdapter.addFragment(new ChatListFragment(), "Calls");
-
-            editor.putBoolean("farmerAccountTypeChosen", true);
-            editor.putBoolean("buyerAccountTypeChosen", false);
-            editor.apply();
-        }
-
-    }
 
     @Override
     public void onProductsSyncComplete() {

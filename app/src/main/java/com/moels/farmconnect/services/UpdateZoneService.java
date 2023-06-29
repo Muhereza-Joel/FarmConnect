@@ -3,11 +3,9 @@ package com.moels.farmconnect.services;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -15,6 +13,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
+import com.moels.farmconnect.utility_classes.Preferences;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,14 +24,14 @@ public class UpdateZoneService extends Service {
     private Handler handler;
     private Runnable runnable;
     private SQLiteDatabase database;
-    private SharedPreferences myAppPreferences;
+    private Preferences preferences;
     // TODO Required to set updated flag for firebase to false in case of any failure
 
     @Override
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
-        myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
+        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
 
     }
 
@@ -54,7 +54,7 @@ public class UpdateZoneService extends Service {
         runnable = new Runnable() {
             @Override
             public void run() {
-                String phoneNumber = myAppPreferences.getString("authenticatedPhoneNumber", "123456789");
+                String phoneNumber = preferences.getString("authenticatedPhoneNumber");
                 DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
                 Map<String, Object> updatedZone = new HashMap<>();

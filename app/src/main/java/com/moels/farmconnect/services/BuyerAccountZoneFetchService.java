@@ -3,7 +3,6 @@ package com.moels.farmconnect.services;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -17,9 +16,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.moels.farmconnect.models.Zone;
-import com.moels.farmconnect.utility_classes.ContactsDatabase;
-import com.moels.farmconnect.utility_classes.ContactsDatabaseHelper;
+import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
+import com.moels.farmconnect.utility_classes.Preferences;
 import com.moels.farmconnect.utility_classes.UI;
+import com.moels.farmconnect.utility_classes.ZonesDatabase;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
 import java.util.ArrayList;
@@ -31,17 +31,15 @@ public class BuyerAccountZoneFetchService extends Service {
     private Runnable runnable;
     private BuyerZonesFetchListener zonesFetchListener;
     private final IBinder binder = new BuyerZonesFetchServiceBinder();
-    private ContactsDatabase contactsDatabaseHelper;
-    private ZonesDatabaseHelper zonesDatabaseHelper;
-    private SharedPreferences myAppPreferences;
+    private ZonesDatabase zonesDatabase;
+    private Preferences preferences;
 
     @Override
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
-        myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
-        contactsDatabaseHelper = ContactsDatabaseHelper.getInstance(getApplicationContext());
-        zonesDatabaseHelper = ZonesDatabaseHelper.getInstance(getApplicationContext());
+        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
+        zonesDatabase = ZonesDatabaseHelper.getInstance(getApplicationContext());
     }
 
     @Override
@@ -54,7 +52,7 @@ public class BuyerAccountZoneFetchService extends Service {
         runnable = new Runnable() {
             @Override
             public void run() {
-                retrieveZoneByPhoneNumber(myAppPreferences.getString("authenticatedPhoneNumber", "123456789"));
+                retrieveZoneByPhoneNumber(preferences.getString("authenticatedPhoneNumber"));
             }
         };
         handler.postDelayed(runnable, POLL_INTERVAL);
@@ -111,7 +109,7 @@ public class BuyerAccountZoneFetchService extends Service {
                 zoneDetails.add(zone.getStatus());
                 zoneDetails.add(updated);
 
-                zonesDatabaseHelper.addZoneToDatabase(zoneDetails);
+                zonesDatabase.addZoneToDatabase(zoneDetails);
             }
         }
         if (zonesFetchListener != null){

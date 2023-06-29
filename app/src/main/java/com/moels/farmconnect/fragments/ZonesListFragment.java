@@ -28,6 +28,8 @@ import com.moels.farmconnect.models.Zone;
 import com.moels.farmconnect.models.ZoneCardItem;
 import com.moels.farmconnect.utility_classes.ContactsDatabase;
 import com.moels.farmconnect.utility_classes.ContactsDatabaseHelper;
+import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
+import com.moels.farmconnect.utility_classes.Preferences;
 import com.moels.farmconnect.utility_classes.RealTimeZonesObserver;
 import com.moels.farmconnect.utility_classes.ZonesDatabase;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
@@ -46,10 +48,7 @@ public class ZonesListFragment extends Fragment {
     private List<ZoneCardItem> zoneCardItems;
     private View view;
     private TextView emptyZonesMessageTextView;
-
-    private SharedPreferences sharedPreferences;
-    private boolean isFarmerAccount;
-    private boolean isBuyerAccount;
+    private Preferences preferences;
     private ZonesObserver zonesObserver;
 
     @Override
@@ -57,12 +56,10 @@ public class ZonesListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         zonesDatabase = ZonesDatabaseHelper.getInstance(getContext());
         contactsDatabase = ContactsDatabaseHelper.getInstance(getContext());
-        sharedPreferences = getActivity().getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
-        isFarmerAccount = sharedPreferences.getBoolean("farmerAccountTypeChosen", false);
-        isBuyerAccount = sharedPreferences.getBoolean("buyerAccountTypeChosen", false);
+        preferences = FarmConnectAppPreferences.getInstance(getContext());
         zoneCardItems = zonesDatabase.getZonesFromDatabase();
 
-        if (isFarmerAccount){
+        if (preferences.isFarmerAccount()){
             observeZonesInFirebase();
         }
 
@@ -209,7 +206,7 @@ public class ZonesListFragment extends Fragment {
         zonesListRecyclerView.setAdapter(zoneListRecyclerViewAdapter);
 //        scrollRecycleViewToBottom(zonesListRecyclerView);
 
-        if (isFarmerAccount){
+        if (preferences.isFarmerAccount()){
             observeZonesInFirebase();
         }
 
@@ -273,7 +270,7 @@ public class ZonesListFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (isFarmerAccount){
+        if (preferences.isFarmerAccount()){
             zonesObserver.stopListening();
         }
     }

@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -33,7 +32,8 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.services.FetchContactsService;
+import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
+import com.moels.farmconnect.utility_classes.Preferences;
 import com.moels.farmconnect.utility_classes.UI;
 
 import java.util.concurrent.TimeUnit;
@@ -51,6 +51,7 @@ public class AuthenticateUserActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private ProgressDialog progressDialog;
     private Toolbar toolbar;
+    private Preferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,7 @@ public class AuthenticateUserActivity extends AppCompatActivity {
         UI.setUpToolbarInDarkMode(getApplicationContext(), toolbar);
 
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Phone Number Verification", true);
+        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
 
         phoneNumberToAuthenticate.setText(String.format("+256-%s", getIntent().getStringExtra("phoneNumber")));
 
@@ -91,16 +93,12 @@ public class AuthenticateUserActivity extends AppCompatActivity {
                                         UI.show(verifyPhoneNumberButton);
 
                                         if (task.isSuccessful()){
-                                        String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                        String verifiedPhoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
-                                        DatabaseReference usersReference = FirebaseDatabase.getInstance().getReference("users");
-                                        usersReference.child(userID).child(verifiedPhoneNumber).setValue(verifiedPhoneNumber);
-
-                                            SharedPreferences myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
-                                            SharedPreferences.Editor editor = myAppPreferences.edit();
-                                            editor.putBoolean("phoneNumberAuthenticated", true);
-                                            editor.putString("authenticatedPhoneNumber", getIntent().getStringExtra("phoneNumber"));
-                                            editor.apply();
+                                            String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                            String verifiedPhoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
+                                            DatabaseReference usersReference = FirebaseDatabase.getInstance().getReference("users");
+                                            usersReference.child(userID).child(verifiedPhoneNumber).setValue(verifiedPhoneNumber);
+                                            preferences.putBoolean("phoneNumberAuthenticated", true);
+                                            preferences.putString("authenticatedPhoneNumber", getIntent().getStringExtra("phoneNumber"));
 
                                             Intent createProfileActivity = new Intent(getApplicationContext(), CreateProfileActivity.class);
                                             createProfileActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

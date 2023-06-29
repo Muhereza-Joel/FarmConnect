@@ -3,7 +3,6 @@ package com.moels.farmconnect.activities;
 import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +24,8 @@ import androidx.core.content.ContextCompat;
 
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.services.ZoneUploadService;
+import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
+import com.moels.farmconnect.utility_classes.Preferences;
 import com.moels.farmconnect.utility_classes.UI;
 import com.moels.farmconnect.utility_classes.ZonesDatabase;
 import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
@@ -42,7 +43,7 @@ public class AddNewZoneActivity extends AppCompatActivity {
     private Toolbar addNewZoneActivityToolbar;
     private EditText zoneNameEditText, locationEditText, productsToCollectEditText, descriptionEditText;
     private ZonesDatabase zonesDatabase;
-    private SharedPreferences myAppPreferences;
+    private Preferences preferences;
     private TextView zoneHeaderTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,7 @@ public class AddNewZoneActivity extends AppCompatActivity {
         setUpStatusBar();
         UI.setUpToolbarInDarkMode(getApplicationContext(), addNewZoneActivityToolbar);
 
-        myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
+        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
         setSupportActionBar(addNewZoneActivityToolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Add New Zone", true);
 
@@ -110,7 +111,7 @@ public class AddNewZoneActivity extends AppCompatActivity {
                     UI.displaySnackBar(getApplicationContext(), parentView, "Collection Zone Created!!");
                     Intent uploadZoneService = new Intent(AddNewZoneActivity.this, ZoneUploadService.class);
                     startService(uploadZoneService);
-                    saveFirstZoneCreatedPreference(myAppPreferences);
+                    saveFirstZoneCreatedPreference(preferences);
                 }
             }
         }
@@ -143,7 +144,7 @@ public class AddNewZoneActivity extends AppCompatActivity {
         zoneDetails.add(productsToCollectEditText.getText().toString());
         zoneDetails.add(descriptionEditText.getText().toString());
         zoneDetails.add(uploadedStatus);
-        zoneDetails.add(myAppPreferences.getString("authenticatedPhoneNumber", "123456789"));
+        zoneDetails.add(preferences.getString("authenticatedPhoneNumber"));
         zoneDetails.add(getCurrentDate());
         zoneDetails.add(getCurrentTime());
         zoneDetails.add(activeStatus);
@@ -185,20 +186,18 @@ public class AddNewZoneActivity extends AppCompatActivity {
         descriptionEditText.setText("");
     }
 
-    private void saveFirstZoneCreatedPreference(SharedPreferences sharedPreferences){
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("FirstZoneCreated", true);
-        editor.apply();
+    private void saveFirstZoneCreatedPreference(Preferences preferences){
+        preferences.putBoolean("FirstZoneCreated", true);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        hideAddZoneBanner(myAppPreferences);
+        hideAddZoneBanner(preferences);
     }
 
-    private void hideAddZoneBanner(SharedPreferences sharedPreferences){
-        if (sharedPreferences.getBoolean("FirstZoneCreated", false)){
+    private void hideAddZoneBanner(Preferences preferences){
+        if (preferences.getBoolean("FirstZoneCreated")){
             UI.hide(zoneHeaderTextView);
         }
     }

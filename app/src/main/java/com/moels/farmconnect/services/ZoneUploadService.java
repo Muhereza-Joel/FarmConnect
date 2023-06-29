@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,21 +16,22 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.moels.farmconnect.models.Zone;
+import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
+import com.moels.farmconnect.utility_classes.Preferences;
 import com.moels.farmconnect.utility_classes.UI;
-
-import java.util.HashMap;
 
 public class ZoneUploadService extends Service {
     private static final int POLL_INTERVAL = 2000; // Execute after 2 seconds
     private Handler handler;
     private Runnable runnable;
     private SQLiteDatabase database;
-    private SharedPreferences myAppPreferences;
+    private Preferences preferences;
+    //TODO remove sqlite functionality from this service
 
     @Override
     public void onCreate() {
         super.onCreate();
-        myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
+        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
         handler = new Handler();
         database = openOrCreateDatabase("FarmConnectZonesDatabase", MODE_PRIVATE, null);
     }
@@ -80,7 +80,7 @@ public class ZoneUploadService extends Service {
             String remote_id, String zoneName, String location, String productsToCollect,
             String description, String owner, String createDate, String createTime, String status) {
 
-            String phoneNumber = myAppPreferences.getString("authenticatedPhoneNumber", "123456789");
+            String phoneNumber = preferences.getString("authenticatedPhoneNumber");
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
             Zone zone = new Zone(remote_id, zoneName, location, productsToCollect, description, owner, createDate, createTime, status);
 

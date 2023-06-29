@@ -8,8 +8,9 @@ import android.view.View;
 
 import com.moels.farmconnect.activities.MakeDepositRequestActivity;
 import com.moels.farmconnect.activities.MakeWithdrawRequestActivity;
-import com.moels.farmconnect.utility_classes.FarmConnectPreferences;
+import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
 import com.moels.farmconnect.utility_classes.Preferences;
+import com.moels.farmconnect.utility_classes.UI;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -101,13 +102,14 @@ public class APICall extends AsyncTask<String, String, String> {
                     @Override
                     public void run() {
                         try {
-                            preferences = FarmConnectPreferences.getInstance(activity.getApplicationContext());
+                            preferences = FarmConnectAppPreferences.getInstance(activity.getApplicationContext());
 
                             if (preferences.isBuyerAccount()){
                                 MakeDepositRequestActivity.responseMessage.setText(response.toString());
                                 MakeDepositRequestActivity.progressDialog.dismiss();
                                 MakeDepositRequestActivity.responseMessage.setText(jsonObject.get("errormsg").toString());
 
+                                UI.displayToast(activity.getApplicationContext(), "Transaction was success");
                                 Log.e("FarmConnect: ", jsonObject.get("errormsg").toString());
                                 Intent intent = new Intent();
                                 intent.putExtra("response", response.toString());
@@ -136,7 +138,7 @@ public class APICall extends AsyncTask<String, String, String> {
                     @Override
                     public void run() {
                         try {
-                            preferences = FarmConnectPreferences.getInstance(activity.getApplicationContext());
+                            preferences = FarmConnectAppPreferences.getInstance(activity.getApplicationContext());
                             if (preferences.isBuyerAccount()){
                                 MakeDepositRequestActivity.responseMessage.setText(response.toString());
                                 MakeDepositRequestActivity.progressDialog.dismiss();

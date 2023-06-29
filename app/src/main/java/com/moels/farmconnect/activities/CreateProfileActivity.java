@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -54,13 +53,13 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.models.User;
+import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
+import com.moels.farmconnect.utility_classes.Preferences;
 import com.moels.farmconnect.utility_classes.UI;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class CreateProfileActivity extends AppCompatActivity {
@@ -76,6 +75,7 @@ public class CreateProfileActivity extends AppCompatActivity {
     private LinearLayout profilePicImageViewContainer;
     private ProgressDialog progressDialog;
     Uri croppedImageUri;
+    private Preferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +85,8 @@ public class CreateProfileActivity extends AppCompatActivity {
         setUpStatusBar();
         setSupportActionBar(toolbar);
         UI.setUpToolbarInDarkMode(getApplicationContext(), toolbar);
-
         UI.setUpActionBar(getSupportActionBar(),"Create Profile");
+        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
 
         GradientDrawable circleDrawable = new GradientDrawable();
         circleDrawable.setShape(GradientDrawable.OVAL);
@@ -217,15 +217,12 @@ public class CreateProfileActivity extends AppCompatActivity {
             String randomString = UUID.randomUUID().toString();
             String imageName = timestamp + "_" + randomString + ".png";
 
-            SharedPreferences myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = myAppPreferences.edit();
-
             progressDialog = new ProgressDialog(this);
             progressDialog.setMessage("Processing...");
             progressDialog.setCancelable(false);
             progressDialog.show();
 
-            StorageReference imageReference = storageReference.child("ProfileImages").child(myAppPreferences.getString("authenticatedPhoneNumber", "123456789")).child(imageName);
+            StorageReference imageReference = storageReference.child("ProfileImages").child(preferences.getString("authenticatedPhoneNumber")).child(imageName);
             UploadTask uploadTask = imageReference.putBytes(data);
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -241,7 +238,7 @@ public class CreateProfileActivity extends AppCompatActivity {
                         public void onSuccess(Uri uri) {
                             String url = uri.toString();
                             User user = new User(fullName,gender, authenticatedPhoneNumber, birthDate, selectedValue, url);
-                            uploadProfileData(editor, user);
+                            uploadProfileData(user);
                         }
                     });
                 }
@@ -254,7 +251,7 @@ public class CreateProfileActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void uploadProfileData(SharedPreferences.Editor editor, User user) {
+    private void uploadProfileData(User user) {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         DatabaseReference profileReference = databaseReference.child("userAccounts");
 
@@ -272,20 +269,17 @@ public class CreateProfileActivity extends AppCompatActivity {
                             System.out.println(existingAccountType);
                             if (existingAccountType != null) {
                                 if (existingAccountType.equals("Buyer account")) {
-                                    editor.putBoolean("buyerAccountTypeChosen", true);
-                                    editor.putBoolean("farmerAccountTypeChosen", false);
-                                    editor.apply();
+                                    preferences.putBoolean("buyerAccountTypeChosen", true);
+                                    preferences.putBoolean("farmerAccountTypeChosen", false);
                                 } else if (existingAccountType.equals("Farmer account")) {
-                                    editor.putBoolean("farmerAccountTypeChosen", true);
-                                    editor.putBoolean("buyerAccountTypeChosen", false);
-                                    editor.apply();
+                                    preferences.putBoolean("farmerAccountTypeChosen", true);
+                                    preferences.putBoolean("buyerAccountTypeChosen", false);
                                 }
                             } else {
                                 // Handle the case where the "accountType" field is missing or null
                                 // You can set default values or handle it according to your requirements
                             }
-                            editor.putBoolean("profileCreated", true);
-                            editor.apply();
+                            preferences.putBoolean("profileCreated", true);
                             progressDialog.dismiss();
                             startFinishSetUpActivity();
                             break;
@@ -298,10 +292,9 @@ public class CreateProfileActivity extends AppCompatActivity {
                         public void onSuccess(Void unused) {
                             UI.displayToast(getApplicationContext(), "Profile Data Uploaded");
                             Log.d("On Success", "Uploaded data to Firebase Realtime Database");
-                            editor.putBoolean("profileCreated", true);
-                            editor.apply();
+                            preferences.putBoolean("profileCreated", true);
                             progressDialog.dismiss();
-                            saveChosenAccount(editor);
+                            saveChosenAccount();
                             startFinishSetUpActivity();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -324,17 +317,15 @@ public class CreateProfileActivity extends AppCompatActivity {
     }
 
 
-    private void saveChosenAccount(SharedPreferences.Editor editor){
+    private void saveChosenAccount(){
         if (buyerRadioButton.isChecked() == true){
-            editor.putBoolean("buyerAccountTypeChosen", true);
-            editor.putBoolean("farmerAccountTypeChosen", false);
-            editor.apply();
+            preferences.putBoolean("buyerAccountTypeChosen", true);
+            preferences.putBoolean("farmerAccountTypeChosen", false);
         }
 
         if (farmerRadioButton.isChecked() == true){
-            editor.putBoolean("farmerAccountTypeChosen", true);
-            editor.putBoolean("buyerAccountTypeChosen", false);
-            editor.apply();
+            preferences.putBoolean("farmerAccountTypeChosen", true);
+            preferences.putBoolean("buyerAccountTypeChosen", false);
         }
     }
     private void startFinishSetUpActivity(){

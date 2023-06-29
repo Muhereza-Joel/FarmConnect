@@ -8,7 +8,6 @@ import android.app.Service;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
@@ -27,6 +26,8 @@ import com.moels.farmconnect.R;
 import com.moels.farmconnect.activities.MainActivity;
 import com.moels.farmconnect.utility_classes.ContactsDatabase;
 import com.moels.farmconnect.utility_classes.ContactsDatabaseHelper;
+import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
+import com.moels.farmconnect.utility_classes.Preferences;
 import com.moels.farmconnect.utility_classes.ProductsDatabase;
 import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.ZonesDatabase;
@@ -54,9 +55,7 @@ public class ProductsDataSyncService extends Service{
     private static final int NOTIFICATION_ID = 1;
     private static final String CHANNEL_ID = "ForegroundServiceChannel";
     private String authenticatedPhoneNumber;
-    private SharedPreferences myAppPreferences;
-    private boolean isBuyerAccount;
-    private boolean isFarmerAccount;
+    private Preferences preferences;
 
     public ProductsDataSyncService() {
     }
@@ -68,11 +67,9 @@ public class ProductsDataSyncService extends Service{
         zonesDatabase = ZonesDatabaseHelper.getInstance(getApplicationContext());
         contactsDatabase = ContactsDatabaseHelper.getInstance(getApplicationContext());
         productsDatabase = ProductsDatabaseHelper.getInstance(getApplicationContext());
+        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
 
-        myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
-        authenticatedPhoneNumber = myAppPreferences.getString("authenticatedPhoneNumber", "123456789");
-        isBuyerAccount = myAppPreferences.getBoolean("buyerAccountTypeChosen", false);
-        isFarmerAccount = myAppPreferences.getBoolean("farmerAccountTypeChosen", false);
+        authenticatedPhoneNumber = preferences.getString("authenticatedPhoneNumber");
     }
 
     @Override
@@ -126,20 +123,20 @@ public class ProductsDataSyncService extends Service{
             public void run() {
                     Log.d("FarmConnect", "run: DataSync Service is running");
                     if (getSizeOfSyncedData() == 0){
-                        if(isFarmerAccount){
+                        if(preferences.isFarmerAccount()){
                             getAllProductsForTheFarmer(authenticatedPhoneNumber);
                         }else {
                             getAllProductsFromDatabase();
                         }
 
                     } else if(getSizeOfSyncedData() > 0){
-                        if (isBuyerAccount){
+                        if (preferences.isBuyerAccount()){
                             getNewProductsFromFirebaseDatabase();
                             updateProductDetails();
                             removeObsoleteProductsFromSyncedData();
                         }
 
-                        if (isFarmerAccount){
+                        if (preferences.isFarmerAccount()){
                             if (productsSyncListener != null){
                                 productsSyncListener.onProductsSyncComplete();
                             }

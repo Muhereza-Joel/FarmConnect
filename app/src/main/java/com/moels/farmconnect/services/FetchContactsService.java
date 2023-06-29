@@ -24,14 +24,15 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.moels.farmconnect.utility_classes.ContactsDatabase;
 import com.moels.farmconnect.utility_classes.ContactsDatabaseHelper;
+import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
+import com.moels.farmconnect.utility_classes.Preferences;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FetchContactsService extends Service {
 
-    private SharedPreferences myAppPreferences;
-    private SharedPreferences.Editor editor;
+    private Preferences preferences;
     private static final int POLL_INTERVAL = 1000;
     private Handler handler;
     private Runnable runnable;
@@ -44,15 +45,13 @@ public class FetchContactsService extends Service {
         super.onCreate();
         handler = new Handler();
         contactsDatabase = ContactsDatabaseHelper.getInstance(getApplicationContext());
-        myAppPreferences = getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
-        editor = myAppPreferences.edit();
+        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
             queryFirebaseForMatchingPhoneNumbers(getAllContactsOnPhone());
-            editor.putBoolean("contactListFetched", true);
-            editor.apply();
+            preferences.putBoolean("contactListFetched", true);
 
         return START_STICKY;
     }
@@ -137,10 +136,9 @@ public class FetchContactsService extends Service {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                editor.putBoolean("contactListFetched", false);
-                        editor.apply();
-                        Log.e("Firebase", "Error: " + error.getMessage());
-                        stopSelf();
+                preferences.putBoolean("contactListFetched", false);
+                Log.e("Firebase", "Error: " + error.getMessage());
+                stopSelf();
             }
 
             // Other overridden methods of ValueEventListener

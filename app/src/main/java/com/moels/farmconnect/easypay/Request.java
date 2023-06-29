@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import com.moels.farmconnect.activities.MakeDepositRequestActivity;
 import com.moels.farmconnect.activities.MakeWithdrawRequestActivity;
-import com.moels.farmconnect.utility_classes.FarmConnectPreferences;
+import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
 import com.moels.farmconnect.utility_classes.Preferences;
 
 public class Request {
@@ -25,7 +25,7 @@ public class Request {
 
     public Request(Activity activity) {
         this.activity = activity;
-        preferences = FarmConnectPreferences.getInstance(activity.getApplicationContext());
+        preferences = FarmConnectAppPreferences.getInstance(activity.getApplicationContext());
     }
 
     public Request setTransactionAmount(String amountToWithdraw) {
