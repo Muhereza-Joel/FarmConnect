@@ -93,6 +93,16 @@ public class ProductsInAzoneActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
+        if (id == R.id.payments_icon){
+            Intent intent = new Intent(ProductsInAzoneActivity.this, PaymentsActivity.class);
+            startActivity(intent);
+        }
+
+        if (id == R.id.purchases_icon){
+            Intent intent = new Intent(ProductsInAzoneActivity.this, PurchasesActivity.class);
+            startActivity(intent);
+        }
+
         if (id == R.id.zone_details){
             Intent intent = new Intent(ProductsInAzoneActivity.this, ZoneDetailsActivity.class);
             intent.putExtra("zoneID", getIntent().getStringExtra("zoneID"));

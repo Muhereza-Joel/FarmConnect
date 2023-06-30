@@ -42,4 +42,5 @@
     <string name="description">Description</string>
     <string name="zone_location">Location such district,village</string>
     <string name="zone_name">Zone Name</string>
+    <string name="purchases_icon_title">Purchases</string>
 </resources>

@@ -51,8 +51,9 @@
             android:layout_height="wrap_content"
             android:text="Buyer"
             android:textAppearance="?android:textAppearanceMedium"
-            android:textSize="16sp"
+            android:textSize="13sp"
             android:gravity="center"
+            android:textColor="@color/colorBlack"
             android:background="@drawable/owner_tag"
             android:textStyle="bold|italic" />
 

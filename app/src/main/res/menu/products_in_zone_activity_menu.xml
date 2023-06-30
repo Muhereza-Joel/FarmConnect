@@ -3,22 +3,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/payments_icon"
+        android:orderInCategory="100"
+        android:icon="@drawable/baseline_payment_24"
+        app:showAsAction="always"
+        android:title="@string/purchases_icon_title"
+        android:tooltipText="@string/purchases_icon_title"/>
+
+
+    <item
+        android:id="@+id/purchases_icon"
+        android:orderInCategory="101"
+        android:icon="@drawable/baseline_shopping_cart_checkout_24"
+        app:showAsAction="always"
+        android:title="@string/purchases_icon_title"
+        android:tooltipText="@string/purchases_icon_title"/>
+
+    <item
         android:id="@+id/search_icon"
+        android:orderInCategory="103"
         android:icon="@drawable/baseline_search_24"
         android:title="Search"
-        app:showAsAction="ifRoom|collapseActionView"
+        app:showAsAction="always|collapseActionView"
         app:actionViewClass="android.widget.SearchView" />
 
     <item
         android:id="@+id/zone_details"
-        android:orderInCategory="100"
+        android:orderInCategory="104"
         android:title="Zone Details"
         android:tooltipText="Zone Details"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/edit_zone"
-        android:orderInCategory="101"
+        android:orderInCategory="105"
         android:title="Edit Zone"
         android:tooltipText="Edit Zone"
         app:showAsAction="never" />
@@ -26,21 +44,23 @@
 
     <item
         android:id="@+id/zone_participants"
-        android:orderInCategory="102"
+        android:orderInCategory="106"
         android:title="Zone Participants"
         android:tooltipText="Zone Participants"
-        app:showAsAction="never" />
+        app:showAsAction="never">
+
+    </item>
 
     <item
         android:id="@+id/invite_seller"
-        android:orderInCategory="103"
+        android:orderInCategory="107"
         android:title="Invite People"
         android:tooltipText="Invite People"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/delete_zone"
-        android:orderInCategory="104"
+        android:orderInCategory="108"
         android:title="Delete Zone"
         android:tooltipText="Delete Zone"
         app:showAsAction="never" />
