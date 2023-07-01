@@ -15,12 +15,6 @@
         android:paddingStart="15dp"
         android:paddingEnd="15dp">
 
-        <ImageView
-            android:id="@+id/photoImageView"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/baseline_location_on_24" />
-
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -56,15 +50,41 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/create_time_text_view"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="right"
-                android:text="7:23pm"
-                android:textAppearance="?android:textAppearanceMedium"
-                android:textSize="13sp"
-                android:textStyle="italic|normal" />
+                android:gravity="end">
+
+                <TextView
+                    android:id="@+id/create_date_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:text="30/06/2022"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textSize="13sp"
+                    android:textStyle="italic|normal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:textStyle="bold"
+                    android:text="at"/>
+
+                <TextView
+                    android:id="@+id/create_time_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:text="7:23pm"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textSize="13sp"
+                    android:textStyle="italic|normal" />
+
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/product_id"
@@ -90,7 +110,7 @@
                     android:text="seller"/>
 
                 <TextView
-                    android:id="@+id/receiver_name_text_view"
+                    android:id="@+id/seller_name_text_view"
                     android:layout_weight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -106,7 +126,7 @@
                     android:textStyle="italic|bold" />
 
                 <ImageView
-                    android:id="@+id/receiver_image_view"
+                    android:id="@+id/product_owner_image_view"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:src="@drawable/avatar"

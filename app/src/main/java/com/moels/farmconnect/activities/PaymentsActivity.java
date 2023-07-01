@@ -51,6 +51,18 @@ public class PaymentsActivity extends AppCompatActivity{
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         paymentCards.add(new PaymentCard("Mobile Money Deposit", "UGX 10000",
                 "10/12/2023", "5:00am", "Joel", ""));
+        paymentCards.add(new PaymentCard("Mobile Money Deposit", "UGX 10000",
+                "10/12/2023", "5:00am", "Joel", ""));
+        paymentCards.add(new PaymentCard("Mobile Money Deposit", "UGX 10000",
+                "10/12/2023", "5:00am", "Joel", ""));
+        paymentCards.add(new PaymentCard("Mobile Money Deposit", "UGX 10000",
+                "10/12/2023", "5:00am", "Joel", ""));
+        paymentCards.add(new PaymentCard("Mobile Money Deposit", "UGX 10000",
+                "10/12/2023", "5:00am", "Joel", ""));
+        paymentCards.add(new PaymentCard("Mobile Money Deposit", "UGX 10000",
+                "10/12/2023", "5:00am", "Joel", ""));
+        paymentCards.add(new PaymentCard("Mobile Money Deposit", "UGX 10000",
+                "10/12/2023", "5:00am", "Joel", ""));
         paymentCards.add(new PaymentCard("Mobile Money", "UGX 10000",
                 "10/12/2023", "5:00am", "Joel", ""));
         paymentCards.add(new PaymentCard("Mobile Money", "UGX 10000",
