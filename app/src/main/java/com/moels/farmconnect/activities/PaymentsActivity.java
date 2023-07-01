@@ -3,6 +3,8 @@ package com.moels.farmconnect.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.UiModeManager;
 import android.content.Context;
@@ -12,16 +14,27 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.adapters.PaymentsListRecyclerViewAdapter;
+import com.moels.farmconnect.command.Command;
+import com.moels.farmconnect.models.PaymentCard;
 import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
 import com.moels.farmconnect.utility_classes.Preferences;
 import com.moels.farmconnect.utility_classes.UI;
 
-public class PaymentsActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
+
+public class PaymentsActivity extends AppCompatActivity{
 
     private Preferences preferences;
     private Toolbar toolbar;
+    private RecyclerView recyclerView;
+    private PaymentsListRecyclerViewAdapter paymentsListRecyclerViewAdapter;
+    private List<PaymentCard> paymentCards;
+    private TextView emptyPaymentsLabel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +47,31 @@ public class PaymentsActivity extends AppCompatActivity {
 
         setUpOverflowIcon();
         setUpActionBarTitle();
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        paymentCards.add(new PaymentCard("Mobile Money Deposit", "UGX 10000",
+                "10/12/2023", "5:00am", "Joel", ""));
+        paymentCards.add(new PaymentCard("Mobile Money", "UGX 10000",
+                "10/12/2023", "5:00am", "Joel", ""));
+        paymentCards.add(new PaymentCard("Mobile Money", "UGX 10000",
+                "10/12/2023", "5:00am", "Joel", ""));
+        paymentsListRecyclerViewAdapter = new PaymentsListRecyclerViewAdapter(getApplicationContext(), paymentCards);
+        recyclerView.setAdapter(paymentsListRecyclerViewAdapter);
+
+        if (paymentCards.size() > 0){
+            UI.hide(emptyPaymentsLabel);
+        }
+
+
+
     }
 
     private void init(){
         toolbar = findViewById(R.id.payments_activity_toolbar);
         preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
+        recyclerView = findViewById(R.id.payments_recycler_view);
+        emptyPaymentsLabel = findViewById(R.id.empty_message_label);
+        paymentCards = new ArrayList<>();
     }
 
     private void setUpStatusBar() {
@@ -79,5 +112,4 @@ public class PaymentsActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.purchases_and_payments_activity_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
 }

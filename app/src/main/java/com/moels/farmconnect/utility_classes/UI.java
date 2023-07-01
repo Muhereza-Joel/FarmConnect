@@ -13,6 +13,12 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.moels.farmconnect.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
+import java.util.UUID;
+
 public class UI {
     public static void show(View view){
         view.setVisibility(View.VISIBLE);
@@ -66,4 +72,29 @@ public class UI {
             tabLayout.setBackgroundColor(context.getResources().getColor(R.color.colorBlack));
         }
     }
+
+    public static String generateUniqueID(){
+        UUID uuid = UUID.randomUUID();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        String currentTime = simpleDateFormat.format(new Date());
+
+        Random random = new Random();
+        int randomNumber = random.nextInt(10000);
+        return currentTime + randomNumber;
+    }
+
+    public static String getCurrentDate(){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        String formattedDate = dateFormat.format(calendar.getTime());
+        return formattedDate;
+    }
+
+    public static String getCurrentTime(){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat timeFormat = new SimpleDateFormat("h:mma");
+        String formattedTime = timeFormat.format(calendar.getTime());
+        return formattedTime;
+    }
+
 }

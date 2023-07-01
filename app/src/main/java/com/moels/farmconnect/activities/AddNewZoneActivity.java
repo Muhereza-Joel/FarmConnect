@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
-import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,26 +22,21 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.command.Command;
+import com.moels.farmconnect.command.Listener;
+import com.moels.farmconnect.command.SaveZoneCommand;
 import com.moels.farmconnect.services.ZoneUploadService;
 import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
 import com.moels.farmconnect.utility_classes.Preferences;
 import com.moels.farmconnect.utility_classes.UI;
-import com.moels.farmconnect.utility_classes.ZonesDatabase;
-import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Random;
-import java.util.UUID;
 
-public class AddNewZoneActivity extends AppCompatActivity {
+public class AddNewZoneActivity extends AppCompatActivity implements Listener {
 
     private Toolbar addNewZoneActivityToolbar;
     private EditText zoneNameEditText, locationEditText, productsToCollectEditText, descriptionEditText;
-    private ZonesDatabase zonesDatabase;
     private Preferences preferences;
     private TextView zoneHeaderTextView;
     @Override
@@ -51,13 +45,9 @@ public class AddNewZoneActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_new_zone);
         initUI();
         setUpStatusBar();
-        UI.setUpToolbarInDarkMode(getApplicationContext(), addNewZoneActivityToolbar);
-
-        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
         setSupportActionBar(addNewZoneActivityToolbar);
+        UI.setUpToolbarInDarkMode(getApplicationContext(), addNewZoneActivityToolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Add New Zone", true);
-
-        zonesDatabase = ZonesDatabaseHelper.getInstance(getApplicationContext());
     }
 
     private void initUI(){
@@ -67,6 +57,7 @@ public class AddNewZoneActivity extends AppCompatActivity {
         productsToCollectEditText = findViewById(R.id.products_to_collect_edit_text);
         descriptionEditText = findViewById(R.id.description_edit_text);
         zoneHeaderTextView = findViewById(R.id.add_zone_header);
+        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
 
     }
     private void setUpStatusBar() {
@@ -101,34 +92,11 @@ public class AddNewZoneActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if(id == R.id.save_zone_btn){
-            View parentView = findViewById(R.id.parent);
-
-            boolean validated = validateViews();
-            if (validated){
-                boolean zoneCreated = zonesDatabase.addZoneToDatabase(getValuesFromUI());
-                if(zoneCreated) {
-                    clearViews();
-                    UI.displaySnackBar(getApplicationContext(), parentView, "Collection Zone Created!!");
-                    Intent uploadZoneService = new Intent(AddNewZoneActivity.this, ZoneUploadService.class);
-                    startService(uploadZoneService);
-                    saveFirstZoneCreatedPreference(preferences);
-                }
-            }
+            Command command = new SaveZoneCommand(getApplicationContext(), getValuesFromUI(), this);
+            command.execute();
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private boolean validateViews(){
-        boolean validated = true;
-        if (TextUtils.isEmpty(zoneNameEditText.getText().toString())
-                || TextUtils.isEmpty(locationEditText.getText().toString())
-                || TextUtils.isEmpty(productsToCollectEditText.getText().toString())
-                || TextUtils.isEmpty(descriptionEditText.getText().toString())){
-            UI.displayToast(getApplicationContext(), "All fields are required");
-            validated = false;
-        }
-        return validated;
     }
 
     private List<String> getValuesFromUI(){
@@ -138,45 +106,41 @@ public class AddNewZoneActivity extends AppCompatActivity {
         String updatedStatus = "false";
         String activeStatus = "active";
 
-        zoneDetails.add(generateUniqueID());
+        zoneDetails.add(UI.generateUniqueID());
         zoneDetails.add(zoneNameEditText.getText().toString());
         zoneDetails.add(locationEditText.getText().toString());
         zoneDetails.add(productsToCollectEditText.getText().toString());
         zoneDetails.add(descriptionEditText.getText().toString());
         zoneDetails.add(uploadedStatus);
         zoneDetails.add(preferences.getString("authenticatedPhoneNumber"));
-        zoneDetails.add(getCurrentDate());
-        zoneDetails.add(getCurrentTime());
+        zoneDetails.add(UI.getCurrentDate());
+        zoneDetails.add(UI.getCurrentTime());
         zoneDetails.add(activeStatus);
         zoneDetails.add(updatedStatus);
 
         return zoneDetails;
     }
 
-    private static String generateUniqueID(){
-        UUID uuid = UUID.randomUUID();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-        String currentTime = simpleDateFormat.format(new Date());
-
-        Random random = new Random();
-        int randomNumber = random.nextInt(10000);
-        String zoneId = currentTime + randomNumber;
-        return zoneId;
+    @Override
+    public void onFailure() {
+        UI.displayToast(getApplicationContext(), "All Fields Are Required");
     }
 
-
-    private String getCurrentDate(){
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        String formattedDate = dateFormat.format(calendar.getTime());
-        return formattedDate;
+    @Override
+    public void onSuccess() {
+        View parentView = findViewById(R.id.parent);
+        clearViews();
+        UI.displaySnackBar(getApplicationContext(), parentView, "Collection Zone Created!!");
+        startZoneUploadService();
+        saveFirstZoneCreatedPreference(preferences);
     }
 
-    private String getCurrentTime(){
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat timeFormat = new SimpleDateFormat("h:mma");
-        String formattedTime = timeFormat.format(calendar.getTime());
-        return formattedTime;
+    private void startZoneUploadService(){
+        Intent uploadZoneService = new Intent(AddNewZoneActivity.this, ZoneUploadService.class);
+        startService(uploadZoneService);
+    }
+    private void saveFirstZoneCreatedPreference(Preferences preferences){
+        preferences.putBoolean("FirstZoneCreated", true);
     }
 
     private void clearViews(){
@@ -184,10 +148,6 @@ public class AddNewZoneActivity extends AppCompatActivity {
         locationEditText.setText("");
         productsToCollectEditText.setText("");
         descriptionEditText.setText("");
-    }
-
-    private void saveFirstZoneCreatedPreference(Preferences preferences){
-        preferences.putBoolean("FirstZoneCreated", true);
     }
 
     @Override
@@ -201,4 +161,5 @@ public class AddNewZoneActivity extends AppCompatActivity {
             UI.hide(zoneHeaderTextView);
         }
     }
+
 }
