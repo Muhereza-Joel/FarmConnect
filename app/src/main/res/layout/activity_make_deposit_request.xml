@@ -59,12 +59,12 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/product_owner_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:text="Muhereza Joel"
                     android:textColor="@color/colorPrimaryTeal"
-                    android:textAllCaps="true"
                     android:textSize="@dimen/text_size_16"
                     android:textStyle="bold" />
 

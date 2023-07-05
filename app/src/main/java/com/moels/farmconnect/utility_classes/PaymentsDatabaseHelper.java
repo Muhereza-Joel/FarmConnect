@@ -3,20 +3,16 @@ package com.moels.farmconnect.utility_classes;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.List;
 
-public class PaymentsDatabaseHelper extends SQLiteOpenHelper implements PaymentsDatabase{
+public final class PaymentsDatabaseHelper extends FarmConnectDatabase implements PaymentsDatabase{
 
     private static PaymentsDatabaseHelper uniqueInstance;
-    private static final String DATABASE_NAME = "FarmConnectPaymentsDatabase";
-    private static final int DATABASE_VERSION = 1;
-    private SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
     private PaymentsDatabaseHelper(Context context){
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context);
     }
 
     public static PaymentsDatabaseHelper getInstance(Context context){
@@ -24,33 +20,6 @@ public class PaymentsDatabaseHelper extends SQLiteOpenHelper implements Payments
             uniqueInstance = new PaymentsDatabaseHelper(context);
         }
         return uniqueInstance;
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE payments(" +
-                "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "payment_remote_id TEXT UNIQUE, " +
-                "productRemoteId TEXT, " +
-                "paymentMethod TEXT, " +
-                "totalAmount TEXT, " +
-                "amountPayed TEXT, " +
-                "balance TEXT, " +
-                "reason TEXT, " +
-                "referenceNumber TEXT, " +
-                "productOwner TEXT, " +
-                "createDate TEXT, " +
-                "createTime TEXT, " +
-                "uploaded TEXT, " +
-                "updated TEXT, " +
-                "zoneID TEXT" +
-                ")");
-
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
     }
 
     @Override

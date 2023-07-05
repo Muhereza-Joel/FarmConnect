@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 
 import com.moels.farmconnect.models.Card;
@@ -15,14 +14,11 @@ import com.moels.farmconnect.models.ProductCard;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductsDatabaseHelper extends SQLiteOpenHelper implements ProductsDatabase{
+public final class ProductsDatabaseHelper extends FarmConnectDatabase implements ProductsDatabase{
     private static ProductsDatabaseHelper uniqueInstance;
-    private static final String DATABASE_NAME = "FarmConnectProductsDatabase";
-    private static final int DATABASE_VERSION = 3; //Earlier version number was 2
-    private final SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
     private ProductsDatabaseHelper(Context context){
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context);
     }
 
     public static ProductsDatabaseHelper getInstance(Context context){
@@ -32,65 +28,6 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper implements Products
         return uniqueInstance;
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE products(" +
-                "_pid INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "productRemoteId TEXT UNIQUE, " +
-                "productName TEXT, " +
-                "quantity TEXT, " +
-                "unitPrice TEXT, " +
-                "price TEXT, " +
-                "imageUrl TEXT, " +
-                "uploaded TEXT, " +
-                "updated TEXT, " +
-                "owner TEXT, " +
-                "date TEXT, " +
-                "time TEXT, " +
-                "status TEXT, " +
-                "zoneID TEXT)");
-
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < newVersion){
-            //Copy original data
-            db.execSQL("CREATE TABLE products_temp AS SELECT * FROM products");
-
-            db.execSQL("DROP TABLE IF EXISTS products");
-
-            db.execSQL("CREATE TABLE products(" +
-                    "_pid INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "productRemoteId TEXT UNIQUE, " +
-                    "productName TEXT, " +
-                    "quantity TEXT, " +
-                    "unitPrice TEXT, " +
-                    "price TEXT, " +
-                    "imageUrl TEXT, " +
-                    "uploaded TEXT, " +
-                    "updated TEXT, " +
-                    "owner TEXT, " +
-                    "date TEXT, " +
-                    "time TEXT, " +
-                    "status TEXT, " +
-                    "zoneID TEXT)");
-
-
-            //Copy data back to the table
-            db.execSQL("INSERT INTO products(" +
-                    "productRemoteId, productName, quantity, unitPrice, " +
-                    "price, imageUrl, uploaded, updated, owner, " +
-                    "date, time, status, zoneID) " +
-                    "SELECT productRemoteId, productName, quantity, unitPrice, " +
-                    "price, imageUrl, uploaded, updated, owner, " +
-                    "date, time, status, zoneID FROM products_temp");
-
-            //Delete the temporary table
-            db.execSQL("DROP TABLE IF EXISTS products_temp");
-        }
-
-    }
 
     @Override
     public List<String> getProductRemoteIds(){
@@ -262,6 +199,32 @@ public class ProductsDatabaseHelper extends SQLiteOpenHelper implements Products
         }
         cursor.close();
         return productImageUrl;
+    }
+
+    @SuppressLint("Range")
+    @Override
+    public String getProductOwner(String productID) {
+        String owner = "";
+        Cursor cursor = sqLiteDatabase.query("products", new String[]{"owner"},
+                "productRemoteId = ?", new String[]{productID}, null, null, null);
+        if (cursor.moveToNext()){
+            owner = cursor.getString(cursor.getColumnIndex("owner"));
+        }
+        cursor.close();
+        return owner;
+    }
+
+    @SuppressLint("Range")
+    @Override
+    public String getProductZoneID(String productID) {
+        String zoneID = "";
+        Cursor cursor = sqLiteDatabase.query("products", new String[]{"zoneID"},
+                "productRemoteId = ?", new String[]{productID}, null, null, null);
+        if (cursor.moveToNext()){
+            zoneID = cursor.getString(cursor.getColumnIndex("owner"));
+        }
+        cursor.close();
+        return zoneID;
     }
 
     @Override

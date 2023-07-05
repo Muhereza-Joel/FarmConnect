@@ -101,6 +101,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
                     .setAPIClientSecret(APIClientSecret)
                     .setAPIClientID(APIClientID)
                     .setTransactionReference(transactionReference)
+                    .setProductID(getIntent().getStringExtra("productID"))
                     .initialize();
         }catch (Exception e){
             UI.displayToast(ProductDetailsActivity.this, e.getMessage());
@@ -118,6 +119,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
                     .setAPIClientSecret(APIClientSecret)
                     .setAPIClientID(APIClientID)
                     .setTransactionReference(transactionReference)
+                    .setProductID(getIntent().getStringExtra("productID"))
                     .initialize();
         }catch (Exception e){
             UI.displayToast(ProductDetailsActivity.this, e.getMessage());

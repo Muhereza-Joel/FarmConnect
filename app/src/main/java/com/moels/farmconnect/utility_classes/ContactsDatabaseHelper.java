@@ -5,20 +5,16 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContactsDatabaseHelper extends SQLiteOpenHelper implements ContactsDatabase{
+public final class ContactsDatabaseHelper extends FarmConnectDatabase implements ContactsDatabase{
     private static ContactsDatabaseHelper uniqueInstance;
-    private static final String DATABASE_NAME = "FarmConnectContactsDatabase";
-    private static final int DATABASE_VERSION = 3; //Upgraded database from version 2
-    private SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
     private ContactsDatabaseHelper(Context context){
-        super(context, DATABASE_NAME,null, DATABASE_VERSION );
+        super(context);
     }
 
     public static ContactsDatabaseHelper getInstance(Context context){
@@ -27,44 +23,7 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper implements Contacts
         }
         return uniqueInstance;
     }
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE contacts (" +
-                "_id INTEGER PRIMARY KEY," +
-                "username TEXT," +
-                "phoneNumber TEXT UNIQUE," +
-                "imageUrl TEXT," +
-                "accountType TEXT," +
-                "uploaded TEXT," +
-                "updated TEXT)");
-    }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < newVersion) {
-            // Create a temporary table to backup the existing data
-            db.execSQL("CREATE TABLE contacts_temp AS SELECT * FROM contacts");
-
-            // Drop the old table
-            db.execSQL("DROP TABLE IF EXISTS contacts");
-
-            // Create a new table with the updated schema
-            db.execSQL("CREATE TABLE contacts (" +
-                    "_id INTEGER PRIMARY KEY," +
-                    "username TEXT," +
-                    "phoneNumber TEXT UNIQUE," +
-                    "imageUrl TEXT," +
-                    "accountType TEXT," +
-                    "uploaded TEXT," +
-                    "updated TEXT)");
-
-            // Copy the data from the temporary table to the new table
-            db.execSQL("INSERT INTO contacts (_id, username, phoneNumber) SELECT _id, username, phoneNumber FROM contacts_temp");
-
-            // Drop the temporary table
-            db.execSQL("DROP TABLE IF EXISTS contacts_temp");
-        }
-    }
 
     @Override
     public String getOwnerUsername(String phoneNumber){

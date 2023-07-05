@@ -24,26 +24,32 @@ import com.hbb20.CountryCodePicker;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.easypay.APICall;
 import com.moels.farmconnect.easypay.APICallParameters;
+import com.moels.farmconnect.utility_classes.ContactsDatabase;
+import com.moels.farmconnect.utility_classes.ContactsDatabaseHelper;
+import com.moels.farmconnect.utility_classes.ProductsDatabase;
+import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.UI;
 
 public class MakeDepositRequestActivity extends AppCompatActivity {
-    private TextView amountToPay;
+    private TextView amountToPayTextView, productOwnerNameTextView;
     public static TextView responseMessage;
     private EditText phone_number_field;
     private CountryCodePicker countryCodePicker;
-    private APICallParameters apiParameters=new APICallParameters();
+    public static APICallParameters apiParameters=new APICallParameters();
     private String amountToDeposit;
     public static ProgressDialog progressDialog;
     private LinearLayout container;
     private Toolbar toolbar;
     private Button payButton;
     private Boolean viewsValidated;
+    private ProductsDatabase productsDatabase;
+    private ContactsDatabase contactsDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_deposit_request);
-        initUI();
+        init();
         setUpStatusBar();
         setSupportActionBar(toolbar);
 
@@ -57,14 +63,17 @@ public class MakeDepositRequestActivity extends AppCompatActivity {
 
     }
 
-    private void initUI(){
+    private void init(){
         phone_number_field=(EditText) findViewById(R.id.phone_number_field);
-        amountToPay =findViewById(R.id.ammountToPay);
+        amountToPayTextView =findViewById(R.id.ammountToPay);
         countryCodePicker=findViewById(R.id.ccp);
         responseMessage =findViewById(R.id.transactionResponse);
         container = findViewById(R.id.payment_container);
         toolbar = findViewById(R.id.make_withdraw_request_activity_toolbar);
         payButton = (Button) findViewById(R.id.pay);
+        productOwnerNameTextView = findViewById(R.id.product_owner_name);
+        productsDatabase = ProductsDatabaseHelper.getInstance(getApplicationContext());
+        contactsDatabase = ContactsDatabaseHelper.getInstance(getApplicationContext());
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Processing...");
@@ -93,7 +102,8 @@ public class MakeDepositRequestActivity extends AppCompatActivity {
     private void getIntentData(){
         try {
             apiParameters = (APICallParameters) getIntent().getSerializableExtra(EASY_PAY_PARAMS);
-            amountToPay.setText("You are paying " + apiParameters.transactionCurrency+" "+apiParameters.transactionAmount + " to");
+            amountToPayTextView.setText("You are paying " + apiParameters.transactionCurrency+" "+apiParameters.transactionAmount + " to");
+            productOwnerNameTextView.setText(contactsDatabase.getOwnerUsername(productsDatabase.getProductOwner(apiParameters.productID)));
         }catch (Exception e){
             e.printStackTrace();
         }

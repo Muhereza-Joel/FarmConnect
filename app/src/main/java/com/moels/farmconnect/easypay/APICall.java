@@ -9,7 +9,11 @@ import android.view.View;
 import com.moels.farmconnect.activities.MakeDepositRequestActivity;
 import com.moels.farmconnect.activities.MakeWithdrawRequestActivity;
 import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
+import com.moels.farmconnect.utility_classes.PaymentsDatabase;
+import com.moels.farmconnect.utility_classes.PaymentsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.Preferences;
+import com.moels.farmconnect.utility_classes.ProductsDatabase;
+import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.UI;
 
 import org.json.JSONException;
@@ -20,6 +24,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class APICall extends AsyncTask<String, String, String> {
 
@@ -28,7 +34,7 @@ public class APICall extends AsyncTask<String, String, String> {
     private String client_secret;
     private String phoneNumber;
     private String requestAction;
-    private String withdrawAmount;
+    private String amount;
     private String transactionReference;
     private String transactionCurrency;
     private String transactionReason;
@@ -62,8 +68,8 @@ public class APICall extends AsyncTask<String, String, String> {
         return this;
     }
 
-    public APICall setTransactionAmount(String withdrawAmount) {
-        this.withdrawAmount = withdrawAmount;
+    public APICall setTransactionAmount(String amount) {
+        this.amount = amount;
         return this;
     }
 
@@ -109,7 +115,9 @@ public class APICall extends AsyncTask<String, String, String> {
                                 MakeDepositRequestActivity.progressDialog.dismiss();
                                 MakeDepositRequestActivity.responseMessage.setText(jsonObject.get("errormsg").toString());
 
-                                UI.displayToast(activity.getApplicationContext(), "Transaction was success");
+                                UI.displayToast(activity.getApplicationContext(), "Transaction was successful");
+                                saveTransactionDetails(jsonObject);
+
                                 Log.e("FarmConnect: ", jsonObject.get("errormsg").toString());
                                 Intent intent = new Intent();
                                 intent.putExtra("response", response.toString());
@@ -120,6 +128,7 @@ public class APICall extends AsyncTask<String, String, String> {
                                 MakeWithdrawRequestActivity.progressDialog.dismiss();
                                 MakeWithdrawRequestActivity.responseMessage.setText(jsonObject.get("errormsg").toString());
 
+                                UI.displayToast(activity.getApplicationContext(), "Transaction was successful");
                                 Log.e("FarmConnect: ", jsonObject.get("errormsg").toString());
                                 Intent intent = new Intent();
                                 intent.putExtra("response", response.toString());
@@ -173,7 +182,7 @@ public class APICall extends AsyncTask<String, String, String> {
                 "\"username\": \""+client_id+"\"," +
                 "\"password\": \""+client_secret+"\"," +
                 "\"action\": \""+requestAction+"\"," +
-                "\"amount\": \"" + withdrawAmount + "\"," +
+                "\"amount\": \"" + amount + "\"," +
                 "\"currency\": \""+transactionCurrency+"\"," +
                 "\"phone\": \"" + phoneNumber + "\"," +
                 "\"reference\": \""+ transactionReference + "\"," +
@@ -260,6 +269,33 @@ public class APICall extends AsyncTask<String, String, String> {
             throw new RuntimeException(e);
         }
         return transactionWasSuccessful;
+    }
+
+    private boolean saveTransactionDetails(JSONObject jsonObject){
+            boolean transactionDetailsSaved = false;
+        if (jsonObject != null) {
+            PaymentsDatabase paymentsDatabase = PaymentsDatabaseHelper.getInstance(activity.getApplicationContext());
+            ProductsDatabase productsDatabase = ProductsDatabaseHelper.getInstance(activity.getApplicationContext());
+            List<String> paymentDetails = new ArrayList<>();
+            paymentDetails.add(UI.generateUniqueID());
+            paymentDetails.add(MakeDepositRequestActivity.apiParameters.productID);
+            paymentDetails.add("Mobile Money");
+            paymentDetails.add(amount);
+            paymentDetails.add(amount);
+            paymentDetails.add("0");
+            paymentDetails.add(transactionReason);
+            paymentDetails.add(transactionReference);
+            paymentDetails.add(productsDatabase.getProductOwner(MakeDepositRequestActivity.apiParameters.productID));
+            paymentDetails.add(UI.getCurrentDate());
+            paymentDetails.add(UI.getCurrentTime());
+            paymentDetails.add("false");
+            paymentDetails.add("false");
+            paymentDetails.add(productsDatabase.getProductZoneID(MakeDepositRequestActivity.apiParameters.productID));
+
+            paymentsDatabase.addPaymentRecord(paymentDetails);
+        }
+
+        return transactionDetailsSaved;
     }
 
     @Override

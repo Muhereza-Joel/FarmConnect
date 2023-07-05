@@ -15,6 +15,8 @@ public interface ProductsDatabase {
     List<Card> getAllProducts(String zoneID, String owner);
     List<String> getProductDetails(String productID);
     String getProductImageUrl(String productID);
+    String getProductOwner(String productID);
+    String getProductZoneID(String productID);
     boolean updateProduct(String productID, ContentValues contentValues);
     void updateProductUploadStatus(String productID, boolean uploaded);
     void updateProductUpdateStatus(String productID, boolean uploaded);

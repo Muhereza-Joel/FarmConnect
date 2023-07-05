@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -14,15 +13,12 @@ import com.moels.farmconnect.models.ZoneCardItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ZonesDatabaseHelper extends SQLiteOpenHelper implements ZonesDatabase{
+public final class ZonesDatabaseHelper extends FarmConnectDatabase implements ZonesDatabase{
 
     private static ZonesDatabaseHelper uniqueInstance;
-    private static final String DATABASE_NAME = "FarmConnectZonesDatabase";
-    private static final int DATABASE_VERSION = 4; //upgraded from version 3
-    private SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
     private ZonesDatabaseHelper(Context context){
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context);
     }
 
     public static ZonesDatabaseHelper getInstance(Context context){
@@ -30,59 +26,6 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper implements ZonesDataba
             uniqueInstance = new ZonesDatabaseHelper(context);
         }
         return uniqueInstance;
-    }
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE zones(" +
-                "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "remote_id TEXT UNIQUE, " +
-                "zoneName TEXT, " +
-                "location TEXT, " +
-                "products TEXT, " +
-                "description TEXT, " +
-                "uploaded TEXT, " +
-                "owner TEXT, " +
-                "createDate TEXT, " +
-                "createTime TEXT, " +
-                "status TEXT, " +
-                "updated TEXT" +
-                ")");
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < newVersion) {
-
-            db.execSQL("CREATE TABLE temp_zones AS SELECT * FROM zones");
-
-            db.execSQL("DROP TABLE IF EXISTS zones");
-
-            db.execSQL("CREATE TABLE zones(" +
-                    "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "remote_id TEXT UNIQUE, " +
-                    "zoneName TEXT, " +
-                    "location TEXT, " +
-                    "products TEXT, " +
-                    "description TEXT, " +
-                    "uploaded TEXT, " +
-                    "owner TEXT, " +
-                    "createDate TEXT, " +
-                    "createTime TEXT, " +
-                    "status TEXT, " +
-                    "updated TEXT" +
-                    ")");
-
-            db.execSQL("INSERT INTO zones (" +
-                    "_id, remote_id, zoneName, location, products, description, " +
-                    "uploaded, owner, createDate, createTime, status, updated) " +
-                    "SELECT _id, remote_id, zoneName, location, products, description, " +
-                    "uploaded, owner, createDate, createTime, status, NULL " +
-                    "FROM temp_zones");
-
-
-            // Step 5: Drop the temporary table
-            db.execSQL("DROP TABLE IF EXISTS temp_zones");
-        }
     }
 
     @Override
@@ -162,6 +105,31 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper implements ZonesDataba
         return zoneDetails;
     }
 
+    @SuppressLint("Range")
+    @Override
+    public List<String> getZonesToUpload() {
+        List<String> zoneDetails = new ArrayList<>();
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM zones WHERE uploaded = 'false'", null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                zoneDetails.add(cursor.getString(cursor.getColumnIndex("remote_id")));
+                zoneDetails.add(cursor.getString(cursor.getColumnIndex("zoneName")));
+                zoneDetails.add(cursor.getString(cursor.getColumnIndex("location")));
+                zoneDetails.add(cursor.getString(cursor.getColumnIndex("products")));
+                zoneDetails.add(cursor.getString(cursor.getColumnIndex("description")));
+                zoneDetails.add(cursor.getString(cursor.getColumnIndex("owner")));
+                zoneDetails.add(cursor.getString(cursor.getColumnIndex("createDate")));
+                zoneDetails.add(cursor.getString(cursor.getColumnIndex("createTime")));
+                zoneDetails.add(cursor.getString(cursor.getColumnIndex("status")));
+
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return zoneDetails;
+    }
+
     @Override
     public boolean addZoneToDatabase(List<String> zoneDetails){
         boolean rowCreated = false;
@@ -199,6 +167,18 @@ public class ZonesDatabaseHelper extends SQLiteOpenHelper implements ZonesDataba
         }
         return zoneUpdated;
 
+    }
+
+    @Override
+    public boolean updateZoneUploadStatus(String zoneID, boolean uploadedStatus) {
+        boolean rowUpdated = false;
+        ContentValues values = new ContentValues();
+        values.put("uploaded", uploadedStatus ? "true" : "false");
+        int rowsUpdated = sqLiteDatabase.update("zones", values, "remote_id = ?", new String[]{zoneID});
+        if (rowsUpdated > 0){
+            rowUpdated = true;
+        }
+        return rowUpdated;
     }
 
     @Override

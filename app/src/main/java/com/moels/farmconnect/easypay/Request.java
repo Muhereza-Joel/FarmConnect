@@ -19,6 +19,7 @@ public class Request {
     public String APIClientID;
     public String APIClientSecret;
     public String paymentReason;
+    public String productID;
     public static String EASY_PAY_PARAMS="parameters";
     public static int EP_REQUEST_CODE =120;
     private Preferences preferences;
@@ -68,6 +69,11 @@ public class Request {
         return this;
     }
 
+    public Request setProductID(String productID) {
+        this.productID = productID;
+        return this;
+    }
+
     public void initialize() {
         if (activity != null) {
             APICallParameters apiWithdrawCallParameters=new APICallParameters();
@@ -80,6 +86,7 @@ public class Request {
             apiWithdrawCallParameters.APIClientSecret = APIClientSecret;
             apiWithdrawCallParameters.reference = transactionReference;
             apiWithdrawCallParameters.reason = paymentReason;
+            apiWithdrawCallParameters.productID = productID;
 
             if (preferences.isBuyerAccount()){
                 Intent intent = new Intent(activity, MakeDepositRequestActivity.class);

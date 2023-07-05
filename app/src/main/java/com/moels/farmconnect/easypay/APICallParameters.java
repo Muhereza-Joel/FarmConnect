@@ -12,6 +12,7 @@ public class APICallParameters implements Serializable {
     public String APIClientSecret;
     public String reference;
     public String reason;
+    public String productID;
 
     public APICallParameters(){}
 }

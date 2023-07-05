@@ -3,20 +3,16 @@ package com.moels.farmconnect.utility_classes;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.List;
 
-public class PurchasesDatabaseHelper extends SQLiteOpenHelper implements PurchasesDatabase{
+public final class PurchasesDatabaseHelper extends FarmConnectDatabase implements PurchasesDatabase{
 
     private static PurchasesDatabaseHelper uniqueInstance;
-    private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "FarmConnectPurchasesDatabase";
-    private SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
-    private PurchasesDatabaseHelper(Context context){
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    private PurchasesDatabaseHelper(Context context) {
+        super(context);
     }
 
     public static PurchasesDatabaseHelper getInstance(Context context){
@@ -24,23 +20,6 @@ public class PurchasesDatabaseHelper extends SQLiteOpenHelper implements Purchas
             uniqueInstance = new PurchasesDatabaseHelper(context);
         }
         return uniqueInstance;
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE purchases(" +
-                "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "purchaseRemoteId TEXT UNIQUE, " +
-                "productRemoteId TEXT, " +
-                "uploaded TEXT, " +
-                "updated TEXT, " +
-                "status TEXT, " +
-                "zoneID TEXT)");
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
     }
 
     @Override

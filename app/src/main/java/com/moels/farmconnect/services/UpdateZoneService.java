@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -37,6 +38,7 @@ public class UpdateZoneService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d("FarmConnect", "onStartCommand: Zone Update Service Running");
         String remote_id = intent.getStringExtra("zoneID");
         String cleanedZoneId = remote_id.replaceAll("[^a-zA-Z0-9_-]", "");
         String zoneName = intent.getStringExtra("zoneName");
@@ -67,6 +69,8 @@ public class UpdateZoneService extends Service {
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
+                                Log.d("FarmConnect", "onSuccess: Collection Zone Edited");
+
                                 stopSelf();
                             }
                         })
@@ -74,6 +78,7 @@ public class UpdateZoneService extends Service {
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
+                                Log.d("FarmConnect", "onFailure: Failed to update zone" + e.getLocalizedMessage());
                                 //TODO handle updates which failed
                             }
                         });
@@ -93,5 +98,6 @@ public class UpdateZoneService extends Service {
     public void onDestroy() {
         super.onDestroy();
         handler.removeCallbacks(runnable);
+        Log.d("FarmConnect", "onDestroy: Zone Update Service stoped");
     }
 }

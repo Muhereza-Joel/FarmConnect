@@ -2,11 +2,9 @@ package com.moels.farmconnect.services;
 
 import android.annotation.SuppressLint;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 
 import androidx.annotation.NonNull;
@@ -19,12 +17,16 @@ import com.moels.farmconnect.models.Zone;
 import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
 import com.moels.farmconnect.utility_classes.Preferences;
 import com.moels.farmconnect.utility_classes.UI;
+import com.moels.farmconnect.utility_classes.ZonesDatabase;
+import com.moels.farmconnect.utility_classes.ZonesDatabaseHelper;
+
+import java.util.List;
 
 public class ZoneUploadService extends Service {
     private static final int POLL_INTERVAL = 2000; // Execute after 2 seconds
     private Handler handler;
     private Runnable runnable;
-    private SQLiteDatabase database;
+    private ZonesDatabase zonesDatabase;
     private Preferences preferences;
     //TODO remove sqlite functionality from this service
 
@@ -33,7 +35,7 @@ public class ZoneUploadService extends Service {
         super.onCreate();
         preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
         handler = new Handler();
-        database = openOrCreateDatabase("FarmConnectZonesDatabase", MODE_PRIVATE, null);
+        zonesDatabase = ZonesDatabaseHelper.getInstance(getApplicationContext());
     }
 
 
@@ -55,25 +57,13 @@ public class ZoneUploadService extends Service {
     }
 
     private void checkForNewZones() {
-        Cursor cursor = database.rawQuery("SELECT * FROM zones WHERE uploaded = 'false'", null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                @SuppressLint("Range") String remote_id = cursor.getString(cursor.getColumnIndex("remote_id"));
-                @SuppressLint("Range") String zoneName = cursor.getString(cursor.getColumnIndex("zoneName"));
-                @SuppressLint("Range") String location = cursor.getString(cursor.getColumnIndex("location"));
-                @SuppressLint("Range") String productsToCollect = cursor.getString(cursor.getColumnIndex("products"));
-                @SuppressLint("Range") String description = cursor.getString(cursor.getColumnIndex("description"));
-                @SuppressLint("Range") String owner = cursor.getString(cursor.getColumnIndex("owner"));
-                @SuppressLint("Range") String createDate = cursor.getString(cursor.getColumnIndex("createDate"));
-                @SuppressLint("Range") String createTime = cursor.getString(cursor.getColumnIndex("createTime"));
-                @SuppressLint("Range") String status = cursor.getString(cursor.getColumnIndex("status"));
-
-                uploadZoneDataToFirebase(remote_id, zoneName, location, productsToCollect, description, owner, createDate, createTime, status);
-
-            } while (cursor.moveToNext());
+        List<String> zoneDetails = zonesDatabase.getZonesToUpload();
+        if (zoneDetails != null && zoneDetails.size() > 0){
+            uploadZoneDataToFirebase(zoneDetails.get(0), zoneDetails.get(1), zoneDetails.get(2),
+                    zoneDetails.get(3), zoneDetails.get(4), zoneDetails.get(5), zoneDetails.get(6), zoneDetails.get(7), zoneDetails.get(8));
         }
-        cursor.close();
+
+
     }
 
     private boolean uploadZoneDataToFirebase(
@@ -88,31 +78,18 @@ public class ZoneUploadService extends Service {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        updateZoneUploadedStatus(remote_id);
+                        zonesDatabase.updateZoneUploadStatus(remote_id, true);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        UI.displayToast(getApplicationContext(), "Network Error Occurred");
+                        zonesDatabase.updateZoneUploadStatus(remote_id, false);
+                        UI.displayToast(getApplicationContext(), e.getMessage());
                     }
                 });
 
             return true;
-    }
-
-    private void updateZoneUploadedStatus(String remote_id) {
-        database.execSQL("UPDATE zones SET uploaded = 'true' WHERE remote_id = " + remote_id);
-
-        // Check if the last zone is uploaded and stop the service
-        Cursor cursor = database.rawQuery("SELECT COUNT(*) FROM zones WHERE uploaded = 'false'", null);
-        if (cursor.moveToFirst()) {
-            int count = cursor.getInt(0);
-            if (count == 0) {
-                stopSelf();  // Stop the service if the last zone is uploaded
-                cursor.close();
-            }
-        }
     }
 
     @Override

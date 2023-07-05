@@ -11,8 +11,10 @@ public interface ZonesDatabase {
     String getZoneOwner(String zoneID);
     List<String> getZoneIds(String phoneNumber);
     List<String> getZoneDetails(String zoneID);
+    List<String> getZonesToUpload();
     boolean addZoneToDatabase(List<String> zoneDetails);
     boolean updateZone(String zoneID, ContentValues contentValues);
+    boolean updateZoneUploadStatus(String zoneID, boolean uploadedStatus);
     void deleteZoneFromDatabase(String _id);
 
 }
