@@ -1,18 +1,25 @@
 package com.moels.farmconnect.utility_classes;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.moels.farmconnect.models.PaymentCard;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public final class PaymentsDatabaseHelper extends FarmConnectDatabase implements PaymentsDatabase{
 
     private static PaymentsDatabaseHelper uniqueInstance;
+    private ContactsDatabase contactsDatabase;
 
     private PaymentsDatabaseHelper(Context context){
         super(context);
+        contactsDatabase = ContactsDatabaseHelper.getInstance(context);
     }
 
     public static PaymentsDatabaseHelper getInstance(Context context){
@@ -50,9 +57,26 @@ public final class PaymentsDatabaseHelper extends FarmConnectDatabase implements
         return rowCreated;
     }
 
+    @SuppressLint("Range")
     @Override
-    public List<String> getPayments(String zoneID) {
-        return null;
+    public List<PaymentCard> getPayments(String zoneID) {
+        List<PaymentCard> paymentCards = new ArrayList<>();
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM payments WHERE zoneID = " + zoneID, null);
+        if (cursor.moveToNext()){
+            do {
+                String methodOfPayment = cursor.getString(cursor.getColumnIndex("paymentMethod"));
+                String amountPayed = cursor.getString(cursor.getColumnIndex("amountPayed"));
+                String date = cursor.getString(cursor.getColumnIndex("createDate"));
+                String time = cursor.getString(cursor.getColumnIndex("createTime"));
+                String owner = cursor.getString(cursor.getColumnIndex("productOwner"));
+                String recipientName = contactsDatabase.getOwnerUsername(owner);
+                String imageUrl = contactsDatabase.getOwnerImageUrl(owner);
+                PaymentCard paymentCard = new PaymentCard(methodOfPayment, amountPayed, date, time, recipientName, imageUrl);
+                paymentCards.add(paymentCard);
+
+            }while (cursor.moveToNext());
+        }
+        return paymentCards;
     }
 
     @Override

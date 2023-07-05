@@ -21,6 +21,8 @@ import com.moels.farmconnect.adapters.PaymentsListRecyclerViewAdapter;
 import com.moels.farmconnect.command.Command;
 import com.moels.farmconnect.models.PaymentCard;
 import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
+import com.moels.farmconnect.utility_classes.PaymentsDatabase;
+import com.moels.farmconnect.utility_classes.PaymentsDatabaseHelper;
 import com.moels.farmconnect.utility_classes.Preferences;
 import com.moels.farmconnect.utility_classes.UI;
 
@@ -35,6 +37,7 @@ public class PaymentsActivity extends AppCompatActivity{
     private PaymentsListRecyclerViewAdapter paymentsListRecyclerViewAdapter;
     private List<PaymentCard> paymentCards;
     private TextView emptyPaymentsLabel;
+    PaymentsDatabase paymentsDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,24 +52,6 @@ public class PaymentsActivity extends AppCompatActivity{
         setUpActionBarTitle();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        paymentCards.add(new PaymentCard("Mobile Money Deposit", "UGX 10000",
-                "10/12/2023", "5:00am", "Joel", ""));
-        paymentCards.add(new PaymentCard("Mobile Money Deposit", "UGX 10000",
-                "10/12/2023", "5:00am", "Joel", ""));
-        paymentCards.add(new PaymentCard("Mobile Money Deposit", "UGX 10000",
-                "10/12/2023", "5:00am", "Joel", ""));
-        paymentCards.add(new PaymentCard("Mobile Money Deposit", "UGX 10000",
-                "10/12/2023", "5:00am", "Joel", ""));
-        paymentCards.add(new PaymentCard("Mobile Money Deposit", "UGX 10000",
-                "10/12/2023", "5:00am", "Joel", ""));
-        paymentCards.add(new PaymentCard("Mobile Money Deposit", "UGX 10000",
-                "10/12/2023", "5:00am", "Joel", ""));
-        paymentCards.add(new PaymentCard("Mobile Money Deposit", "UGX 10000",
-                "10/12/2023", "5:00am", "Joel", ""));
-        paymentCards.add(new PaymentCard("Mobile Money", "UGX 10000",
-                "10/12/2023", "5:00am", "Joel", ""));
-        paymentCards.add(new PaymentCard("Mobile Money", "UGX 10000",
-                "10/12/2023", "5:00am", "Joel", ""));
         paymentsListRecyclerViewAdapter = new PaymentsListRecyclerViewAdapter(getApplicationContext(), paymentCards);
         recyclerView.setAdapter(paymentsListRecyclerViewAdapter);
 
@@ -83,7 +68,8 @@ public class PaymentsActivity extends AppCompatActivity{
         preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
         recyclerView = findViewById(R.id.payments_recycler_view);
         emptyPaymentsLabel = findViewById(R.id.empty_message_label);
-        paymentCards = new ArrayList<>();
+        paymentsDatabase = PaymentsDatabaseHelper.getInstance(getApplicationContext());
+        paymentCards = paymentsDatabase.getPayments(getIntent().getStringExtra("zoneID"));
     }
 
     private void setUpStatusBar() {
