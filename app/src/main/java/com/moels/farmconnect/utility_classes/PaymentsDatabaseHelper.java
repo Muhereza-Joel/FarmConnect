@@ -28,7 +28,7 @@ public final class PaymentsDatabaseHelper extends FarmConnectDatabase implements
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("payment_remote_id", paymentDetails.get(0));
-        contentValues.put("productID", paymentDetails.get(1));
+        contentValues.put("productRemoteId", paymentDetails.get(1));
         contentValues.put("paymentMethod", paymentDetails.get(2));
         contentValues.put("totalAmount", paymentDetails.get(3));
         contentValues.put("amountPayed", paymentDetails.get(4));

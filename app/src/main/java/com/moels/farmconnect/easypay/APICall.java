@@ -110,23 +110,22 @@ public class APICall extends AsyncTask<String, String, String> {
                         try {
                             preferences = FarmConnectAppPreferences.getInstance(activity.getApplicationContext());
 
-                            if (preferences.isBuyerAccount()){
-                                MakeDepositRequestActivity.responseMessage.setText(response.toString());
+                            if (preferences.isBuyerAccount() && jsonObject != null){
+                                MakeDepositRequestActivity.responseMessage.setVisibility(View.VISIBLE);
+//                                MakeDepositRequestActivity.responseMessage.setText(response.toString());
                                 MakeDepositRequestActivity.progressDialog.dismiss();
-                                MakeDepositRequestActivity.responseMessage.setText(jsonObject.get("errormsg").toString());
-
                                 UI.displayToast(activity.getApplicationContext(), "Transaction was successful");
                                 saveTransactionDetails(jsonObject);
 
-                                Log.e("FarmConnect: ", jsonObject.get("errormsg").toString());
                                 Intent intent = new Intent();
                                 intent.putExtra("response", response.toString());
                                 activity.setResult(Activity.RESULT_OK, intent);
                                 activity.finish();
-                            } else if (preferences.isFarmerAccount()){
+
+                            } else if (preferences.isFarmerAccount() && jsonObject != null){
+                                MakeWithdrawRequestActivity.responseMessage.setVisibility(View.VISIBLE);
                                 MakeWithdrawRequestActivity.responseMessage.setText(response.toString());
                                 MakeWithdrawRequestActivity.progressDialog.dismiss();
-                                MakeWithdrawRequestActivity.responseMessage.setText(jsonObject.get("errormsg").toString());
 
                                 UI.displayToast(activity.getApplicationContext(), "Transaction was successful");
                                 Log.e("FarmConnect: ", jsonObject.get("errormsg").toString());
@@ -148,18 +147,28 @@ public class APICall extends AsyncTask<String, String, String> {
                     public void run() {
                         try {
                             preferences = FarmConnectAppPreferences.getInstance(activity.getApplicationContext());
-                            if (preferences.isBuyerAccount()){
-                                MakeDepositRequestActivity.responseMessage.setText(response.toString());
+                            if (preferences.isBuyerAccount() && jsonObject != null){
                                 MakeDepositRequestActivity.progressDialog.dismiss();
+                                MakeDepositRequestActivity.responseMessage.setVisibility(View.VISIBLE);
                                 MakeDepositRequestActivity.responseMessage.setText(jsonObject.get("errormsg").toString());
+                                Log.e("FarmConnect: ", jsonObject.get("errormsg").toString());
+                            } else if (preferences.isBuyerAccount()){
+                                MakeDepositRequestActivity.progressDialog.dismiss();
+                                MakeDepositRequestActivity.responseMessage.setVisibility(View.VISIBLE);
+                                MakeDepositRequestActivity.responseMessage.setText("Transaction was not successfull");
                             }
 
-                            if (preferences.isFarmerAccount()){
+                            if (preferences.isFarmerAccount() && jsonObject != null){
                                 MakeWithdrawRequestActivity.progressDialog.dismiss();
                                 MakeWithdrawRequestActivity.responseMessage.setVisibility(View.VISIBLE);
                                 MakeWithdrawRequestActivity.responseMessage.setText(jsonObject.get("errormsg").toString());
+                                 Log.e("FarmConnect: ", jsonObject.get("errormsg").toString());
+                            } else if (preferences.isFarmerAccount()){
+                                MakeWithdrawRequestActivity.progressDialog.dismiss();
+                                MakeWithdrawRequestActivity.responseMessage.setVisibility(View.VISIBLE);
+                                MakeWithdrawRequestActivity.responseMessage.setText("Transaction was not successfull");
+
                             }
-                            Log.e("FarmConnect: ", jsonObject.get("errormsg").toString());
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -290,6 +299,7 @@ public class APICall extends AsyncTask<String, String, String> {
             paymentDetails.add(UI.getCurrentTime());
             paymentDetails.add("false");
             paymentDetails.add("false");
+
             paymentDetails.add(productsDatabase.getProductZoneID(MakeDepositRequestActivity.apiParameters.productID));
 
             paymentsDatabase.addPaymentRecord(paymentDetails);

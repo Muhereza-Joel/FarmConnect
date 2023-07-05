@@ -221,7 +221,7 @@ public final class ProductsDatabaseHelper extends FarmConnectDatabase implements
         Cursor cursor = sqLiteDatabase.query("products", new String[]{"zoneID"},
                 "productRemoteId = ?", new String[]{productID}, null, null, null);
         if (cursor.moveToNext()){
-            zoneID = cursor.getString(cursor.getColumnIndex("owner"));
+            zoneID = cursor.getString(cursor.getColumnIndex("zoneID"));
         }
         cursor.close();
         return zoneID;
