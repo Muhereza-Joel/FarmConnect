@@ -128,10 +128,16 @@ public final class ProductsDatabaseHelper extends FarmConnectDatabase implements
         Cursor cursor;
 
         if (owner.equals("")){
-            cursor = sqLiteDatabase.rawQuery("SELECT * FROM products WHERE zoneID = '" + zoneID + "'", null);
+            cursor = sqLiteDatabase.rawQuery("SELECT products.*" +
+                    " FROM products" +
+                    " LEFT JOIN purchases ON products.productRemoteId = purchases.productRemoteId " +
+                    " WHERE purchases.productRemoteId IS NULL AND products.zoneID = " + zoneID, null);
 
         }else {
-            cursor = sqLiteDatabase.rawQuery("SELECT * FROM products WHERE zoneID = '" + zoneID + "' AND owner = '" + owner + "'", null);
+            cursor = sqLiteDatabase.rawQuery("SELECT products.*" +
+                    " FROM products" +
+                    " LEFT JOIN purchases ON products.productRemoteId = purchases.productRemoteId " +
+                    " WHERE purchases.productRemoteId IS NULL AND products.zoneID = " + zoneID + " AND owner = " + owner, null);
         }
 
 
