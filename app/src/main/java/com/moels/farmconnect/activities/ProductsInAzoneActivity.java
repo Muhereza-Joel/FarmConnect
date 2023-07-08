@@ -101,6 +101,7 @@ public class ProductsInAzoneActivity extends AppCompatActivity{
 
         if (id == R.id.purchases_icon){
             Intent intent = new Intent(ProductsInAzoneActivity.this, PurchasesActivity.class);
+            intent.putExtra("zoneID", getIntent().getStringExtra("zoneID"));
             startActivity(intent);
         }
 

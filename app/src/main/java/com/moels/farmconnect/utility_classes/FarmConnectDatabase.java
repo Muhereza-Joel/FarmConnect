@@ -6,7 +6,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public abstract class FarmConnectDatabase extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    //Upgraded from version 1
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "FarmConnectDatabase";
     public SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
@@ -94,6 +95,8 @@ public abstract class FarmConnectDatabase extends SQLiteOpenHelper {
                 "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "purchaseRemoteId TEXT UNIQUE, " +
                 "productRemoteId TEXT, " +
+                "date TEXT, " +
+                "time TEXT, " +
                 "uploaded TEXT, " +
                 "updated TEXT, " +
                 "status TEXT, " +
@@ -105,6 +108,7 @@ public abstract class FarmConnectDatabase extends SQLiteOpenHelper {
         upgradeContactsTable(db, oldVersion, newVersion);
         upgradeProductsTable(db, oldVersion, newVersion);
         upgradeZonesTable(db, oldVersion, newVersion);
+        upgradePurchasesTable(db, oldVersion, newVersion);
     }
 
     private void upgradeContactsTable(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -201,6 +205,32 @@ public abstract class FarmConnectDatabase extends SQLiteOpenHelper {
 
             // Step 5: Drop the temporary table
             db.execSQL("DROP TABLE IF EXISTS temp_zones");
+        }
+    }
+    private void upgradePurchasesTable(SQLiteDatabase db,int oldVersion, int newVersion) {
+        if (oldVersion < newVersion) {
+            db.execSQL("CREATE TABLE temp_purchases AS SELECT * FROM purchases");
+
+            db.execSQL("DROP TABLE IF EXISTS purchases");
+
+            db.execSQL("CREATE TABLE purchases(" +
+                    "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "purchaseRemoteId TEXT UNIQUE, " +
+                    "productRemoteId TEXT, " +
+                    "date TEXT, " +
+                    "time TEXT, " +
+                    "uploaded TEXT, " +
+                    "updated TEXT, " +
+                    "status TEXT, " +
+                    "zoneID TEXT)");
+
+            db.execSQL("INSERT INTO purchases (" +
+                    "_id, purchaseRemoteId, productRemoteId, date, time," +
+                    "uploaded, updated, status, zoneID) " +
+                    "SELECT _id, purchaseRemoteId, productRemoteId, NULL, NULL, uploaded," +
+                    "updated, status, zoneID FROM temp_purchases");
+
+            db.execSQL("DROP TABLE IF EXISTS temp_purchases");
         }
     }
 }

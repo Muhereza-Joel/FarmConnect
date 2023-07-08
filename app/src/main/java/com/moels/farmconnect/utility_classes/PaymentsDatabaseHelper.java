@@ -15,11 +15,13 @@ import java.util.List;
 public final class PaymentsDatabaseHelper extends FarmConnectDatabase implements PaymentsDatabase{
 
     private static PaymentsDatabaseHelper uniqueInstance;
+    private PurchasesDatabase purchasesDatabase;
     private ContactsDatabase contactsDatabase;
 
     private PaymentsDatabaseHelper(Context context){
         super(context);
         contactsDatabase = ContactsDatabaseHelper.getInstance(context);
+        purchasesDatabase = PurchasesDatabaseHelper.getInstance(context);
     }
 
     public static PaymentsDatabaseHelper getInstance(Context context){
@@ -52,10 +54,24 @@ public final class PaymentsDatabaseHelper extends FarmConnectDatabase implements
         long rowsInserted = sqLiteDatabase.insertWithOnConflict("payments", null, contentValues, SQLiteDatabase.CONFLICT_IGNORE);
         if (rowsInserted != -1){
             rowCreated = true;
+            savePurchaseRecord(paymentDetails.get(1), paymentDetails.get(13));
             Log.d("FarmConnect", "addPaymentRecord: payment details saved success fully");
         }
         return rowCreated;
     }
+
+    private void savePurchaseRecord(String productID, String zoneID){
+        List<String> purchaseDetails = new ArrayList<String>();
+        purchaseDetails.add(UI.generateUniqueID());
+        purchaseDetails.add(productID);
+        purchaseDetails.add("false"); //Flag for uploaded status
+        purchaseDetails.add("false"); //Flag for update status
+        purchaseDetails.add("Picked"); //Flag for delivery status
+        purchaseDetails.add(zoneID);
+
+        purchasesDatabase.addPurchaseRecord(purchaseDetails);
+    }
+
 
     @SuppressLint("Range")
     @Override
@@ -76,6 +92,7 @@ public final class PaymentsDatabaseHelper extends FarmConnectDatabase implements
 
             }while (cursor.moveToNext());
         }
+        cursor.close();
         return paymentCards;
     }
 

@@ -13,7 +13,7 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="b4887cba-bade-4162-8b5b-33515bcb6b2f">
-      <console name="Connection" type="STANDARD" schema="main" session="Main"><![CDATA[SELECT * FROM products WHERE updated = 'true' AND productRemoteId = 202306061731041332]]></console>
+      <console name="Connection" type="STANDARD" schema="main" session="Main"><![CDATA[SELECT * FROM products JOIN purchases ON products."productRemoteId" = purchases."productRemoteId"]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
@@ -52,7 +52,7 @@
           <port value="" />
           <database value="" />
           <files>
-            <file path="C:\Users\STELLA\Desktop\FarmConnectProductsDatabase" schema="main" />
+            <file path="C:\Users\STELLA\Desktop\FarmConnectDatabase" schema="main" />
           </files>
           <type value="NONE" />
           <user value="" />

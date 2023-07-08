@@ -24,6 +24,8 @@
         android:textStyle="bold"
         android:textSize="@dimen/text_size_20"
         android:layout_marginTop="200dp"
-        android:text="No Transactions Currently Made"/>
+        android:layout_marginStart="@dimen/layout_margin_start_20"
+        android:layout_marginEnd="@dimen/layout_padding_end_20"
+        android:text="You have not made any transactions yet..."/>
 
 </LinearLayout>

@@ -22,6 +22,8 @@ import com.moels.farmconnect.adapters.PurchasesListRecyclerViewAdapter;
 import com.moels.farmconnect.models.PurchasesCard;
 import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
 import com.moels.farmconnect.utility_classes.Preferences;
+import com.moels.farmconnect.utility_classes.PurchasesDatabase;
+import com.moels.farmconnect.utility_classes.PurchasesDatabaseHelper;
 import com.moels.farmconnect.utility_classes.UI;
 
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ import java.util.List;
 public class PurchasesActivity extends AppCompatActivity {
 
     private Preferences preferences;
+    private PurchasesDatabase purchasesDatabase;
     private Toolbar toolbar;
     private List<PurchasesCard> purchasesCards;
     private RecyclerView recyclerView;
@@ -49,20 +52,6 @@ public class PurchasesActivity extends AppCompatActivity {
         setUpActionBarTitle();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-
-        purchasesCards.add(new PurchasesCard("Coffee", "10 Kilograms", "10/04/2023", "04:00", "Joel", ""));
-        purchasesCards.add(new PurchasesCard("Coffee", "10 Kilograms", "10/04/2023", "04:00", "Joel", ""));
-        purchasesCards.add(new PurchasesCard("Coffee", "10 Kilograms", "10/04/2023", "04:00", "Joel", ""));
-        purchasesCards.add(new PurchasesCard("Coffee", "10 Kilograms", "10/04/2023", "04:00", "Joel", ""));
-        purchasesCards.add(new PurchasesCard("Coffee", "10 Kilograms", "10/04/2023", "04:00", "Joel", ""));
-        purchasesCards.add(new PurchasesCard("Coffee", "10 Kilograms", "10/04/2023", "04:00", "Joel", ""));
-        purchasesCards.add(new PurchasesCard("Coffee", "10 Kilograms", "10/04/2023", "04:00", "Joel", ""));
-        purchasesCards.add(new PurchasesCard("Coffee", "10 Kilograms", "10/04/2023", "04:00", "Joel", ""));
-        purchasesCards.add(new PurchasesCard("Coffee", "10 Kilograms", "10/04/2023", "04:00", "Joel", ""));
-        purchasesCards.add(new PurchasesCard("Coffee", "10 Kilograms", "10/04/2023", "04:00", "Joel", ""));
-        purchasesCards.add(new PurchasesCard("Coffee", "10 Kilograms", "10/04/2023", "04:00", "Joel", ""));
-        purchasesCards.add(new PurchasesCard("Coffee", "10 Kilograms", "10/04/2023", "04:00", "Joel", ""));
-
         purchasesListRecyclerViewAdapter = new PurchasesListRecyclerViewAdapter(getApplicationContext(), purchasesCards);
 
         recyclerView.setAdapter(purchasesListRecyclerViewAdapter);
@@ -79,6 +68,8 @@ public class PurchasesActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.purchases_recycler_view);
         emptyPurchasesTextView = findViewById(R.id.empty_purchases_text_view);
         purchasesCards = new ArrayList<>();
+        purchasesDatabase = PurchasesDatabaseHelper.getInstance(getApplicationContext());
+        purchasesCards = purchasesDatabase.getPurchases(getIntent().getStringExtra("zoneID"));
     }
 
 
