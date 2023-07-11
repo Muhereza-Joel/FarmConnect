@@ -37,7 +37,7 @@ import com.moels.farmconnect.utility_classes.UI;
 import java.util.List;
 
 public class ProductDetailsActivity extends AppCompatActivity {
-    private final String postUrl = "https://b5c9cd46-e33f-4f68-8d55-40d9037553dd.mock.pstmn.io";
+    private final String postUrl = "https://www.easypay.co.ug/api/";
     private final String APIClientID = "b462d01c06404cb0";
     private final String APIClientSecret = "527b39bd50e77706";
     private final String transactionCurrency = "UGX";
@@ -93,7 +93,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private void initDepositRequest(){
         try {
             new Request(ProductDetailsActivity.this)
-                    .setTransactionAmount("500")
+                    .setTransactionAmount(productPriceTextView.getText().toString())
                     .setTransactionCurrency(transactionCurrency)
                     .setPaymentReason("FarmConnect Deposit Payment")
                     .setRequestAction("mmdeposit")
@@ -111,7 +111,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private void initWithdrawRequest(){
         try {
             new Request(ProductDetailsActivity.this)
-                    .setTransactionAmount("500")
+                    .setTransactionAmount(productPriceTextView.getText().toString())
                     .setTransactionCurrency(transactionCurrency)
                     .setPaymentReason("FarmConnect Purchase Payment")
                     .setRequestAction("mmpayout")

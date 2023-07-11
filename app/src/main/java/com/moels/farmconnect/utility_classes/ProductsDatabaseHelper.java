@@ -137,7 +137,7 @@ public final class ProductsDatabaseHelper extends FarmConnectDatabase implements
             cursor = sqLiteDatabase.rawQuery("SELECT products.*" +
                     " FROM products" +
                     " LEFT JOIN purchases ON products.productRemoteId = purchases.productRemoteId " +
-                    " WHERE purchases.productRemoteId IS NULL AND products.zoneID = " + zoneID + " AND owner = " + owner, null);
+                    " WHERE purchases.productRemoteId IS NULL AND products.zoneID = " + zoneID + " AND owner = " + "'" + owner + "'", null);
         }
 
 
