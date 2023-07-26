@@ -8,17 +8,21 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.moels.farmconnect.model.observers.Observable;
+import com.moels.farmconnect.model.observers.Observer;
 import com.moels.farmconnect.utils.models.ZoneCardItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ZonesDatabaseHelper extends FarmConnectDatabase implements ZonesDatabase{
+public final class ZonesDatabaseHelper extends FarmConnectDatabase implements ZonesDatabase, Observable {
 
     private static ZonesDatabaseHelper uniqueInstance;
+    private ArrayList<Observer> observers;
 
     private ZonesDatabaseHelper(Context context){
         super(context);
+        observers = new ArrayList<>();
     }
 
     public static ZonesDatabaseHelper getInstance(Context context){
@@ -152,6 +156,7 @@ public final class ZonesDatabaseHelper extends FarmConnectDatabase implements Zo
         if (rowsInserted != -1){
             Log.d("FarmConnect", "addZoneToDatabase: Collection zone added to database created");
             rowCreated = true;
+            notifyObservers();
         }else {
             Log.d("FarmConnect", "addZoneToDatabase: Collection zone already exits in database");
         }
@@ -184,5 +189,24 @@ public final class ZonesDatabaseHelper extends FarmConnectDatabase implements Zo
     @Override
     public void deleteZoneFromDatabase(String _id){
         sqLiteDatabase.delete("zones", "remote_id = ?", new String[] {_id});
+    }
+
+    @Override
+    public void registerObserver(Observer observer) {
+        observers.add(observer);
+
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        int index = observers.indexOf(observer);
+        if (index > 0) observers.remove(index);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Observer observer : observers){
+            observer.update("");
+        }
     }
 }

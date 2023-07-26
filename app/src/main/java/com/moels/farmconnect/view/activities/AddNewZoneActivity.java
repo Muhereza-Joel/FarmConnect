@@ -22,10 +22,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.controller.command.Command;
-import com.moels.farmconnect.controller.command.Listener;
-import com.moels.farmconnect.controller.command.SaveZoneCommand;
+import com.moels.farmconnect.controller.ZonesController;
+import com.moels.farmconnect.model.command.Listener;
 import com.moels.farmconnect.model.database.services.ZoneUploadService;
+import com.moels.farmconnect.model.observers.Observer;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
 import com.moels.farmconnect.utils.UI;
@@ -33,7 +33,7 @@ import com.moels.farmconnect.utils.UI;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddNewZoneActivity extends AppCompatActivity implements Listener {
+public class AddNewZoneActivity extends AppCompatActivity implements Listener{
 
     private Toolbar addNewZoneActivityToolbar;
     private EditText zoneNameEditText, locationEditText, productsToCollectEditText, descriptionEditText;
@@ -92,8 +92,8 @@ public class AddNewZoneActivity extends AppCompatActivity implements Listener {
         int id = item.getItemId();
 
         if(id == R.id.save_zone_btn){
-            Command command = new SaveZoneCommand(getApplicationContext(), getValuesFromUI(), this);
-            command.execute();
+            ZonesController zonesController = new ZonesController(getApplicationContext(), getValuesFromUI(), this);
+            zonesController.saveZone();
         }
 
         return super.onOptionsItemSelected(item);
@@ -131,7 +131,7 @@ public class AddNewZoneActivity extends AppCompatActivity implements Listener {
         View parentView = findViewById(R.id.parent);
         clearViews();
         UI.displaySnackBar(getApplicationContext(), parentView, "Collection Zone Created!!");
-        startZoneUploadService();
+//        startZoneUploadService();
         saveFirstZoneCreatedPreference(preferences);
     }
 
@@ -161,5 +161,4 @@ public class AddNewZoneActivity extends AppCompatActivity implements Listener {
             UI.hide(zoneHeaderTextView);
         }
     }
-
 }
