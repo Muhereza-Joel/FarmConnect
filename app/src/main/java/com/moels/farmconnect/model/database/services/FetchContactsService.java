@@ -1,4 +1,4 @@
-package com.moels.farmconnect.database.services;
+package com.moels.farmconnect.model.database.services;
 
 import android.annotation.SuppressLint;
 import android.app.Service;
@@ -20,8 +20,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.moels.farmconnect.database.ContactsDatabase;
-import com.moels.farmconnect.database.ContactsDatabaseHelper;
+import com.moels.farmconnect.model.database.ContactsDatabase;
+import com.moels.farmconnect.model.database.ContactsDatabaseHelper;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
 

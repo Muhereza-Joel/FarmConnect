@@ -9,11 +9,11 @@ import android.view.View;
 import com.moels.farmconnect.view.activities.MakeDepositRequestActivity;
 import com.moels.farmconnect.view.activities.MakeWithdrawRequestActivity;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
-import com.moels.farmconnect.database.PaymentsDatabase;
-import com.moels.farmconnect.database.PaymentsDatabaseHelper;
+import com.moels.farmconnect.model.database.PaymentsDatabase;
+import com.moels.farmconnect.model.database.PaymentsDatabaseHelper;
 import com.moels.farmconnect.utils.preferences.Preferences;
-import com.moels.farmconnect.database.ProductsDatabase;
-import com.moels.farmconnect.database.ProductsDatabaseHelper;
+import com.moels.farmconnect.model.database.ProductsDatabase;
+import com.moels.farmconnect.model.database.ProductsDatabaseHelper;
 import com.moels.farmconnect.utils.UI;
 
 import org.json.JSONException;

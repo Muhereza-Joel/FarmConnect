@@ -23,10 +23,10 @@ import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.database.services.UpdateZoneService;
+import com.moels.farmconnect.model.database.services.UpdateZoneService;
 import com.moels.farmconnect.utils.UI;
-import com.moels.farmconnect.database.ZonesDatabase;
-import com.moels.farmconnect.database.ZonesDatabaseHelper;
+import com.moels.farmconnect.model.database.ZonesDatabase;
+import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -26,8 +26,8 @@ import com.moels.farmconnect.utils.models.Card;
 import com.moels.farmconnect.utils.models.Product;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
-import com.moels.farmconnect.database.ProductsDatabase;
-import com.moels.farmconnect.database.ProductsDatabaseHelper;
+import com.moels.farmconnect.model.database.ProductsDatabase;
+import com.moels.farmconnect.model.database.ProductsDatabaseHelper;
 import com.moels.farmconnect.model.observers.ProductsObserver;
 import com.moels.farmconnect.model.observers.RealTimeProductsObserver;
 

@@ -34,7 +34,7 @@ import com.moels.farmconnect.R;
 import com.moels.farmconnect.controller.adapters.ViewPagerAdapter;
 import com.moels.farmconnect.view.fragments.ChatListFragment;
 import com.moels.farmconnect.view.fragments.ZonesListFragment;
-import com.moels.farmconnect.database.services.ProductsDataSyncService;
+import com.moels.farmconnect.model.database.services.ProductsDataSyncService;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
 import com.moels.farmconnect.utils.UI;

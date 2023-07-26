@@ -13,9 +13,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.database.services.DeleteProductService;
-import com.moels.farmconnect.database.ProductsDatabase;
-import com.moels.farmconnect.database.ProductsDatabaseHelper;
+import com.moels.farmconnect.model.database.services.DeleteProductService;
+import com.moels.farmconnect.model.database.ProductsDatabase;
+import com.moels.farmconnect.model.database.ProductsDatabaseHelper;
 
 public class DeleteProductConfirmationDialog extends DialogFragment implements DialogInterface.OnClickListener {
     private ProductsDatabase productsDatabase;

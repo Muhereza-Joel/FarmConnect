@@ -12,8 +12,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.database.services.DeleteZoneService;
-import com.moels.farmconnect.database.ZonesDatabaseHelper;
+import com.moels.farmconnect.model.database.services.DeleteZoneService;
+import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
 
 public class DeleteZoneConfirmationDialog extends DialogFragment implements DialogInterface.OnClickListener {
 

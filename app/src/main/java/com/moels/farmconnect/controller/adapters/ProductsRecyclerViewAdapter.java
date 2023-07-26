@@ -16,8 +16,8 @@ import com.bumptech.glide.Glide;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.utils.models.Card;
 import com.moels.farmconnect.utils.models.ProductCard;
-import com.moels.farmconnect.database.ContactsDatabase;
-import com.moels.farmconnect.database.ContactsDatabaseHelper;
+import com.moels.farmconnect.model.database.ContactsDatabase;
+import com.moels.farmconnect.model.database.ContactsDatabaseHelper;
 
 import java.util.List;
 

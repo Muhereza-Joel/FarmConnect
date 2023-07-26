@@ -17,7 +17,7 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.database.services.FetchContactsService;
+import com.moels.farmconnect.model.database.services.FetchContactsService;
 
 public class FinishSetUpActivity extends AppCompatActivity implements FetchContactsService.ContactsFetchListener{
     private FetchContactsService fetchContactsService;

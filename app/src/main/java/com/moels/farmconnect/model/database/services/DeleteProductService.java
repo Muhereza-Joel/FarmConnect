@@ -1,4 +1,4 @@
-package com.moels.farmconnect.database.services;
+package com.moels.farmconnect.model.database.services;
 
 import android.app.Service;
 import android.content.Intent;
@@ -14,8 +14,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.moels.farmconnect.database.ZonesDatabase;
-import com.moels.farmconnect.database.ZonesDatabaseHelper;
+import com.moels.farmconnect.model.database.ZonesDatabase;
+import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
 
 public class DeleteProductService extends Service {
 

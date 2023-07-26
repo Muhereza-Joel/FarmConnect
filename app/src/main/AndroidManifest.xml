@@ -57,15 +57,15 @@
             android:exported="false" />
 
         <service
-            android:name=".database.services.UpdateProductService"
+            android:name=".model.database.services.UpdateProductService"
             android:enabled="true"
             android:exported="false" />
         <service
-            android:name=".database.services.ProductsUploadService"
+            android:name=".model.database.services.ProductsUploadService"
             android:enabled="true"
             android:exported="false" />
         <service
-            android:name=".database.services.DeleteProductService"
+            android:name=".model.database.services.DeleteProductService"
             android:enabled="true"
             android:exported="false" />
 
@@ -85,7 +85,7 @@
             android:parentActivityName=".view.activities.AddProductToZoneActivity" />
 
         <service
-            android:name=".database.services.ProductsDataSyncService"
+            android:name=".model.database.services.ProductsDataSyncService"
             android:enabled="true"
             android:exported="false" />
 
@@ -96,11 +96,11 @@
             android:windowSoftInputMode="adjustResize" />
 
         <service
-            android:name=".database.services.BuyerAccountZoneFetchService"
+            android:name=".model.database.services.BuyerAccountZoneFetchService"
             android:enabled="true"
             android:exported="false" />
         <service
-            android:name=".database.services.FarmerAccountZonesFetchService"
+            android:name=".model.database.services.FarmerAccountZonesFetchService"
             android:enabled="true"
             android:exported="false" />
 
@@ -112,15 +112,15 @@
             android:exported="false" />
 
         <service
-            android:name=".database.services.FetchContactsService"
+            android:name=".model.database.services.FetchContactsService"
             android:enabled="true"
             android:exported="false" />
         <service
-            android:name=".database.services.UpdateZoneService"
+            android:name=".model.database.services.UpdateZoneService"
             android:enabled="true"
             android:exported="false" />
         <service
-            android:name=".database.services.DeleteZoneService"
+            android:name=".model.database.services.DeleteZoneService"
             android:enabled="true"
             android:exported="false" />
 
@@ -134,7 +134,7 @@
             android:parentActivityName=".view.activities.ProductsInAzoneActivity" />
 
         <service
-            android:name=".database.services.ZoneUploadService"
+            android:name=".model.database.services.ZoneUploadService"
             android:enabled="true"
             android:exported="false" />
 

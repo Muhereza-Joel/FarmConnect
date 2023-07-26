@@ -1,4 +1,4 @@
-package com.moels.farmconnect.database.services;
+package com.moels.farmconnect.model.database.services;
 
 import android.app.Service;
 import android.content.Intent;

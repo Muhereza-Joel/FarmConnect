@@ -29,8 +29,8 @@ import com.moels.farmconnect.view.dialogs.DeleteProductConfirmationDialog;
 import com.moels.farmconnect.easypay.Request;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
-import com.moels.farmconnect.database.ProductsDatabase;
-import com.moels.farmconnect.database.ProductsDatabaseHelper;
+import com.moels.farmconnect.model.database.ProductsDatabase;
+import com.moels.farmconnect.model.database.ProductsDatabaseHelper;
 import com.moels.farmconnect.utils.UI;
 
 import java.util.List;

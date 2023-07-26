@@ -26,13 +26,13 @@ import com.moels.farmconnect.view.activities.ProductsInAzoneActivity;
 import com.moels.farmconnect.controller.adapters.ZoneListRecyclerViewAdapter;
 import com.moels.farmconnect.utils.models.Zone;
 import com.moels.farmconnect.utils.models.ZoneCardItem;
-import com.moels.farmconnect.database.ContactsDatabase;
-import com.moels.farmconnect.database.ContactsDatabaseHelper;
+import com.moels.farmconnect.model.database.ContactsDatabase;
+import com.moels.farmconnect.model.database.ContactsDatabaseHelper;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
 import com.moels.farmconnect.model.observers.RealTimeZonesObserver;
-import com.moels.farmconnect.database.ZonesDatabase;
-import com.moels.farmconnect.database.ZonesDatabaseHelper;
+import com.moels.farmconnect.model.database.ZonesDatabase;
+import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
 import com.moels.farmconnect.model.observers.ZonesObserver;
 
 import java.util.ArrayList;

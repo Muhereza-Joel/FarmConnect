@@ -21,8 +21,8 @@ import com.moels.farmconnect.controller.adapters.PurchasesListRecyclerViewAdapte
 import com.moels.farmconnect.utils.models.PurchasesCard;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
-import com.moels.farmconnect.database.PurchasesDatabase;
-import com.moels.farmconnect.database.PurchasesDatabaseHelper;
+import com.moels.farmconnect.model.database.PurchasesDatabase;
+import com.moels.farmconnect.model.database.PurchasesDatabaseHelper;
 import com.moels.farmconnect.utils.UI;
 
 import java.util.ArrayList;

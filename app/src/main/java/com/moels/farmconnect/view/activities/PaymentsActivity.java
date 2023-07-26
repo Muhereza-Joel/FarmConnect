@@ -20,8 +20,8 @@ import com.moels.farmconnect.R;
 import com.moels.farmconnect.controller.adapters.PaymentsListRecyclerViewAdapter;
 import com.moels.farmconnect.utils.models.PaymentCard;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
-import com.moels.farmconnect.database.PaymentsDatabase;
-import com.moels.farmconnect.database.PaymentsDatabaseHelper;
+import com.moels.farmconnect.model.database.PaymentsDatabase;
+import com.moels.farmconnect.model.database.PaymentsDatabaseHelper;
 import com.moels.farmconnect.utils.preferences.Preferences;
 import com.moels.farmconnect.utils.UI;
 

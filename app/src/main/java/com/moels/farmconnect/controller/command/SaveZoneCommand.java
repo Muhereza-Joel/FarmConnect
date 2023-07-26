@@ -3,8 +3,8 @@ package com.moels.farmconnect.controller.command;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.moels.farmconnect.database.ZonesDatabase;
-import com.moels.farmconnect.database.ZonesDatabaseHelper;
+import com.moels.farmconnect.model.database.ZonesDatabase;
+import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
 
 import java.util.List;
 

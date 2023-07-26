@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.utils.UI;
-import com.moels.farmconnect.database.ZonesDatabaseHelper;
+import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
 
 public class ZoneDetailsActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.moels.farmconnect.database;
+package com.moels.farmconnect.model.database;
 
 import com.moels.farmconnect.utils.models.PaymentCard;
 

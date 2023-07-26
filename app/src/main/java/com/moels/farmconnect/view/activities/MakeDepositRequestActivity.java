@@ -24,10 +24,10 @@ import com.hbb20.CountryCodePicker;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.easypay.APICall;
 import com.moels.farmconnect.easypay.APICallParameters;
-import com.moels.farmconnect.database.ContactsDatabase;
-import com.moels.farmconnect.database.ContactsDatabaseHelper;
-import com.moels.farmconnect.database.ProductsDatabase;
-import com.moels.farmconnect.database.ProductsDatabaseHelper;
+import com.moels.farmconnect.model.database.ContactsDatabase;
+import com.moels.farmconnect.model.database.ContactsDatabaseHelper;
+import com.moels.farmconnect.model.database.ProductsDatabase;
+import com.moels.farmconnect.model.database.ProductsDatabaseHelper;
 import com.moels.farmconnect.utils.UI;
 
 public class MakeDepositRequestActivity extends AppCompatActivity {

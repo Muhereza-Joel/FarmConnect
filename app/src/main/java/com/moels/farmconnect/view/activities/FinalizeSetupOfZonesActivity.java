@@ -17,8 +17,8 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.database.services.BuyerAccountZoneFetchService;
-import com.moels.farmconnect.database.services.FarmerAccountZonesFetchService;
+import com.moels.farmconnect.model.database.services.BuyerAccountZoneFetchService;
+import com.moels.farmconnect.model.database.services.FarmerAccountZonesFetchService;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
 

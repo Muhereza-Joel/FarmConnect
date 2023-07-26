@@ -1,4 +1,4 @@
-package com.moels.farmconnect.database.services;
+package com.moels.farmconnect.model.database.services;
 
 import android.app.Service;
 import android.content.Intent;
@@ -12,10 +12,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.moels.farmconnect.database.ProductsDatabase;
-import com.moels.farmconnect.database.ProductsDatabaseHelper;
-import com.moels.farmconnect.database.ZonesDatabase;
-import com.moels.farmconnect.database.ZonesDatabaseHelper;
+import com.moels.farmconnect.model.database.ProductsDatabase;
+import com.moels.farmconnect.model.database.ProductsDatabaseHelper;
+import com.moels.farmconnect.model.database.ZonesDatabase;
+import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
 
 import java.util.HashMap;
 import java.util.List;

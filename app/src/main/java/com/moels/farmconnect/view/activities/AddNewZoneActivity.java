@@ -25,7 +25,7 @@ import com.moels.farmconnect.R;
 import com.moels.farmconnect.controller.command.Command;
 import com.moels.farmconnect.controller.command.Listener;
 import com.moels.farmconnect.controller.command.SaveZoneCommand;
-import com.moels.farmconnect.database.services.ZoneUploadService;
+import com.moels.farmconnect.model.database.services.ZoneUploadService;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
 import com.moels.farmconnect.utils.UI;
