@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:overScrollMode="never"
     android:scrollbars="vertical"
-    tools:context=".activities.EditProductActivity">
+    tools:context=".view.activities.EditProductActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"

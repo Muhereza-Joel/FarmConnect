@@ -3,10 +3,10 @@ package com.moels.farmconnect.easypay;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.moels.farmconnect.activities.MakeDepositRequestActivity;
-import com.moels.farmconnect.activities.MakeWithdrawRequestActivity;
-import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
-import com.moels.farmconnect.utility_classes.Preferences;
+import com.moels.farmconnect.view.activities.MakeDepositRequestActivity;
+import com.moels.farmconnect.view.activities.MakeWithdrawRequestActivity;
+import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
+import com.moels.farmconnect.utils.preferences.Preferences;
 
 public class Request {
     private Activity activity;

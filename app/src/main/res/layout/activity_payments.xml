@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activities.PaymentsActivity">
+    tools:context=".view.activities.PaymentsActivity">
 
     <include
         android:id="@+id/payments_activity_toolbar"

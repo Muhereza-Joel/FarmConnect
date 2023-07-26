@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_below="@+id/products_in_a_zone_activity_toolbar"
-    tools:context=".fragments.ProductsListFragment">
+    tools:context=".view.fragments.ProductsListFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

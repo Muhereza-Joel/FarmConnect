@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activities.PurchasesActivity">
+    tools:context=".view.activities.PurchasesActivity">
 
     <include
         android:id="@+id/purchases_activity_toolbar"

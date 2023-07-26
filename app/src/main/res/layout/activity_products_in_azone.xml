@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:overScrollMode="never"
     android:scrollbars="vertical"
-    tools:context=".activities.ProductsInAzoneActivity">
+    tools:context=".view.activities.ProductsInAzoneActivity">
 
     <RelativeLayout
         android:id="@+id/fragment_container"

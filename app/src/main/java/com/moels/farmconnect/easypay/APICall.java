@@ -6,15 +6,15 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 
-import com.moels.farmconnect.activities.MakeDepositRequestActivity;
-import com.moels.farmconnect.activities.MakeWithdrawRequestActivity;
-import com.moels.farmconnect.utility_classes.FarmConnectAppPreferences;
-import com.moels.farmconnect.utility_classes.PaymentsDatabase;
-import com.moels.farmconnect.utility_classes.PaymentsDatabaseHelper;
-import com.moels.farmconnect.utility_classes.Preferences;
-import com.moels.farmconnect.utility_classes.ProductsDatabase;
-import com.moels.farmconnect.utility_classes.ProductsDatabaseHelper;
-import com.moels.farmconnect.utility_classes.UI;
+import com.moels.farmconnect.view.activities.MakeDepositRequestActivity;
+import com.moels.farmconnect.view.activities.MakeWithdrawRequestActivity;
+import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
+import com.moels.farmconnect.database.PaymentsDatabase;
+import com.moels.farmconnect.database.PaymentsDatabaseHelper;
+import com.moels.farmconnect.utils.preferences.Preferences;
+import com.moels.farmconnect.database.ProductsDatabase;
+import com.moels.farmconnect.database.ProductsDatabaseHelper;
+import com.moels.farmconnect.utils.UI;
 
 import org.json.JSONException;
 import org.json.JSONObject;

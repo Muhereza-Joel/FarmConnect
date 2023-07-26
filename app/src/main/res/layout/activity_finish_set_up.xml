@@ -8,7 +8,7 @@
     android:background="@color/colorPrimary"
     android:gravity="top"
     android:orientation="vertical"
-    tools:context=".activities.FinishSetUpActivity">
+    tools:context=".view.activities.FinishSetUpActivity">
 
 
 </LinearLayout>

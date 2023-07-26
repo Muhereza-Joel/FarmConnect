@@ -8,7 +8,7 @@
     android:background="@color/colorPrimary"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".activities.FinalizeSetupOfZonesActivity">
+    tools:context=".view.activities.FinalizeSetupOfZonesActivity">
 
 
 

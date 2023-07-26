@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:overScrollMode="never"
     android:scrollbars="vertical"
-    tools:context=".activities.WelcomeActivity">
+    tools:context=".view.activities.WelcomeActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
