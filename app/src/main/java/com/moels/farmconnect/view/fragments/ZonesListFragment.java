@@ -114,12 +114,13 @@ public class ZonesListFragment extends Fragment {
                 if (zone != null){
                     ContentValues contentValues = new ContentValues();
                     String zoneID = zone.getZoneID();
-                    contentValues.put("zoneName", zone.getZoneName());
-                    contentValues.put("location", zone.getZoneLocation());
-                    contentValues.put("products",zone.getProductsToCollect());
-                    contentValues.put("description", zone.getDescription());
+                    List<String> zoneDetails = new ArrayList<>();
+                    zoneDetails.add(zone.getZoneName());
+                    zoneDetails.add(zone.getZoneLocation());
+                    zoneDetails.add(zone.getProductsToCollect());
+                    zoneDetails.add(zone.getDescription());
 
-                    zonesDatabase.updateZone(zoneID, contentValues);
+                    zonesDatabase.updateZone(zoneID, zoneDetails);
                     zoneCardItems = zonesDatabase.getZonesFromDatabase();
                     zoneListRecyclerViewAdapter = new ZoneListRecyclerViewAdapter(zoneCardItems, getContext());
                     zonesListRecyclerView.setAdapter(zoneListRecyclerViewAdapter);

@@ -23,6 +23,8 @@ import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.controller.AppController;
+import com.moels.farmconnect.model.command.Listener;
 import com.moels.farmconnect.model.database.services.UpdateZoneService;
 import com.moels.farmconnect.utils.UI;
 import com.moels.farmconnect.model.database.ZonesDatabase;
@@ -31,10 +33,9 @@ import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EditZoneActivity extends AppCompatActivity {
+public class EditZoneActivity extends AppCompatActivity implements Listener {
     private Toolbar editZoneActivityToolbar;
     private EditText zoneNameEditText, locationEditText, productsToCollectEditText, descriptionEditText;
-    private ZonesDatabase zonesDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,9 +47,8 @@ public class EditZoneActivity extends AppCompatActivity {
         setSupportActionBar(editZoneActivityToolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Edit Zone", true);
 
-        zonesDatabase = ZonesDatabaseHelper.getInstance(getApplicationContext());
 
-        showProductDetails(zonesDatabase.getZoneDetails(getIntent().getStringExtra("zoneID")));
+        showProductDetails(AppController.getInstance().setContext(getApplicationContext()).getZoneDetails(getIntent().getStringExtra("zoneID")));
     }
 
     private void initUI(){
@@ -97,63 +97,26 @@ public class EditZoneActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.save_edited_zone_details_btn){
-            boolean viewsValidated = validateViews();
 
-            if (viewsValidated){
-                boolean zoneUpdated = updateZoneInDatabase(getIntent().getStringExtra("zoneID"), getUpdatedValuesFromUI());
-                if (zoneUpdated){
-                    UI.displayToast(getApplicationContext(), "Collection Zone Updated!!");
-                    goToParentActivity();
-                    clearViews();
-                    finish();
-                }
-            }
+                AppController.getInstance()
+                        .setContext(getApplicationContext()).setListener(this)
+                        .updateZone(getIntent().getStringExtra("zoneID"), getUpdatedValuesFromUI());
 
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private boolean validateViews(){
-        boolean validated = true;
-        if (TextUtils.isEmpty(zoneNameEditText.getText().toString())
-                || TextUtils.isEmpty(locationEditText.getText().toString())
-                || TextUtils.isEmpty(productsToCollectEditText.getText().toString())
-                || TextUtils.isEmpty(descriptionEditText.getText().toString())){
-            UI.displayToast(getApplicationContext(), "All fields are required");
-            validated = false;
-        }
-        return validated;
-    }
-
-    private boolean updateZoneInDatabase(String zoneID, List<String> updatedZoneDetails){
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("zoneName", updatedZoneDetails.get(0));
-        contentValues.put("location", updatedZoneDetails.get(1));
-        contentValues.put("products", updatedZoneDetails.get(2));
-        contentValues.put("description", updatedZoneDetails.get(3));
-        contentValues.put("updated", updatedZoneDetails.get(4));
-
-        boolean zoneUpdated = zonesDatabase.updateZone(zoneID, contentValues);
-
-        startServiceToUpdateZoneInFirebase(zoneID, updatedZoneDetails);
-
-        return zoneUpdated;
-    }
-
     private List<String> getUpdatedValuesFromUI(){
-        String updated = "true";
         List<String> zoneDetails = new ArrayList<>();
-
-        //TODO add flag for updated to true
         zoneDetails.add(zoneNameEditText.getText().toString());
         zoneDetails.add(locationEditText.getText().toString());
         zoneDetails.add(productsToCollectEditText.getText().toString());
         zoneDetails.add(descriptionEditText.getText().toString());
-        zoneDetails.add(updated);
+
         return zoneDetails;
     }
 
+    //TODO start zoneUpdate service.
     private void startServiceToUpdateZoneInFirebase(String remote_id, List<String> updatedZoneDetails){
         Intent updateZoneService = new Intent(EditZoneActivity.this, UpdateZoneService.class);
         updateZoneService.putExtra("zoneID", remote_id);
@@ -162,6 +125,20 @@ public class EditZoneActivity extends AppCompatActivity {
         updateZoneService.putExtra("productsToCollect", updatedZoneDetails.get(2));
         updateZoneService.putExtra("description", updatedZoneDetails.get(3));
         startService(updateZoneService);
+    }
+
+
+    @Override
+    public void onFailure() {
+        UI.displayToast(getApplicationContext(), "All Fields Are Required");
+    }
+
+    @Override
+    public void onSuccess() {
+        UI.displayToast(getApplicationContext(), "Collection Zone Updated!!");
+        goToParentActivity();
+        clearViews();
+        finish();
     }
 
     public void clearViews(){
@@ -176,5 +153,4 @@ public class EditZoneActivity extends AppCompatActivity {
         resultIntent.putExtra("updatedZoneName", zoneNameEditText.getText().toString());
         setResult(Activity.RESULT_OK, resultIntent);
     }
-
 }

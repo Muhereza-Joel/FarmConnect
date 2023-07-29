@@ -18,7 +18,8 @@ public abstract class Controller {
         this.context = context;
         return this;
     }
-    public abstract void save(List<String> zoneDetails);
+    public abstract void saveZone(List<String> zoneDetails);
     public abstract List<String> getZoneDetails(String id);
+    public abstract boolean updateZone(String id, List<String> zoneDetails);
 
 }

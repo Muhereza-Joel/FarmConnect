@@ -13,12 +13,10 @@ public class SaveZoneCommand implements Command{
 
     private ZonesDatabase zonesDatabase;
     private Observer observer;
-    private Context context;
     private List<String> zoneDetails;
 
     public SaveZoneCommand(Context context, List<String> zoneDetails, Observer observer){
         this.zoneDetails = zoneDetails;
-        this.context = context;
         this.observer = observer;
         zonesDatabase = ZonesDatabaseHelper.getInstance(context);
     }

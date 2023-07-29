@@ -9,10 +9,10 @@ public final class DataValidator extends Validator{
     @Override
     public boolean validateZoneDetails(List<String> zoneDetails) {
         boolean dataIsValid = true;
-        if (TextUtils.isEmpty(zoneDetails.get(1))
+        if (TextUtils.isEmpty(zoneDetails.get(0))
+                || TextUtils.isEmpty(zoneDetails.get(1))
                 || TextUtils.isEmpty(zoneDetails.get(2))
-                || TextUtils.isEmpty(zoneDetails.get(3))
-                || TextUtils.isEmpty(zoneDetails.get(4))){
+                || TextUtils.isEmpty(zoneDetails.get(3))){
             dataIsValid = false;
         }
         return dataIsValid;

@@ -91,7 +91,7 @@ public class AddNewZoneActivity extends AppCompatActivity implements Listener{
         int id = item.getItemId();
 
         if(id == R.id.save_zone_btn){
-            AppController.getInstance().setContext(getApplicationContext()).setListener(this).save(getValuesFromUI());
+            AppController.getInstance().setContext(getApplicationContext()).setListener(this).saveZone(getValuesFromUI());
         }
 
         return super.onOptionsItemSelected(item);
@@ -133,6 +133,7 @@ public class AddNewZoneActivity extends AppCompatActivity implements Listener{
         saveFirstZoneCreatedPreference(preferences);
     }
 
+    //TODO start zone upload service;
     private void startZoneUploadService(){
         Intent uploadZoneService = new Intent(AddNewZoneActivity.this, ZoneUploadService.class);
         startService(uploadZoneService);

@@ -164,11 +164,18 @@ public final class ZonesDatabaseHelper extends FarmConnectDatabase implements Zo
     }
 
     @Override
-    public boolean updateZone(String zoneID, ContentValues contentValues){
+    public boolean updateZone(String zoneID, List<String> zoneDetails){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("zoneName", zoneDetails.get(0));
+        contentValues.put("location", zoneDetails.get(1));
+        contentValues.put("products", zoneDetails.get(2));
+        contentValues.put("description", zoneDetails.get(3));
+        contentValues.put("updated", "true");
         boolean zoneUpdated = false;
         int rowUpdated = sqLiteDatabase.update("zones", contentValues, "remote_id = ?", new String[] {zoneID});
         if (rowUpdated > 0){
             zoneUpdated = true;
+            notifyObservers();
         }
         return zoneUpdated;
 
