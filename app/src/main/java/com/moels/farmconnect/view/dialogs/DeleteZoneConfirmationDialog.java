@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.controller.AppController;
 import com.moels.farmconnect.model.database.services.DeleteZoneService;
 import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
 
@@ -34,15 +35,16 @@ public class DeleteZoneConfirmationDialog extends DialogFragment implements Dial
     @Override
     public void onClick(DialogInterface dialog, int which) {
          String remote_id = getActivity().getIntent().getStringExtra("zoneID");
-         ZonesDatabaseHelper.getInstance(getContext()).deleteZoneFromDatabase(remote_id);
+         AppController.getInstance().setContext(getActivity().getApplicationContext()).deleteZone(remote_id);
 
          Intent resultIntent = new Intent();
          getActivity().setResult(Activity.RESULT_OK, resultIntent);
          getActivity().finish();
 
-         Intent deleteZoneService = new Intent(getActivity(), DeleteZoneService.class);
-         deleteZoneService.putExtra("zoneID", remote_id);
-         getActivity().startService(deleteZoneService);
+         //TODO start zone delete service;
+//         Intent deleteZoneService = new Intent(getActivity(), DeleteZoneService.class);
+//         deleteZoneService.putExtra("zoneID", remote_id);
+//         getActivity().startService(deleteZoneService);
     }
 
     @Override

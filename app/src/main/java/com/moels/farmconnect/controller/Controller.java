@@ -21,5 +21,6 @@ public abstract class Controller {
     public abstract void saveZone(List<String> zoneDetails);
     public abstract List<String> getZoneDetails(String id);
     public abstract boolean updateZone(String id, List<String> zoneDetails);
+    public abstract boolean deleteZone(String id);
 
 }

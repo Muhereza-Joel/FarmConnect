@@ -1,7 +1,10 @@
 package com.moels.farmconnect.controller;
 
 
+import android.annotation.SuppressLint;
+
 import com.moels.farmconnect.model.command.Command;
+import com.moels.farmconnect.model.command.DeleteZoneCommand;
 import com.moels.farmconnect.model.command.EditZoneCommand;
 import com.moels.farmconnect.model.command.SaveZoneCommand;
 import com.moels.farmconnect.model.database.ZonesDatabase;
@@ -12,8 +15,13 @@ import com.moels.farmconnect.utils.Validator;
 import java.util.List;
 
 public final class AppController extends Controller implements Observer {
+    @SuppressLint("StaticFieldLeak")
+    private static Controller uniqueInstance;
     public static Controller getInstance(){
-        return new AppController();
+        if (uniqueInstance == null){
+            uniqueInstance = new AppController();
+        }
+        return uniqueInstance;
     }
 
     public void saveZone(List<String> zoneDetails){
@@ -45,6 +53,13 @@ public final class AppController extends Controller implements Observer {
         }
 
         return zoneUpdated;
+    }
+
+    @Override
+    public boolean deleteZone(String id) {
+        Command command = new DeleteZoneCommand(context, id);
+        command.execute();
+        return true;
     }
 
     @Override
