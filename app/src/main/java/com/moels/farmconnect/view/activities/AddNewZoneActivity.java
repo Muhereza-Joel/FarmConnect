@@ -22,10 +22,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.controller.ZonesController;
+import com.moels.farmconnect.controller.AppController;
 import com.moels.farmconnect.model.command.Listener;
 import com.moels.farmconnect.model.database.services.ZoneUploadService;
-import com.moels.farmconnect.model.observers.Observer;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
 import com.moels.farmconnect.utils.UI;
@@ -92,8 +91,7 @@ public class AddNewZoneActivity extends AppCompatActivity implements Listener{
         int id = item.getItemId();
 
         if(id == R.id.save_zone_btn){
-            ZonesController zonesController = new ZonesController(getApplicationContext(), getValuesFromUI(), this);
-            zonesController.saveZone();
+            AppController.getInstance().setContext(getApplicationContext()).setListener(this).save(getValuesFromUI());
         }
 
         return super.onOptionsItemSelected(item);
