@@ -30,9 +30,4 @@ public class SaveZoneCommand implements Command{
         if (zoneIsSaved) zonesDatabase.removeObserver(observer);
     }
 
-
-    @Override
-    public void undo() {
-
-    }
 }

@@ -1,11 +1,10 @@
 package com.moels.farmconnect.controller;
 
 
-import android.content.Context;
-
 import com.moels.farmconnect.model.command.Command;
-import com.moels.farmconnect.model.command.Listener;
 import com.moels.farmconnect.model.command.SaveZoneCommand;
+import com.moels.farmconnect.model.database.ZonesDatabase;
+import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
 import com.moels.farmconnect.model.observers.Observer;
 import com.moels.farmconnect.utils.Validator;
 
@@ -27,7 +26,9 @@ public final class AppController extends Controller implements Observer {
     }
 
     @Override
-    public void getDetails(String id) {
+    public List<String> getZoneDetails(String id) {
+        ZonesDatabase zonesDatabase = ZonesDatabaseHelper.getInstance(context);
+        return zonesDatabase.getZoneDetails(id);
 
     }
 

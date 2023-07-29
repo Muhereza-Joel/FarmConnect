@@ -8,7 +8,6 @@ import android.annotation.SuppressLint;
 import android.app.UiModeManager;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,15 +16,14 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.controller.AppController;
 import com.moels.farmconnect.utils.UI;
-import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
+
+import java.util.List;
 
 public class ZoneDetailsActivity extends AppCompatActivity {
-
     private Toolbar toolbar;
     private TextView zoneNameEditText, locationEditText, productsEditText, descriptionEditText;
-    private SQLiteDatabase sqLiteDatabase;
-    private ZonesDatabaseHelper zonesDatabaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +44,7 @@ public class ZoneDetailsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Zone Details", true);
 
-        zonesDatabaseHelper = ZonesDatabaseHelper.getInstance(getApplicationContext());
-        sqLiteDatabase = zonesDatabaseHelper.getWritableDatabase();
-
-        getZoneDetailsFromDatabase();
+        showZoneDetails();
 
     }
 
@@ -61,26 +56,14 @@ public class ZoneDetailsActivity extends AppCompatActivity {
         descriptionEditText = findViewById(R.id.description_edit_text);
     }
 
-    private void getZoneDetailsFromDatabase(){
-        String remote_id = getIntent().getStringExtra("zoneID");
-        String [] columnsToPick = {"remote_id","zoneName", "location", "products", "description"};
-        Cursor cursor = sqLiteDatabase.query("zones", columnsToPick, "remote_id = ?", new String[]{remote_id}, null, null, null);
-
-        if (cursor.moveToNext()){
-            do {
-                @SuppressLint("Range") String zoneName = cursor.getString(cursor.getColumnIndex("zoneName"));
-                @SuppressLint("Range") String location = cursor.getString(cursor.getColumnIndex("location"));
-                @SuppressLint("Range") String products = cursor.getString(cursor.getColumnIndex("products"));
-                @SuppressLint("Range") String description = cursor.getString(cursor.getColumnIndex("description"));
-
-                zoneNameEditText.setText(zoneName);
-                locationEditText.setText(location);
-                productsEditText.setText(products);
-                descriptionEditText.setText(description);
-
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
+    private void showZoneDetails(){
+        List<String> zoneDetails = AppController.getInstance()
+                .setContext(getApplicationContext())
+                .getZoneDetails(getIntent().getStringExtra("zoneID"));
+        zoneNameEditText.setText(zoneDetails.get(0));
+        locationEditText.setText(zoneDetails.get(1));
+        productsEditText.setText(zoneDetails.get(2));
+        descriptionEditText.setText(zoneDetails.get(3));
     }
 
     private void setUpStatusBar() {

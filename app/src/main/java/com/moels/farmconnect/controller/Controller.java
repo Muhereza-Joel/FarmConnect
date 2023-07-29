@@ -19,6 +19,6 @@ public abstract class Controller {
         return this;
     }
     public abstract void save(List<String> zoneDetails);
-    public abstract void getDetails(String id);
+    public abstract List<String> getZoneDetails(String id);
 
 }
