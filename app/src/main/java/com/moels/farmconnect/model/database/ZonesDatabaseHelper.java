@@ -207,7 +207,7 @@ public final class ZonesDatabaseHelper extends FarmConnectDatabase implements Zo
     @Override
     public void removeObserver(Observer observer) {
         int index = observers.indexOf(observer);
-        if (index > 0) observers.remove(index);
+        if (index >= 0) observers.remove(index);
     }
 
     @Override
