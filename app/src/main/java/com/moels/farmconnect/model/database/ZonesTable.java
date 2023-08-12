@@ -3,6 +3,7 @@ package com.moels.farmconnect.model.database;
 import android.content.Context;
 
 import com.moels.farmconnect.model.observers.Observable;
+import com.moels.farmconnect.utils.models.Zone;
 import com.moels.farmconnect.utils.models.ZoneCardItem;
 
 import java.util.List;
@@ -15,10 +16,10 @@ public interface ZonesTable extends  Observable {
     List<ZoneCardItem> getZonesFromDatabase();
     String getZoneOwner(String zoneID);
     List<String> getZoneIds(String phoneNumber);
-    List<String> getZoneDetails(String zoneID);
+    Zone getZoneDetails(String zoneID);
     List<String> getZonesToUpload();
-    boolean addZoneToDatabase(List<String> zoneDetails);
-    boolean updateZone(String zoneID, List<String> zoneDetails);
+    boolean addZoneToDatabase(Zone zone);
+    boolean updateZone(String zoneID, Zone zone);
     boolean updateZoneUploadStatus(String zoneID, boolean uploadedStatus);
     void deleteZoneFromDatabase(String _id);
 

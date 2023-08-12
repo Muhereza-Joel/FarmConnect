@@ -20,6 +20,7 @@ import com.moels.farmconnect.model.database.ZonesTable;
 import com.moels.farmconnect.model.database.ZonesTableUtil;
 import com.moels.farmconnect.utils.models.Zone;
 import com.moels.farmconnect.model.database.ContactsTableUtil;
+import com.moels.farmconnect.utils.preferences.Globals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,23 +101,10 @@ public class FarmerAccountZonesFetchService extends Service {
     private void getDetailsForEveryZone(List<Zone> zoneList) {
         for (Zone zone : zoneList) {
             if (zone != null){
-                String uploaded = "true";
-                String updated = "false";
-                List<String> zoneDetails = new ArrayList<>();
+                zone.setUpdatedStatus(Globals.UpdateStatus.FALSE.toString());
+                zone.setUploadStatus(Globals.UploadStatus.TRUE.toString());
 
-                zoneDetails.add(zone.getZoneID());
-                zoneDetails.add(zone.getZoneName());
-                zoneDetails.add(zone.getZoneLocation());
-                zoneDetails.add(zone.getProductsToCollect());
-                zoneDetails.add(zone.getDescription());
-                zoneDetails.add(uploaded);
-                zoneDetails.add(zone.getOwner());
-                zoneDetails.add(zone.getDate());
-                zoneDetails.add(zone.getTime());
-                zoneDetails.add(zone.getStatus());
-                zoneDetails.add(updated);
-
-                zonesDatabase.addZoneToDatabase(zoneDetails);
+                zonesDatabase.addZoneToDatabase(zone);
             }
         }
         if (zonesFetchListener != null){

@@ -21,11 +21,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
-import com.bumptech.glide.Glide;
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.controller.AppController;
+import com.moels.farmconnect.controller.ZonesController;
 import com.moels.farmconnect.model.command.Listener;
 import com.moels.farmconnect.model.database.services.ZoneUploadService;
+import com.moels.farmconnect.utils.models.Zone;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Globals;
 import com.moels.farmconnect.utils.preferences.Preferences;
@@ -93,28 +93,31 @@ public class AddNewZoneActivity extends AppCompatActivity implements Listener{
         int id = item.getItemId();
 
         if(id == R.id.save_zone_btn){
-            AppController.getInstance().setContext(getApplicationContext()).setListener(this).saveZone(getValuesFromUI());
+            ZonesController controller = ZonesController.getInstance();
+            controller.setContext(getApplicationContext());
+            controller.setListener(this);
+            controller.saveZone(getValuesFromUI());
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private List<String> getValuesFromUI(){
-        List<String> zoneDetails = new ArrayList<>();
+    private Zone getValuesFromUI(){
 
-        zoneDetails.add(UI.generateUniqueID());
-        zoneDetails.add(zoneNameEditText.getText().toString());
-        zoneDetails.add(locationEditText.getText().toString());
-        zoneDetails.add(productsToCollectEditText.getText().toString());
-        zoneDetails.add(descriptionEditText.getText().toString());
-        zoneDetails.add(Globals.UploadStatus.FALSE.toString());
-        zoneDetails.add(preferences.getString(Globals.AUTHENTICATED_PHONE_NUMBER));
-        zoneDetails.add(UI.getCurrentDate());
-        zoneDetails.add(UI.getCurrentTime());
-        zoneDetails.add(Globals.ACTIVE);
-        zoneDetails.add(Globals.UpdateStatus.FALSE.toString());
+        Zone zone = new Zone();
+        zone.setZoneID(UI.generateUniqueID());
+        zone.setZoneName(zoneNameEditText.getText().toString());
+        zone.setZoneLocation(locationEditText.getText().toString());
+        zone.setProductsToCollect(productsToCollectEditText.getText().toString());
+        zone.setDescription(descriptionEditText.getText().toString());
+        zone.setUploadStatus(Globals.UploadStatus.FALSE.toString());
+        zone.setOwner(preferences.getString(Globals.AUTHENTICATED_PHONE_NUMBER));
+        zone.setDate(UI.getCurrentDate());
+        zone.setTime(UI.getCurrentTime());
+        zone.setStatus(Globals.ACTIVE);
+        zone.setUpdatedStatus(Globals.UpdateStatus.FALSE.toString());
 
-        return zoneDetails;
+        return zone;
     }
 
     @Override

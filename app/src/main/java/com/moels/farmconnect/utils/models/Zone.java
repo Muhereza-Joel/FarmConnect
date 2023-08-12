@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Zone {
-    private String zoneID, zoneName, zoneLocation, productsToCollect, description, owner, date, time, status;
+    private String zoneID, zoneName, zoneLocation, productsToCollect, description, owner, date, time, status, uploadStatus, updatedStatus;
 
     public Zone(){}
 
@@ -65,4 +65,55 @@ public class Zone {
         return status;
     }
 
+    public void setZoneID(String zoneID) {
+        this.zoneID = zoneID;
+    }
+
+    public void setZoneName(String zoneName) {
+        this.zoneName = zoneName;
+    }
+
+    public void setZoneLocation(String zoneLocation) {
+        this.zoneLocation = zoneLocation;
+    }
+
+    public void setProductsToCollect(String productsToCollect) {
+        this.productsToCollect = productsToCollect;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setUploadStatus(String uploadStatus) {
+        this.uploadStatus = uploadStatus;
+    }
+
+    public void setUpdatedStatus(String updatedStatus) {
+        this.updatedStatus = updatedStatus;
+    }
+
+    public String getUploadStatus() {
+        return uploadStatus;
+    }
+
+    public String getUpdatedStatus() {
+        return updatedStatus;
+    }
 }

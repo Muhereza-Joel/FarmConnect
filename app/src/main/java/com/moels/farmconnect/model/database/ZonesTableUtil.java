@@ -10,7 +10,9 @@ import android.util.Log;
 
 import com.moels.farmconnect.model.observers.Observable;
 import com.moels.farmconnect.model.observers.Observer;
+import com.moels.farmconnect.utils.models.Zone;
 import com.moels.farmconnect.utils.models.ZoneCardItem;
+import com.moels.farmconnect.utils.preferences.Globals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,27 +86,23 @@ public final class ZonesTableUtil extends FarmConnectDatabaseHelper implements Z
     }
 
     @Override
-    public List<String> getZoneDetails(String zoneID){
-        List<String> zoneDetails = new ArrayList<>();
+    @SuppressLint("Range")
+    public Zone getZoneDetails(String zoneID){
+        Zone zone = new Zone();
         String [] columnsToPick = {"remote_id","zoneName", "location", "products", "description"};
         Cursor cursor = sqLiteDatabase.query("zones", columnsToPick, "remote_id = ?", new String[]{zoneID}, null, null, null);
 
         if (cursor.moveToNext()){
             do {
-                @SuppressLint("Range") String zoneName = cursor.getString(cursor.getColumnIndex("zoneName"));
-                @SuppressLint("Range") String location = cursor.getString(cursor.getColumnIndex("location"));
-                @SuppressLint("Range") String products = cursor.getString(cursor.getColumnIndex("products"));
-                @SuppressLint("Range") String description = cursor.getString(cursor.getColumnIndex("description"));
-
-                zoneDetails.add(zoneName);
-                zoneDetails.add(location);
-                zoneDetails.add(products);
-                zoneDetails.add(description);
+                zone.setZoneName(cursor.getString(cursor.getColumnIndex("zoneName")));
+                zone.setZoneLocation(cursor.getString(cursor.getColumnIndex("location")));
+                zone.setProductsToCollect(cursor.getString(cursor.getColumnIndex("products")));
+                zone.setDescription(cursor.getString(cursor.getColumnIndex("description")));
 
             } while (cursor.moveToNext());
         }
         cursor.close();
-        return zoneDetails;
+        return zone;
     }
 
     @SuppressLint("Range")
@@ -133,21 +131,21 @@ public final class ZonesTableUtil extends FarmConnectDatabaseHelper implements Z
     }
 
     @Override
-    public boolean addZoneToDatabase(List<String> zoneDetails){
+    public boolean addZoneToDatabase(Zone zone){
         boolean rowCreated = false;
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put("remote_id", zoneDetails.get(0));
-        contentValues.put("zoneName", zoneDetails.get(1));
-        contentValues.put("location", zoneDetails.get(2));
-        contentValues.put("products", zoneDetails.get(3));
-        contentValues.put("description", zoneDetails.get(4));
-        contentValues.put("uploaded", zoneDetails.get(5));
-        contentValues.put("owner", zoneDetails.get(6));
-        contentValues.put("createDate", zoneDetails.get(7));
-        contentValues.put("createTime", zoneDetails.get(8));
-        contentValues.put("status", zoneDetails.get(9));
-        contentValues.put("updated", zoneDetails.get(10));
+        contentValues.put("remote_id", zone.getZoneID());
+        contentValues.put("zoneName", zone.getZoneName());
+        contentValues.put("location", zone.getZoneLocation());
+        contentValues.put("products", zone.getProductsToCollect());
+        contentValues.put("description", zone.getDescription());
+        contentValues.put("uploaded", zone.getUploadStatus());
+        contentValues.put("owner", zone.getOwner());
+        contentValues.put("createDate", zone.getDate());
+        contentValues.put("createTime", zone.getTime());
+        contentValues.put("status", zone.getStatus());
+        contentValues.put("updated", zone.getUpdatedStatus());
 
         long rowsInserted = sqLiteDatabase.insertWithOnConflict("zones", null, contentValues, SQLiteDatabase.CONFLICT_IGNORE);
 
@@ -162,12 +160,12 @@ public final class ZonesTableUtil extends FarmConnectDatabaseHelper implements Z
     }
 
     @Override
-    public boolean updateZone(String zoneID, List<String> zoneDetails){
+    public boolean updateZone(String zoneID, Zone zone){
         ContentValues contentValues = new ContentValues();
-        contentValues.put("zoneName", zoneDetails.get(0));
-        contentValues.put("location", zoneDetails.get(1));
-        contentValues.put("products", zoneDetails.get(2));
-        contentValues.put("description", zoneDetails.get(3));
+        contentValues.put("zoneName", zone.getZoneName());
+        contentValues.put("location", zone.getZoneLocation());
+        contentValues.put("products", zone.getProductsToCollect());
+        contentValues.put("description", zone.getDescription());
         contentValues.put("updated", "true");
         boolean zoneUpdated = false;
         int rowUpdated = sqLiteDatabase.update("zones", contentValues, "remote_id = ?", new String[] {zoneID});

@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.utils.preferences.Globals;
 import com.moels.farmconnect.view.activities.AddProductToZoneActivity;
 import com.moels.farmconnect.view.activities.MainActivity;
 import com.moels.farmconnect.view.activities.ProductsInAzoneActivity;
@@ -72,23 +73,10 @@ public class ZonesListFragment extends Fragment {
             @Override
             public void onZoneAdded(Zone zone) {
                 if (zone != null){
-                    String uploaded = "true";
-                    String updated = "false";
-                    List<String> zoneDetails = new ArrayList<>();
+                    zone.setUploadStatus(Globals.UploadStatus.TRUE.toString());
+                    zone.setUpdatedStatus(Globals.UpdateStatus.FALSE.toString());
 
-                    zoneDetails.add(zone.getZoneID());
-                    zoneDetails.add(zone.getZoneName());
-                    zoneDetails.add(zone.getZoneLocation());
-                    zoneDetails.add(zone.getProductsToCollect());
-                    zoneDetails.add(zone.getDescription());
-                    zoneDetails.add(uploaded);
-                    zoneDetails.add(zone.getOwner());
-                    zoneDetails.add(zone.getDate());
-                    zoneDetails.add(zone.getTime());
-                    zoneDetails.add(zone.getStatus());
-                    zoneDetails.add(updated);
-
-                    zonesDatabase.addZoneToDatabase(zoneDetails);
+                    zonesDatabase.addZoneToDatabase(zone);
 
                     zoneCardItems = zonesDatabase.getZonesFromDatabase();
                     zoneListRecyclerViewAdapter = new ZoneListRecyclerViewAdapter(zoneCardItems, getContext());
@@ -114,13 +102,8 @@ public class ZonesListFragment extends Fragment {
                 if (zone != null){
                     ContentValues contentValues = new ContentValues();
                     String zoneID = zone.getZoneID();
-                    List<String> zoneDetails = new ArrayList<>();
-                    zoneDetails.add(zone.getZoneName());
-                    zoneDetails.add(zone.getZoneLocation());
-                    zoneDetails.add(zone.getProductsToCollect());
-                    zoneDetails.add(zone.getDescription());
 
-                    zonesDatabase.updateZone(zoneID, zoneDetails);
+                    zonesDatabase.updateZone(zoneID, zone);
                     zoneCardItems = zonesDatabase.getZonesFromDatabase();
                     zoneListRecyclerViewAdapter = new ZoneListRecyclerViewAdapter(zoneCardItems, getContext());
                     zonesListRecyclerView.setAdapter(zoneListRecyclerViewAdapter);

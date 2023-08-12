@@ -21,10 +21,12 @@ import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.controller.AppController;
+import com.moels.farmconnect.controller.Controller;
+import com.moels.farmconnect.controller.ZonesController;
 import com.moels.farmconnect.model.command.Listener;
 import com.moels.farmconnect.model.database.services.UpdateZoneService;
 import com.moels.farmconnect.utils.UI;
+import com.moels.farmconnect.utils.models.Zone;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +45,9 @@ public class EditZoneActivity extends AppCompatActivity implements Listener {
         setSupportActionBar(editZoneActivityToolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Edit Zone", true);
 
-
-        showProductDetails(AppController.getInstance().setContext(getApplicationContext()).getZoneDetails(getIntent().getStringExtra("zoneID")));
+        ZonesController zonesController = ZonesController.getInstance();
+        zonesController.setContext(getApplicationContext());
+        showProductDetails(zonesController.getZoneDetails(getIntent().getStringExtra("zoneID")));
     }
 
     private void initUI(){
@@ -71,11 +74,11 @@ public class EditZoneActivity extends AppCompatActivity implements Listener {
 
     }
 
-    public void showProductDetails(List<String> productDetails){
-        zoneNameEditText.setText(productDetails.get(0));
-        locationEditText.setText(productDetails.get(1));
-        productsToCollectEditText.setText(productDetails.get(2));
-        descriptionEditText.setText(productDetails.get(3));
+    public void showProductDetails(Zone zone){
+        zoneNameEditText.setText(zone.getZoneName());
+        locationEditText.setText(zone.getZoneLocation());
+        productsToCollectEditText.setText(zone.getProductsToCollect());
+        descriptionEditText.setText(zone.getDescription());
     }
 
     @Override
@@ -94,22 +97,23 @@ public class EditZoneActivity extends AppCompatActivity implements Listener {
 
         if (id == R.id.save_edited_zone_details_btn){
 
-                AppController.getInstance()
-                        .setContext(getApplicationContext()).setListener(this)
-                        .updateZone(getIntent().getStringExtra("zoneID"), getUpdatedValuesFromUI());
+               ZonesController zonesController =  ZonesController.getInstance();
+               zonesController.setContext(getApplicationContext());
+               zonesController.setListener(this);
+               zonesController.updateZone(getIntent().getStringExtra("zoneID"), getUpdatedValuesFromUI());
 
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private List<String> getUpdatedValuesFromUI(){
-        List<String> zoneDetails = new ArrayList<>();
-        zoneDetails.add(zoneNameEditText.getText().toString());
-        zoneDetails.add(locationEditText.getText().toString());
-        zoneDetails.add(productsToCollectEditText.getText().toString());
-        zoneDetails.add(descriptionEditText.getText().toString());
+    private Zone getUpdatedValuesFromUI(){
+        Zone zone = new Zone();
+        zone.setZoneName(zoneNameEditText.getText().toString());
+        zone.setZoneLocation(locationEditText.getText().toString());
+        zone.setProductsToCollect(productsToCollectEditText.getText().toString());
+        zone.setDescription(descriptionEditText.getText().toString());
 
-        return zoneDetails;
+        return zone;
     }
 
     //TODO start zoneUpdate service.

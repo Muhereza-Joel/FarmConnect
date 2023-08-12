@@ -4,10 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
-import android.annotation.SuppressLint;
 import android.app.UiModeManager;
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,8 +14,9 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.controller.AppController;
+import com.moels.farmconnect.controller.ZonesController;
 import com.moels.farmconnect.utils.UI;
+import com.moels.farmconnect.utils.models.Zone;
 
 import java.util.List;
 
@@ -57,13 +56,13 @@ public class ZoneDetailsActivity extends AppCompatActivity {
     }
 
     private void showZoneDetails(){
-        List<String> zoneDetails = AppController.getInstance()
-                .setContext(getApplicationContext())
-                .getZoneDetails(getIntent().getStringExtra("zoneID"));
-        zoneNameEditText.setText(zoneDetails.get(0));
-        locationEditText.setText(zoneDetails.get(1));
-        productsEditText.setText(zoneDetails.get(2));
-        descriptionEditText.setText(zoneDetails.get(3));
+        ZonesController zonesController = ZonesController.getInstance();
+        zonesController.setContext(getApplicationContext());
+        Zone zone = zonesController.getZoneDetails(getIntent().getStringExtra("zoneID"));
+        zoneNameEditText.setText(zone.getZoneName());
+        locationEditText.setText(zone.getZoneLocation());
+        productsEditText.setText(zone.getProductsToCollect());
+        descriptionEditText.setText(zone.getDescription());
     }
 
     private void setUpStatusBar() {

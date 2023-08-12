@@ -11,42 +11,41 @@ import com.moels.farmconnect.model.database.ZonesTable;
 import com.moels.farmconnect.model.database.ZonesTableUtil;
 import com.moels.farmconnect.model.observers.Observer;
 import com.moels.farmconnect.utils.Validator;
+import com.moels.farmconnect.utils.models.Zone;
 
 import java.util.List;
 
-public final class AppController extends Controller implements Observer {
+public final class ZonesController extends Controller implements Observer {
     @SuppressLint("StaticFieldLeak")
-    private static Controller uniqueInstance;
-    public static Controller getInstance(){
+    private static ZonesController uniqueInstance;
+    public static ZonesController getInstance(){
         if (uniqueInstance == null){
-            uniqueInstance = new AppController();
+            uniqueInstance = new ZonesController();
         }
         return uniqueInstance;
     }
 
-    public void saveZone(List<String> zoneDetails){
-        boolean dataIsValid = Validator.getInstance().validateZoneDetails(zoneDetails);
+    public void saveZone(Zone zone){
+        boolean dataIsValid = Validator.getInstance().validateZoneDetails(zone);
         if (dataIsValid){
-            Command saveZoneCommand = new SaveZoneCommand(context, zoneDetails, this);
+            Command saveZoneCommand = new SaveZoneCommand(context, zone, this);
             saveZoneCommand.execute();
         }else {
             listener.onFailure();
         }
     }
 
-    @Override
-    public List<String> getZoneDetails(String id) {
+    public Zone getZoneDetails(String id) {
         ZonesTable zonesDatabase = ZonesTableUtil.getInstance(context);
         return zonesDatabase.getZoneDetails(id);
 
     }
 
-    @Override
-    public boolean updateZone(String id, List<String> zoneDetails) {
+    public boolean updateZone(String id, Zone zone) {
         boolean zoneUpdated = false;
-        boolean dataIsValid = Validator.getInstance().validateZoneDetails(zoneDetails);
+        boolean dataIsValid = Validator.getInstance().validateZoneDetails(zone);
         if (dataIsValid){
-            Command command = new EditZoneCommand(context, id, zoneDetails, this);
+            Command command = new EditZoneCommand(context, id, zone, this);
             command.execute();
         } else {
             listener.onFailure();
@@ -55,7 +54,6 @@ public final class AppController extends Controller implements Observer {
         return zoneUpdated;
     }
 
-    @Override
     public boolean deleteZone(String id) {
         Command command = new DeleteZoneCommand(context, id);
         command.execute();
