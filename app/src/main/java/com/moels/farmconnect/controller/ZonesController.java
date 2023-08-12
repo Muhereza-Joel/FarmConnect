@@ -16,6 +16,8 @@ import com.moels.farmconnect.utils.models.Zone;
 import java.util.List;
 
 public final class ZonesController extends Controller implements Observer {
+
+    private ZonesController(){}
     @SuppressLint("StaticFieldLeak")
     private static ZonesController uniqueInstance;
     public static ZonesController getInstance(){
@@ -36,7 +38,7 @@ public final class ZonesController extends Controller implements Observer {
     }
 
     public Zone getZoneDetails(String id) {
-        ZonesTable zonesDatabase = ZonesTableUtil.getInstance(context);
+        ZonesTable zonesDatabase = ZonesTable.getInstance(context);
         return zonesDatabase.getZoneDetails(id);
 
     }

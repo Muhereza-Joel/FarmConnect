@@ -162,13 +162,14 @@ public final class ProductsTableUtil extends FarmConnectDatabaseHelper implement
 
     }
 
+    @SuppressLint("Range")
     @Override
-    public List<String> getProductDetails(String productID) {
-        List<String> resultSet = new ArrayList<>();
+    public Product getProductDetails(String productID) {
+        Product product = new Product();
 
         if (productID == null || productID.isEmpty()) {
             // Handle the case when productID is null or empty
-            return resultSet;
+            return null;
         }
 
         String[] columnsToPick = {"imageUrl", "productName", "quantity", "unitPrice", "price"};
@@ -177,20 +178,15 @@ public final class ProductsTableUtil extends FarmConnectDatabaseHelper implement
                 "productRemoteId = ?", new String[]{productID}, null, null, null);
 
         if (cursor.moveToNext()) {
-            @SuppressLint("Range") String productImageUrl = cursor.getString(cursor.getColumnIndex("imageUrl"));
-            @SuppressLint("Range") String productName = cursor.getString(cursor.getColumnIndex("productName"));
-            @SuppressLint("Range") String productQuantity = cursor.getString(cursor.getColumnIndex("quantity"));
-            @SuppressLint("Range") String unitPrice = cursor.getString(cursor.getColumnIndex("unitPrice"));
-            @SuppressLint("Range") String productPrice = cursor.getString(cursor.getColumnIndex("price"));
+            product.setImageUrl(cursor.getString(cursor.getColumnIndex("imageUrl")));
+            product.setProductName(cursor.getString(cursor.getColumnIndex("productName")));
+            product.setQuantity(cursor.getString(cursor.getColumnIndex("quantity")));
+            product.setUnitPrice(cursor.getString(cursor.getColumnIndex("unitPrice")));
+            product.setPrice(cursor.getString(cursor.getColumnIndex("price")));
 
-            resultSet.add(productImageUrl);
-            resultSet.add(productName);
-            resultSet.add(productQuantity);
-            resultSet.add(unitPrice);
-            resultSet.add(productPrice);
         }
         cursor.close();
-        return resultSet;
+        return product;
     }
 
 

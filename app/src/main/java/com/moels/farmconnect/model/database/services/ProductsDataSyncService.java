@@ -28,6 +28,7 @@ import com.moels.farmconnect.model.database.ProductsTable;
 import com.moels.farmconnect.model.database.ProductsTableUtil;
 import com.moels.farmconnect.model.database.ZonesTable;
 import com.moels.farmconnect.model.database.ZonesTableUtil;
+import com.moels.farmconnect.utils.models.Product;
 import com.moels.farmconnect.view.activities.MainActivity;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
@@ -324,10 +325,10 @@ public class ProductsDataSyncService extends Service{
                             String productRemoteId = productSnapshot.child("productID").getValue(String.class);
 
                             // Get the product details from the database
-                            List<String> productDetails = productsDatabase.getProductDetails(productRemoteId);
+                            Product product = productsDatabase.getProductDetails(productRemoteId);
 
                             // Check if the product exists in the database
-                            if (productDetails != null) {
+                            if (product != null) {
                                 String remoteImageUrl = productSnapshot.child("imageUrl").getValue(String.class);
                                 String remoteProductName = productSnapshot.child("productName").getValue(String.class);
                                 String remoteQuantity = productSnapshot.child("quantity").getValue(String.class);
@@ -335,11 +336,11 @@ public class ProductsDataSyncService extends Service{
                                 String remotePrice = productSnapshot.child("price").getValue(String.class);
 
 
-                                String localImageUrl = productDetails.get(0);
-                                String localProductName = productDetails.get(1);
-                                String localQuantity = productDetails.get(2);
-                                String localUnitPrice = productDetails.get(3);
-                                String localPrice = productDetails.get(4);
+                                String localImageUrl = product.getImageUrl();
+                                String localProductName = product.getProductName();
+                                String localQuantity = product.getQuantity();
+                                String localUnitPrice = product.getUnitPrice();
+                                String localPrice = product.getPrice();
 
                                 // Compare the fields with Firebase data
                                 if (!localProductName.equals(remoteProductName)

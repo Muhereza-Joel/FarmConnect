@@ -43,6 +43,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.model.database.services.UpdateProductService;
+import com.moels.farmconnect.utils.models.Product;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
 import com.moels.farmconnect.model.database.ProductsTable;
@@ -148,18 +149,18 @@ public class EditProductActivity extends AppCompatActivity {
 
     }
 
-    private void showProductDetails(List<String> productDetails){
-        if (productDetails.size() > 0){
-            String quantityString = productDetails.get(2);
+    private void showProductDetails(Product product){
+        if (product != null){
+            String quantityString = product.getQuantity();
             String quantity = extractDigits(quantityString);
             String units = extractCharacters(quantityString);
 
-            Glide.with(getApplicationContext()).load(productDetails.get(0)).into(productImageView);
-            productNameEditText.setText(productDetails.get(1));
+            Glide.with(getApplicationContext()).load(product.getImageUrl()).into(productImageView);
+            productNameEditText.setText(product.getProductName());
             productQuantityEditText.setText(quantity);
             selectUnitValueInSpinner(units);
-            productUnitPriceEditText.setText(productDetails.get(3));
-            productPriceTextView.setText(productDetails.get(4));
+            productUnitPriceEditText.setText(product.getUnitPrice());
+            productPriceTextView.setText(product.getPrice());
         }
 
     }

@@ -4,7 +4,7 @@ public class Product {
 
     public Product(){}
 
-    private String productID, productName, quantity,unitPrice, price, imageUrl, owner, createDate, createTime, status, zoneID;
+    private String productID, productName, quantity,unitPrice, price, imageUrl, owner, createDate, createTime, status, zoneID, uploadStatus, updatedStatus;
 
     public Product(String productID,
                    String productName,
@@ -74,5 +74,63 @@ public class Product {
         return zoneID;
     }
 
+    public String getUploadStatus() {
+        return uploadStatus;
+    }
 
+    public String getUpdatedStatus() {
+        return updatedStatus;
+    }
+
+    public void setProductID(String productID) {
+        this.productID = productID;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setUnitPrice(String unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setZoneID(String zoneID) {
+        this.zoneID = zoneID;
+    }
+
+    public void setUploadStatus(String uploadStatus) {
+        this.uploadStatus = uploadStatus;
+    }
+
+    public void setUpdatedStatus(String updatedStatus) {
+        this.updatedStatus = updatedStatus;
+    }
 }

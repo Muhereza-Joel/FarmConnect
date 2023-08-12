@@ -25,6 +25,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.controller.ProductsController;
+import com.moels.farmconnect.utils.models.Product;
 import com.moels.farmconnect.view.dialogs.DeleteProductConfirmationDialog;
 import com.moels.farmconnect.easypay.Request;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
@@ -137,7 +139,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        showProductDetails(productsDatabase.getProductDetails(getIntent().getStringExtra("productID")));
+        ProductsController productsController = ProductsController.getInstance();
+        productsController.setContext(getApplicationContext());
+        showProductDetails(productsController.getProductDetails(getIntent().getStringExtra("productID")));
     }
 
     @Override
@@ -196,13 +200,13 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
     }
 
-    private void showProductDetails(List<String> productDetails){
-        if (productDetails.size() > 0){
-            Glide.with(getApplicationContext()).load(productDetails.get(0)).into(productImageView);
-            productNameTextView.setText(productDetails.get(1));
-            productQuantityTextView.setText(productDetails.get(2));
-            productUnitPriceTextView.setText(productDetails.get(3));
-            productPriceTextView.setText(productDetails.get(4));
+    private void showProductDetails(Product product){
+        if (product != null){
+            Glide.with(getApplicationContext()).load(product.getImageUrl()).into(productImageView);
+            productNameTextView.setText(product.getProductName());
+            productQuantityTextView.setText(product.getQuantity());
+            productUnitPriceTextView.setText(product.getUnitPrice());
+            productPriceTextView.setText(product.getPrice());
         }
 
     }
