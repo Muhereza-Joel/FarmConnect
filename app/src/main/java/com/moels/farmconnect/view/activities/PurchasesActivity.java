@@ -21,8 +21,8 @@ import com.moels.farmconnect.controller.adapters.PurchasesListRecyclerViewAdapte
 import com.moels.farmconnect.utils.models.PurchasesCard;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
-import com.moels.farmconnect.model.database.PurchasesDatabase;
-import com.moels.farmconnect.model.database.PurchasesDatabaseHelper;
+import com.moels.farmconnect.model.database.PurchasesTable;
+import com.moels.farmconnect.model.database.PurchasesTableUtil;
 import com.moels.farmconnect.utils.UI;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ import java.util.List;
 public class PurchasesActivity extends AppCompatActivity {
 
     private Preferences preferences;
-    private PurchasesDatabase purchasesDatabase;
+    private PurchasesTable purchasesDatabase;
     private Toolbar toolbar;
     private List<PurchasesCard> purchasesCards;
     private RecyclerView recyclerView;
@@ -67,7 +67,7 @@ public class PurchasesActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.purchases_recycler_view);
         emptyPurchasesTextView = findViewById(R.id.empty_purchases_text_view);
         purchasesCards = new ArrayList<>();
-        purchasesDatabase = PurchasesDatabaseHelper.getInstance(getApplicationContext());
+        purchasesDatabase = PurchasesTableUtil.getInstance(getApplicationContext());
         purchasesCards = purchasesDatabase.getPurchases(getIntent().getStringExtra("zoneID"));
     }
 

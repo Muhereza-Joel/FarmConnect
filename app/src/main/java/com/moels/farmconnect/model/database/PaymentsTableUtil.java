@@ -13,21 +13,21 @@ import com.moels.farmconnect.utils.UI;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class PaymentsDatabaseHelper extends FarmConnectDatabase implements PaymentsDatabase{
+public final class PaymentsTableUtil extends FarmConnectDatabaseHelper implements PaymentsTable {
 
-    private static PaymentsDatabaseHelper uniqueInstance;
-    private PurchasesDatabase purchasesDatabase;
-    private ContactsDatabase contactsDatabase;
+    private static PaymentsTableUtil uniqueInstance;
+    private PurchasesTable purchasesDatabase;
+    private ContactsTable contactsDatabase;
 
-    private PaymentsDatabaseHelper(Context context){
+    private PaymentsTableUtil(Context context){
         super(context);
-        contactsDatabase = ContactsDatabaseHelper.getInstance(context);
-        purchasesDatabase = PurchasesDatabaseHelper.getInstance(context);
+        contactsDatabase = ContactsTableUtil.getInstance(context);
+        purchasesDatabase = PurchasesTableUtil.getInstance(context);
     }
 
-    public static PaymentsDatabaseHelper getInstance(Context context){
+    public static PaymentsTableUtil getInstance(Context context){
         if (uniqueInstance == null){
-            uniqueInstance = new PaymentsDatabaseHelper(context);
+            uniqueInstance = new PaymentsTableUtil(context);
         }
         return uniqueInstance;
     }

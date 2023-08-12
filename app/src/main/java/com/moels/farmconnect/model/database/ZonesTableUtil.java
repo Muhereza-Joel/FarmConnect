@@ -15,19 +15,19 @@ import com.moels.farmconnect.utils.models.ZoneCardItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ZonesDatabaseHelper extends FarmConnectDatabase implements ZonesDatabase, Observable {
+public final class ZonesTableUtil extends FarmConnectDatabaseHelper implements ZonesTable, Observable {
 
-    private static ZonesDatabaseHelper uniqueInstance;
+    private static ZonesTableUtil uniqueInstance;
     private ArrayList<Observer> observers;
 
-    private ZonesDatabaseHelper(Context context){
+    private ZonesTableUtil(Context context){
         super(context);
         observers = new ArrayList<>();
     }
 
-    public static ZonesDatabaseHelper getInstance(Context context){
+    public static ZonesTableUtil getInstance(Context context){
         if (uniqueInstance == null){
-            uniqueInstance = new ZonesDatabaseHelper(context);
+            uniqueInstance = new ZonesTableUtil(context);
         }
         return uniqueInstance;
     }

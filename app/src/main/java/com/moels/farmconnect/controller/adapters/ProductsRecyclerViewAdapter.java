@@ -16,8 +16,8 @@ import com.bumptech.glide.Glide;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.utils.models.Card;
 import com.moels.farmconnect.utils.models.ProductCard;
-import com.moels.farmconnect.model.database.ContactsDatabase;
-import com.moels.farmconnect.model.database.ContactsDatabaseHelper;
+import com.moels.farmconnect.model.database.ContactsTable;
+import com.moels.farmconnect.model.database.ContactsTableUtil;
 
 import java.util.List;
 
@@ -26,13 +26,13 @@ public class ProductsRecyclerViewAdapter extends RecyclerView.Adapter<ProductsRe
     private List<Card> cardList;
     private Context context;
     private Listener listener;
-    private ContactsDatabase contactsDatabase;
+    private ContactsTable contactsDatabase;
 
 
     public ProductsRecyclerViewAdapter(List<Card> cardList, Context context) {
         this.cardList = cardList;
         this.context = context;
-        contactsDatabase = ContactsDatabaseHelper.getInstance(context);
+        contactsDatabase = ContactsTableUtil.getInstance(context);
     }
 
     @NonNull

@@ -20,8 +20,8 @@ import com.moels.farmconnect.R;
 import com.moels.farmconnect.controller.adapters.PaymentsListRecyclerViewAdapter;
 import com.moels.farmconnect.utils.models.PaymentCard;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
-import com.moels.farmconnect.model.database.PaymentsDatabase;
-import com.moels.farmconnect.model.database.PaymentsDatabaseHelper;
+import com.moels.farmconnect.model.database.PaymentsTable;
+import com.moels.farmconnect.model.database.PaymentsTableUtil;
 import com.moels.farmconnect.utils.preferences.Preferences;
 import com.moels.farmconnect.utils.UI;
 
@@ -35,7 +35,7 @@ public class PaymentsActivity extends AppCompatActivity{
     private PaymentsListRecyclerViewAdapter paymentsListRecyclerViewAdapter;
     private List<PaymentCard> paymentCards;
     private TextView emptyPaymentsLabel;
-    PaymentsDatabase paymentsDatabase;
+    PaymentsTable paymentsDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +66,7 @@ public class PaymentsActivity extends AppCompatActivity{
         preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
         recyclerView = findViewById(R.id.payments_recycler_view);
         emptyPaymentsLabel = findViewById(R.id.empty_message_label);
-        paymentsDatabase = PaymentsDatabaseHelper.getInstance(getApplicationContext());
+        paymentsDatabase = PaymentsTableUtil.getInstance(getApplicationContext());
         paymentCards = paymentsDatabase.getPayments(getIntent().getStringExtra("zoneID"));
     }
 

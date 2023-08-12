@@ -20,8 +20,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.moels.farmconnect.model.database.ContactsDatabase;
-import com.moels.farmconnect.model.database.ContactsDatabaseHelper;
+import com.moels.farmconnect.model.database.ContactsTable;
+import com.moels.farmconnect.model.database.ContactsTableUtil;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
 
@@ -36,7 +36,7 @@ public class FetchContactsService extends Service {
     private static final int POLL_INTERVAL = 1000;
     private Handler handler;
     private Runnable runnable;
-    private ContactsDatabase contactsDatabase;
+    private ContactsTable database;
     private final IBinder binder = new FetchContactsServiceBinder();
     private ContactsFetchListener contactsFetchListener;
 
@@ -44,7 +44,7 @@ public class FetchContactsService extends Service {
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
-        contactsDatabase = ContactsDatabaseHelper.getInstance(getApplicationContext());
+        database = ContactsTableUtil.getInstance(getApplicationContext());
         preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
     }
 
@@ -124,7 +124,7 @@ public class FetchContactsService extends Service {
                             contactDetails.add(accountType);
                             contactDetails.add(uploaded);
                             contactDetails.add(updated);
-                            contactsDatabase.addContactToDatabase(contactDetails);
+                            database.addContactToDatabase(contactDetails);
                             Log.d("Farmconnect", "onDataChange: " + firebasePhoneNumber);
                             isMatchFound = true; //TODO remove contacts that no longer exist in user accounts;
                             break; // Exit the inner loop

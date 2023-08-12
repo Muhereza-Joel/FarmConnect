@@ -13,8 +13,6 @@ import androidx.fragment.app.DialogFragment;
 
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.controller.AppController;
-import com.moels.farmconnect.model.database.services.DeleteZoneService;
-import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
 
 public class DeleteZoneConfirmationDialog extends DialogFragment implements DialogInterface.OnClickListener {
 

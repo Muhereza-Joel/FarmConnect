@@ -2,14 +2,14 @@ package com.moels.farmconnect.model.command;
 
 import android.content.Context;
 
-import com.moels.farmconnect.model.database.ZonesDatabase;
-import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
+import com.moels.farmconnect.model.database.ZonesTable;
+import com.moels.farmconnect.model.database.ZonesTableUtil;
 import com.moels.farmconnect.model.observers.Observer;
 
 import java.util.List;
 
 public class EditZoneCommand implements Command{
-    private ZonesDatabase zonesDatabase;
+    private ZonesTable zonesDatabase;
     private Observer observer;
     private List<String> zoneDetails;
     private String id;
@@ -18,7 +18,7 @@ public class EditZoneCommand implements Command{
         this.observer = observer;
         this.zoneDetails = zoneDetails;
         this.id = zoneID;
-        zonesDatabase = ZonesDatabaseHelper.getInstance(context);
+        zonesDatabase = ZonesTableUtil.getInstance(context);
     }
 
     @Override

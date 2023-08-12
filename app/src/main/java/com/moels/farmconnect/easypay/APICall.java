@@ -9,11 +9,11 @@ import android.view.View;
 import com.moels.farmconnect.view.activities.MakeDepositRequestActivity;
 import com.moels.farmconnect.view.activities.MakeWithdrawRequestActivity;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
-import com.moels.farmconnect.model.database.PaymentsDatabase;
-import com.moels.farmconnect.model.database.PaymentsDatabaseHelper;
+import com.moels.farmconnect.model.database.PaymentsTable;
+import com.moels.farmconnect.model.database.PaymentsTableUtil;
 import com.moels.farmconnect.utils.preferences.Preferences;
-import com.moels.farmconnect.model.database.ProductsDatabase;
-import com.moels.farmconnect.model.database.ProductsDatabaseHelper;
+import com.moels.farmconnect.model.database.ProductsTable;
+import com.moels.farmconnect.model.database.ProductsTableUtil;
 import com.moels.farmconnect.utils.UI;
 
 import org.json.JSONException;
@@ -283,8 +283,8 @@ public class APICall extends AsyncTask<String, String, String> {
     private boolean saveTransactionDetails(JSONObject jsonObject){
             boolean transactionDetailsSaved = false;
         if (jsonObject != null) {
-            PaymentsDatabase paymentsDatabase = PaymentsDatabaseHelper.getInstance(activity.getApplicationContext());
-            ProductsDatabase productsDatabase = ProductsDatabaseHelper.getInstance(activity.getApplicationContext());
+            PaymentsTable paymentsDatabase = PaymentsTableUtil.getInstance(activity.getApplicationContext());
+            ProductsTable productsDatabase = ProductsTableUtil.getInstance(activity.getApplicationContext());
             List<String> paymentDetails = new ArrayList<>();
             paymentDetails.add(UI.generateUniqueID());
             paymentDetails.add(MakeDepositRequestActivity.apiParameters.productID);

@@ -4,14 +4,14 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public abstract class FarmConnectDatabase extends SQLiteOpenHelper {
+public abstract class FarmConnectDatabaseHelper extends SQLiteOpenHelper {
 
     //Upgraded from version 1
     private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "FarmConnectDatabase";
     public SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
-    public FarmConnectDatabase(Context context) {
+    public FarmConnectDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

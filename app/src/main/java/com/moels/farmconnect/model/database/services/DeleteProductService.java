@@ -14,15 +14,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.moels.farmconnect.model.database.ZonesDatabase;
-import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
+import com.moels.farmconnect.model.database.ZonesTable;
+import com.moels.farmconnect.model.database.ZonesTableUtil;
 
 public class DeleteProductService extends Service {
 
     private static final int POLL_INTERVAL = 1000;
     private Handler handler;
     private Runnable runnable;
-    private ZonesDatabase zonesDatabase;
+    private ZonesTable zonesDatabase;
     public DeleteProductService() {
     }
 
@@ -30,7 +30,7 @@ public class DeleteProductService extends Service {
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
-        zonesDatabase = ZonesDatabaseHelper.getInstance(getApplicationContext());
+        zonesDatabase = ZonesTableUtil.getInstance(getApplicationContext());
     }
 
     @Override

@@ -12,10 +12,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.moels.farmconnect.model.database.ProductsDatabase;
-import com.moels.farmconnect.model.database.ProductsDatabaseHelper;
-import com.moels.farmconnect.model.database.ZonesDatabase;
-import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
+import com.moels.farmconnect.model.database.ProductsTable;
+import com.moels.farmconnect.model.database.ProductsTableUtil;
+import com.moels.farmconnect.model.database.ZonesTable;
+import com.moels.farmconnect.model.database.ZonesTableUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,8 +25,8 @@ public class UpdateProductService extends Service {
     private static final int POLL_INTERVAL = 1000;
     private Handler handler;
     private Runnable runnable;
-    private ProductsDatabase productsDatabase;
-    private ZonesDatabase zonesDatabase;
+    private ProductsTable productsDatabase;
+    private ZonesTable zonesDatabase;
 
     public UpdateProductService() {
     }
@@ -35,8 +35,8 @@ public class UpdateProductService extends Service {
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
-        productsDatabase = ProductsDatabaseHelper.getInstance(getApplicationContext());
-        zonesDatabase = ZonesDatabaseHelper.getInstance(getApplicationContext());
+        productsDatabase = ProductsTableUtil.getInstance(getApplicationContext());
+        zonesDatabase = ZonesTableUtil.getInstance(getApplicationContext());
     }
 
     @Override

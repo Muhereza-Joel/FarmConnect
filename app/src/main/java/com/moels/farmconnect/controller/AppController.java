@@ -7,8 +7,8 @@ import com.moels.farmconnect.model.command.Command;
 import com.moels.farmconnect.model.command.DeleteZoneCommand;
 import com.moels.farmconnect.model.command.EditZoneCommand;
 import com.moels.farmconnect.model.command.SaveZoneCommand;
-import com.moels.farmconnect.model.database.ZonesDatabase;
-import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
+import com.moels.farmconnect.model.database.ZonesTable;
+import com.moels.farmconnect.model.database.ZonesTableUtil;
 import com.moels.farmconnect.model.observers.Observer;
 import com.moels.farmconnect.utils.Validator;
 
@@ -36,7 +36,7 @@ public final class AppController extends Controller implements Observer {
 
     @Override
     public List<String> getZoneDetails(String id) {
-        ZonesDatabase zonesDatabase = ZonesDatabaseHelper.getInstance(context);
+        ZonesTable zonesDatabase = ZonesTableUtil.getInstance(context);
         return zonesDatabase.getZoneDetails(id);
 
     }

@@ -38,7 +38,7 @@ import com.moels.farmconnect.utils.models.ContactCardItem;
 import com.moels.farmconnect.model.database.services.BuyerAccountZoneFetchService;
 import com.moels.farmconnect.model.database.services.FarmerAccountZonesFetchService;
 import com.moels.farmconnect.model.database.services.FetchContactsService;
-import com.moels.farmconnect.model.database.ContactsDatabaseHelper;
+import com.moels.farmconnect.model.database.ContactsTableUtil;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
 import com.moels.farmconnect.utils.UI;
@@ -58,7 +58,7 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
     private ContactListRecyclerViewAdapter contactListRecyclerViewAdapter;
     private List<ContactCardItem> contactsList;
     private Button createNewContactButton;
-    private ContactsDatabaseHelper contactsDatabaseHelper;
+    private ContactsTableUtil contactsDatabaseHelper;
     private SQLiteDatabase sqLiteDatabase;
     private Preferences preferences;
     private TextView emptyContactListTextView;
@@ -119,7 +119,7 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
         UI.setUpToolbarInDarkMode(getApplicationContext(), callActivityToolBar);
         UI.setUpActionBar(getSupportActionBar(), R.drawable.ic_back_arrow, "Select Contact", true);
 
-        contactsDatabaseHelper = ContactsDatabaseHelper.getInstance(getApplicationContext());
+        contactsDatabaseHelper = ContactsTableUtil.getInstance(getApplicationContext());
         sqLiteDatabase  = contactsDatabaseHelper.getWritableDatabase();
         preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
 

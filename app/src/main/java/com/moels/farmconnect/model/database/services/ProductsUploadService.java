@@ -10,11 +10,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.moels.farmconnect.model.database.ProductsDatabase;
-import com.moels.farmconnect.model.database.ZonesDatabase;
+import com.moels.farmconnect.model.database.ProductsTable;
+import com.moels.farmconnect.model.database.ZonesTable;
 import com.moels.farmconnect.utils.models.Product;
-import com.moels.farmconnect.model.database.ProductsDatabaseHelper;
-import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
+import com.moels.farmconnect.model.database.ProductsTableUtil;
+import com.moels.farmconnect.model.database.ZonesTableUtil;
 
 import java.util.List;
 
@@ -22,8 +22,8 @@ public class ProductsUploadService extends Service {
     private static final int POLL_INTERVAL = 1000;
     private Handler handler;
     private Runnable runnable;
-    private ProductsDatabase productsDatabase;
-    private ZonesDatabase zonesDatabase;
+    private ProductsTable productsDatabase;
+    private ZonesTable zonesDatabase;
 
     public ProductsUploadService() {
     }
@@ -32,8 +32,8 @@ public class ProductsUploadService extends Service {
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
-        productsDatabase = ProductsDatabaseHelper.getInstance(getApplicationContext());
-        zonesDatabase = ZonesDatabaseHelper.getInstance(getApplicationContext());
+        productsDatabase = ProductsTableUtil.getInstance(getApplicationContext());
+        zonesDatabase = ZonesTableUtil.getInstance(getApplicationContext());
 
     }
 

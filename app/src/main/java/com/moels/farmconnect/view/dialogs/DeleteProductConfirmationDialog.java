@@ -14,16 +14,16 @@ import androidx.fragment.app.DialogFragment;
 
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.model.database.services.DeleteProductService;
-import com.moels.farmconnect.model.database.ProductsDatabase;
-import com.moels.farmconnect.model.database.ProductsDatabaseHelper;
+import com.moels.farmconnect.model.database.ProductsTable;
+import com.moels.farmconnect.model.database.ProductsTableUtil;
 
 public class DeleteProductConfirmationDialog extends DialogFragment implements DialogInterface.OnClickListener {
-    private ProductsDatabase productsDatabase;
+    private ProductsTable productsDatabase;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        productsDatabase = ProductsDatabaseHelper.getInstance(getContext());;
+        productsDatabase = ProductsTableUtil.getInstance(getContext());;
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         return (builder.setTitle("Continue To Delete Product")

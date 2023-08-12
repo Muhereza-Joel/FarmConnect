@@ -21,11 +21,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.controller.AppController;
 import com.moels.farmconnect.model.command.Listener;
 import com.moels.farmconnect.model.database.services.ZoneUploadService;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
+import com.moels.farmconnect.utils.preferences.Globals;
 import com.moels.farmconnect.utils.preferences.Preferences;
 import com.moels.farmconnect.utils.UI;
 
@@ -100,21 +102,17 @@ public class AddNewZoneActivity extends AppCompatActivity implements Listener{
     private List<String> getValuesFromUI(){
         List<String> zoneDetails = new ArrayList<>();
 
-        String uploadedStatus = "false";
-        String updatedStatus = "false";
-        String activeStatus = "active";
-
         zoneDetails.add(UI.generateUniqueID());
         zoneDetails.add(zoneNameEditText.getText().toString());
         zoneDetails.add(locationEditText.getText().toString());
         zoneDetails.add(productsToCollectEditText.getText().toString());
         zoneDetails.add(descriptionEditText.getText().toString());
-        zoneDetails.add(uploadedStatus);
-        zoneDetails.add(preferences.getString("authenticatedPhoneNumber"));
+        zoneDetails.add(Globals.UploadStatus.FALSE.toString());
+        zoneDetails.add(preferences.getString(Globals.AUTHENTICATED_PHONE_NUMBER));
         zoneDetails.add(UI.getCurrentDate());
         zoneDetails.add(UI.getCurrentTime());
-        zoneDetails.add(activeStatus);
-        zoneDetails.add(updatedStatus);
+        zoneDetails.add(Globals.ACTIVE);
+        zoneDetails.add(Globals.UpdateStatus.FALSE.toString());
 
         return zoneDetails;
     }
@@ -139,7 +137,7 @@ public class AddNewZoneActivity extends AppCompatActivity implements Listener{
         startService(uploadZoneService);
     }
     private void saveFirstZoneCreatedPreference(Preferences preferences){
-        preferences.putBoolean("FirstZoneCreated", true);
+        preferences.putBoolean(Preferences.FIRST_ZONE_CREATED, true);
     }
 
     private void clearViews(){
@@ -156,7 +154,7 @@ public class AddNewZoneActivity extends AppCompatActivity implements Listener{
     }
 
     private void hideAddZoneBanner(Preferences preferences){
-        if (preferences.getBoolean("FirstZoneCreated")){
+        if (preferences.getBoolean(Preferences.FIRST_ZONE_CREATED)){
             UI.hide(zoneHeaderTextView);
         }
     }

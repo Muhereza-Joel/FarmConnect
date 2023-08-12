@@ -26,13 +26,13 @@ import com.moels.farmconnect.view.activities.ProductsInAzoneActivity;
 import com.moels.farmconnect.controller.adapters.ZoneListRecyclerViewAdapter;
 import com.moels.farmconnect.utils.models.Zone;
 import com.moels.farmconnect.utils.models.ZoneCardItem;
-import com.moels.farmconnect.model.database.ContactsDatabase;
-import com.moels.farmconnect.model.database.ContactsDatabaseHelper;
+import com.moels.farmconnect.model.database.ContactsTable;
+import com.moels.farmconnect.model.database.ContactsTableUtil;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
 import com.moels.farmconnect.model.observers.RealTimeZonesObserver;
-import com.moels.farmconnect.model.database.ZonesDatabase;
-import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
+import com.moels.farmconnect.model.database.ZonesTable;
+import com.moels.farmconnect.model.database.ZonesTableUtil;
 import com.moels.farmconnect.model.observers.ZonesObserver;
 
 import java.util.ArrayList;
@@ -43,8 +43,8 @@ public class ZonesListFragment extends Fragment {
     private static final int ZONE_DELETE_REQUEST_CODE = 2;
     private RecyclerView zonesListRecyclerView;
     private ZoneListRecyclerViewAdapter zoneListRecyclerViewAdapter;
-    private ZonesDatabase zonesDatabase;
-    private ContactsDatabase contactsDatabase;
+    private ZonesTable zonesDatabase;
+    private ContactsTable contactsDatabase;
     private List<ZoneCardItem> zoneCardItems;
     private View view;
     private TextView emptyZonesMessageTextView;
@@ -54,8 +54,8 @@ public class ZonesListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        zonesDatabase = ZonesDatabaseHelper.getInstance(getContext());
-        contactsDatabase = ContactsDatabaseHelper.getInstance(getContext());
+        zonesDatabase = ZonesTableUtil.getInstance(getContext());
+        contactsDatabase = ContactsTableUtil.getInstance(getContext());
         preferences = FarmConnectAppPreferences.getInstance(getContext());
         zoneCardItems = zonesDatabase.getZonesFromDatabase();
 

@@ -7,7 +7,7 @@ import com.moels.farmconnect.utils.models.Product;
 
 import java.util.List;
 
-public interface ProductsDatabase {
+public interface ProductsTable {
     List<String> getProductRemoteIds();
     boolean addProduct(List<String> productDetails);
     List<String> getUpdatedProduct(String updatedProductID);

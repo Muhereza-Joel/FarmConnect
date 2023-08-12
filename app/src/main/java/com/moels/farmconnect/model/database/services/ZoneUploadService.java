@@ -11,8 +11,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.moels.farmconnect.model.database.ZonesDatabase;
-import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
+import com.moels.farmconnect.model.database.ZonesTable;
+import com.moels.farmconnect.model.database.ZonesTableUtil;
 import com.moels.farmconnect.utils.models.Zone;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
@@ -24,7 +24,7 @@ public class ZoneUploadService extends Service {
     private static final int POLL_INTERVAL = 2000; // Execute after 2 seconds
     private Handler handler;
     private Runnable runnable;
-    private ZonesDatabase zonesDatabase;
+    private ZonesTable zonesDatabase;
     private Preferences preferences;
     //TODO remove sqlite functionality from this service
 
@@ -33,7 +33,7 @@ public class ZoneUploadService extends Service {
         super.onCreate();
         preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
         handler = new Handler();
-        zonesDatabase = ZonesDatabaseHelper.getInstance(getApplicationContext());
+        zonesDatabase = ZonesTableUtil.getInstance(getApplicationContext());
     }
 
 

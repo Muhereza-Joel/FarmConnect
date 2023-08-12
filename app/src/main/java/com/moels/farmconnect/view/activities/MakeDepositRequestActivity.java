@@ -24,10 +24,10 @@ import com.hbb20.CountryCodePicker;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.easypay.APICall;
 import com.moels.farmconnect.easypay.APICallParameters;
-import com.moels.farmconnect.model.database.ContactsDatabase;
-import com.moels.farmconnect.model.database.ContactsDatabaseHelper;
-import com.moels.farmconnect.model.database.ProductsDatabase;
-import com.moels.farmconnect.model.database.ProductsDatabaseHelper;
+import com.moels.farmconnect.model.database.ContactsTable;
+import com.moels.farmconnect.model.database.ContactsTableUtil;
+import com.moels.farmconnect.model.database.ProductsTable;
+import com.moels.farmconnect.model.database.ProductsTableUtil;
 import com.moels.farmconnect.utils.UI;
 
 public class MakeDepositRequestActivity extends AppCompatActivity {
@@ -42,8 +42,8 @@ public class MakeDepositRequestActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private Button payButton;
     private Boolean viewsValidated;
-    private ProductsDatabase productsDatabase;
-    private ContactsDatabase contactsDatabase;
+    private ProductsTable productsDatabase;
+    private ContactsTable contactsDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +72,8 @@ public class MakeDepositRequestActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.make_withdraw_request_activity_toolbar);
         payButton = (Button) findViewById(R.id.pay);
         productOwnerNameTextView = findViewById(R.id.product_owner_name);
-        productsDatabase = ProductsDatabaseHelper.getInstance(getApplicationContext());
-        contactsDatabase = ContactsDatabaseHelper.getInstance(getApplicationContext());
+        productsDatabase = ProductsTableUtil.getInstance(getApplicationContext());
+        contactsDatabase = ContactsTableUtil.getInstance(getApplicationContext());
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Processing...");

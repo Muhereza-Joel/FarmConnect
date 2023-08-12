@@ -10,16 +10,16 @@ import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ContactsDatabaseHelper extends FarmConnectDatabase implements ContactsDatabase{
-    private static ContactsDatabaseHelper uniqueInstance;
+public final class ContactsTableUtil extends FarmConnectDatabaseHelper implements ContactsTable {
+    private static ContactsTableUtil uniqueInstance;
 
-    private ContactsDatabaseHelper(Context context){
+    private ContactsTableUtil(Context context){
         super(context);
     }
 
-    public static ContactsDatabaseHelper getInstance(Context context){
+    public static ContactsTableUtil getInstance(Context context){
         if (uniqueInstance == null){
-            uniqueInstance = new ContactsDatabaseHelper(context);
+            uniqueInstance = new ContactsTableUtil(context);
         }
         return uniqueInstance;
     }

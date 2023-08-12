@@ -22,12 +22,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.model.database.ContactsDatabase;
-import com.moels.farmconnect.model.database.ContactsDatabaseHelper;
-import com.moels.farmconnect.model.database.ProductsDatabase;
-import com.moels.farmconnect.model.database.ProductsDatabaseHelper;
-import com.moels.farmconnect.model.database.ZonesDatabase;
-import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
+import com.moels.farmconnect.model.database.ContactsTable;
+import com.moels.farmconnect.model.database.ContactsTableUtil;
+import com.moels.farmconnect.model.database.ProductsTable;
+import com.moels.farmconnect.model.database.ProductsTableUtil;
+import com.moels.farmconnect.model.database.ZonesTable;
+import com.moels.farmconnect.model.database.ZonesTableUtil;
 import com.moels.farmconnect.view.activities.MainActivity;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
@@ -43,9 +43,9 @@ public class ProductsDataSyncService extends Service{
     private static final int POLL_INTERVAL = 1000;
     private Handler handler;
     private Runnable runnable;
-    private ZonesDatabase zonesDatabase;
-    private ContactsDatabase contactsDatabase;
-    private ProductsDatabase productsDatabase;
+    private ZonesTable zonesDatabase;
+    private ContactsTable contactsDatabase;
+    private ProductsTable productsDatabase;
 
     private DatabaseReference zonesDatabaseReference;
     private DatabaseReference productsReference;
@@ -63,9 +63,9 @@ public class ProductsDataSyncService extends Service{
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
-        zonesDatabase = ZonesDatabaseHelper.getInstance(getApplicationContext());
-        contactsDatabase = ContactsDatabaseHelper.getInstance(getApplicationContext());
-        productsDatabase = ProductsDatabaseHelper.getInstance(getApplicationContext());
+        zonesDatabase = ZonesTableUtil.getInstance(getApplicationContext());
+        contactsDatabase = ContactsTableUtil.getInstance(getApplicationContext());
+        productsDatabase = ProductsTableUtil.getInstance(getApplicationContext());
         preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
 
         authenticatedPhoneNumber = preferences.getString("authenticatedPhoneNumber");

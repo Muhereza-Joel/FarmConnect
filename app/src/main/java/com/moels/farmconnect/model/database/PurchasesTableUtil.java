@@ -13,19 +13,19 @@ import com.moels.farmconnect.utils.UI;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class PurchasesDatabaseHelper extends FarmConnectDatabase implements PurchasesDatabase{
+public final class PurchasesTableUtil extends FarmConnectDatabaseHelper implements PurchasesTable {
 
-    private static PurchasesDatabaseHelper uniqueInstance;
-    private ContactsDatabase contactsDatabase;
+    private static PurchasesTableUtil uniqueInstance;
+    private ContactsTable contactsDatabase;
 
-    private PurchasesDatabaseHelper(Context context) {
+    private PurchasesTableUtil(Context context) {
         super(context);
-        contactsDatabase = ContactsDatabaseHelper.getInstance(context);
+        contactsDatabase = ContactsTableUtil.getInstance(context);
     }
 
-    public static PurchasesDatabaseHelper getInstance(Context context){
+    public static PurchasesTableUtil getInstance(Context context){
         if (uniqueInstance == null){
-            uniqueInstance = new PurchasesDatabaseHelper(context);
+            uniqueInstance = new PurchasesTableUtil(context);
         }
         return uniqueInstance;
     }

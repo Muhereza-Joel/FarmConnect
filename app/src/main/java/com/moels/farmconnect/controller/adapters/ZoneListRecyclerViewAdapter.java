@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.utils.models.ZoneCardItem;
-import com.moels.farmconnect.model.database.ContactsDatabase;
-import com.moels.farmconnect.model.database.ContactsDatabaseHelper;
+import com.moels.farmconnect.model.database.ContactsTable;
+import com.moels.farmconnect.model.database.ContactsTableUtil;
 
 import java.util.List;
 
@@ -25,12 +25,12 @@ public class ZoneListRecyclerViewAdapter extends RecyclerView.Adapter<ZoneListRe
     private List<ZoneCardItem> itemList;
     private Context context;
     private Listener listener;
-    private ContactsDatabase contactsDatabase;
+    private ContactsTable contactsDatabase;
 
     public ZoneListRecyclerViewAdapter(List<ZoneCardItem> itemList, Context context) {
         this.itemList = itemList;
         this.context = context;
-        contactsDatabase = ContactsDatabaseHelper.getInstance(context);
+        contactsDatabase = ContactsTableUtil.getInstance(context);
     }
 
     @NonNull

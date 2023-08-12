@@ -14,16 +14,16 @@ import com.moels.farmconnect.utils.models.ProductCard;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ProductsDatabaseHelper extends FarmConnectDatabase implements ProductsDatabase{
-    private static ProductsDatabaseHelper uniqueInstance;
+public final class ProductsTableUtil extends FarmConnectDatabaseHelper implements ProductsTable {
+    private static ProductsTableUtil uniqueInstance;
 
-    private ProductsDatabaseHelper(Context context){
+    private ProductsTableUtil(Context context){
         super(context);
     }
 
-    public static ProductsDatabaseHelper getInstance(Context context){
+    public static ProductsTableUtil getInstance(Context context){
         if (uniqueInstance == null){
-            uniqueInstance = new ProductsDatabaseHelper(context);
+            uniqueInstance = new ProductsTableUtil(context);
         }
         return uniqueInstance;
     }

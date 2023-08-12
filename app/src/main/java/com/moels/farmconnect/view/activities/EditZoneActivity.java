@@ -7,14 +7,12 @@ import androidx.core.content.ContextCompat;
 
 import android.app.Activity;
 import android.app.UiModeManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
-import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,8 +25,6 @@ import com.moels.farmconnect.controller.AppController;
 import com.moels.farmconnect.model.command.Listener;
 import com.moels.farmconnect.model.database.services.UpdateZoneService;
 import com.moels.farmconnect.utils.UI;
-import com.moels.farmconnect.model.database.ZonesDatabase;
-import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
 
 import java.util.ArrayList;
 import java.util.List;

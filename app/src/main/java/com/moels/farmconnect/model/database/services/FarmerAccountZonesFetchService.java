@@ -15,11 +15,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.moels.farmconnect.model.database.ContactsDatabase;
-import com.moels.farmconnect.model.database.ZonesDatabase;
-import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
+import com.moels.farmconnect.model.database.ContactsTable;
+import com.moels.farmconnect.model.database.ZonesTable;
+import com.moels.farmconnect.model.database.ZonesTableUtil;
 import com.moels.farmconnect.utils.models.Zone;
-import com.moels.farmconnect.model.database.ContactsDatabaseHelper;
+import com.moels.farmconnect.model.database.ContactsTableUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,15 +30,15 @@ public class FarmerAccountZonesFetchService extends Service {
     private Runnable runnable;
     private FarmerZonesFetchListener zonesFetchListener;
     private final IBinder binder = new FarmerZonesFetchServiceBinder();
-    private ContactsDatabase contactsDatabase;
-    private ZonesDatabase zonesDatabase;
+    private ContactsTable contactsDatabase;
+    private ZonesTable zonesDatabase;
 
     @Override
     public void onCreate() {
         super.onCreate();
         handler = new Handler();
-        contactsDatabase = ContactsDatabaseHelper.getInstance(getApplicationContext());
-        zonesDatabase = ZonesDatabaseHelper.getInstance(getApplicationContext());
+        contactsDatabase = ContactsTableUtil.getInstance(getApplicationContext());
+        zonesDatabase = ZonesTableUtil.getInstance(getApplicationContext());
     }
 
     @Override

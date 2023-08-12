@@ -44,8 +44,8 @@ import com.moels.farmconnect.R;
 import com.moels.farmconnect.model.database.services.ProductsUploadService;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
-import com.moels.farmconnect.model.database.ProductsDatabase;
-import com.moels.farmconnect.model.database.ProductsDatabaseHelper;
+import com.moels.farmconnect.model.database.ProductsTable;
+import com.moels.farmconnect.model.database.ProductsTableUtil;
 import com.moels.farmconnect.utils.UI;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -69,7 +69,7 @@ public class CreateProductActivity extends AppCompatActivity {
     private Spinner quantityUnitsSpinner;
     private TextView productPriceTextView;
     private ProgressDialog progressDialog;
-    private ProductsDatabase productsDatabase;
+    private ProductsTable productsDatabase;
     private Preferences preferences;
 
     @Override
@@ -82,7 +82,7 @@ public class CreateProductActivity extends AppCompatActivity {
         UI.setUpToolbarInDarkMode(getApplicationContext(), toolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Create New Product", true);
 
-        productsDatabase = ProductsDatabaseHelper.getInstance(getApplicationContext());
+        productsDatabase = ProductsTableUtil.getInstance(getApplicationContext());
         preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
 
         productImageView.setOnClickListener(new View.OnClickListener() {

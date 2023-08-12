@@ -14,8 +14,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.moels.farmconnect.model.database.ZonesDatabase;
-import com.moels.farmconnect.model.database.ZonesDatabaseHelper;
+import com.moels.farmconnect.model.database.ZonesTable;
+import com.moels.farmconnect.model.database.ZonesTableUtil;
 import com.moels.farmconnect.utils.models.Zone;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
@@ -30,7 +30,7 @@ public class BuyerAccountZoneFetchService extends Service {
     private Runnable runnable;
     private BuyerZonesFetchListener zonesFetchListener;
     private final IBinder binder = new BuyerZonesFetchServiceBinder();
-    private ZonesDatabase zonesDatabase;
+    private ZonesTable zonesDatabase;
     private Preferences preferences;
 
     @Override
@@ -38,7 +38,7 @@ public class BuyerAccountZoneFetchService extends Service {
         super.onCreate();
         handler = new Handler();
         preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
-        zonesDatabase = ZonesDatabaseHelper.getInstance(getApplicationContext());
+        zonesDatabase = ZonesTableUtil.getInstance(getApplicationContext());
     }
 
     @Override

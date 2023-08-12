@@ -45,8 +45,8 @@ import com.moels.farmconnect.R;
 import com.moels.farmconnect.model.database.services.UpdateProductService;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
-import com.moels.farmconnect.model.database.ProductsDatabase;
-import com.moels.farmconnect.model.database.ProductsDatabaseHelper;
+import com.moels.farmconnect.model.database.ProductsTable;
+import com.moels.farmconnect.model.database.ProductsTableUtil;
 import com.moels.farmconnect.utils.UI;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -66,7 +66,7 @@ public class EditProductActivity extends AppCompatActivity {
     private EditText productNameEditText, productQuantityEditText, productUnitPriceEditText;
     private Spinner quantityUnitsSpinner;
     private TextView productPriceTextView;
-    private ProductsDatabase productsDatabase;
+    private ProductsTable productsDatabase;
     private ProgressDialog progressDialog;
     private Preferences preferences;
 
@@ -91,7 +91,7 @@ public class EditProductActivity extends AppCompatActivity {
         productQuantityEditText.addTextChangedListener(createTextWatcher());
         productUnitPriceEditText.addTextChangedListener(createTextWatcher());
 
-        productsDatabase = ProductsDatabaseHelper.getInstance(getApplicationContext());
+        productsDatabase = ProductsTableUtil.getInstance(getApplicationContext());
         preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
 
 

@@ -26,8 +26,8 @@ import com.moels.farmconnect.utils.models.Card;
 import com.moels.farmconnect.utils.models.Product;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
-import com.moels.farmconnect.model.database.ProductsDatabase;
-import com.moels.farmconnect.model.database.ProductsDatabaseHelper;
+import com.moels.farmconnect.model.database.ProductsTable;
+import com.moels.farmconnect.model.database.ProductsTableUtil;
 import com.moels.farmconnect.model.observers.ProductsObserver;
 import com.moels.farmconnect.model.observers.RealTimeProductsObserver;
 
@@ -38,7 +38,7 @@ public class ProductsListFragment extends Fragment {
     private static final int PRODUCT_DELETE_REQUEST_CODE = 3;
     private RecyclerView productListRecyclerView;
     private ProductsRecyclerViewAdapter productsRecyclerViewAdapter;
-    private ProductsDatabase productsDatabase;
+    private ProductsTable productsDatabase;
     public List<Card> cardList;
     private Preferences preferences;
     private String authenticatedPhoneNumber;
@@ -50,7 +50,7 @@ public class ProductsListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        productsDatabase = ProductsDatabaseHelper.getInstance(getContext());
+        productsDatabase = ProductsTableUtil.getInstance(getContext());
         preferences = FarmConnectAppPreferences.getInstance(getContext());
         authenticatedPhoneNumber = preferences.getString("authenticatedPhoneNumber");
 

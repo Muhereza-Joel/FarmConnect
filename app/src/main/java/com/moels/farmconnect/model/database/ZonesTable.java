@@ -1,13 +1,11 @@
 package com.moels.farmconnect.model.database;
 
-import android.content.ContentValues;
-
 import com.moels.farmconnect.model.observers.Observable;
 import com.moels.farmconnect.utils.models.ZoneCardItem;
 
 import java.util.List;
 
-public interface ZonesDatabase extends Observable {
+public interface ZonesTable extends Observable {
     List<ZoneCardItem> getZonesFromDatabase();
     String getZoneOwner(String zoneID);
     List<String> getZoneIds(String phoneNumber);
