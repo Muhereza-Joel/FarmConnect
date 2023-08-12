@@ -21,11 +21,12 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.model.command.CommandListener;
 import com.moels.farmconnect.view.dialogs.DeleteZoneConfirmationDialog;
 import com.moels.farmconnect.view.fragments.ProductsListFragment;
 import com.moels.farmconnect.utils.UI;
 
-public class ProductsInAzoneActivity extends AppCompatActivity{
+public class ProductsInAzoneActivity extends AppCompatActivity implements CommandListener {
 
     private static final int EDIT_ZONE_REQUEST_CODE = 1;
     private Toolbar toolbar;
@@ -156,4 +157,13 @@ public class ProductsInAzoneActivity extends AppCompatActivity{
 
     }
 
+    @Override
+    public void onFailure() {
+
+    }
+
+    @Override
+    public void onSuccess() {
+
+    }
 }

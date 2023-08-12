@@ -2,14 +2,12 @@ package com.moels.farmconnect.controller;
 
 import android.content.Context;
 
-import com.moels.farmconnect.model.command.Listener;
-
-import java.util.List;
+import com.moels.farmconnect.model.command.CommandListener;
 
 public abstract class Controller {
-    public Listener listener;
+    public CommandListener listener;
     public Context context;
-    public void setListener(Listener listener) {
+    public void setListener(CommandListener listener) {
         this.listener = listener;
     }
 

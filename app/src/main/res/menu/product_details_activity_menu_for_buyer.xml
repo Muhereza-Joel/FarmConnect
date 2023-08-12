@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/change_status"
+        android:id="@+id/rate_product"
         android:orderInCategory="200"
-        android:title="Change Status"
-        android:tooltipText="Change Status"
+        android:title="Rate Product"
+        android:tooltipText="Rate Product"
         app:showAsAction="never" />
 
     <item

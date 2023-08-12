@@ -2,28 +2,34 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="@dimen/layout_padding_10">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <RadioGroup
+            android:id="@+id/product_status_radio_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <RadioButton
+                android:id="@+id/availabe_status_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:checked="true"
                 android:text="Available"/>
 
 
             <RadioButton
+                android:id="@+id/solid_status_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Sold"/>
 
             <RadioButton
+                android:id="@+id/out_of_stock_status_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Out of Stock"/>

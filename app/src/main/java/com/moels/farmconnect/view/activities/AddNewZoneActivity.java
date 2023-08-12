@@ -23,7 +23,7 @@ import androidx.core.content.ContextCompat;
 
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.controller.ZonesController;
-import com.moels.farmconnect.model.command.Listener;
+import com.moels.farmconnect.model.command.CommandListener;
 import com.moels.farmconnect.model.database.services.ZoneUploadService;
 import com.moels.farmconnect.utils.models.Zone;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
@@ -31,10 +31,7 @@ import com.moels.farmconnect.utils.preferences.Globals;
 import com.moels.farmconnect.utils.preferences.Preferences;
 import com.moels.farmconnect.utils.UI;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class AddNewZoneActivity extends AppCompatActivity implements Listener{
+public class AddNewZoneActivity extends AppCompatActivity implements CommandListener {
 
     private Toolbar addNewZoneActivityToolbar;
     private EditText zoneNameEditText, locationEditText, productsToCollectEditText, descriptionEditText;

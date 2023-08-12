@@ -21,17 +21,15 @@ import android.view.WindowManager;
 import android.widget.EditText;
 
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.controller.Controller;
 import com.moels.farmconnect.controller.ZonesController;
-import com.moels.farmconnect.model.command.Listener;
+import com.moels.farmconnect.model.command.CommandListener;
 import com.moels.farmconnect.model.database.services.UpdateZoneService;
 import com.moels.farmconnect.utils.UI;
 import com.moels.farmconnect.utils.models.Zone;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class EditZoneActivity extends AppCompatActivity implements Listener {
+public class EditZoneActivity extends AppCompatActivity implements CommandListener {
     private Toolbar editZoneActivityToolbar;
     private EditText zoneNameEditText, locationEditText, productsToCollectEditText, descriptionEditText;
     @Override

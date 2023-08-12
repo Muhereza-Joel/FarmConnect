@@ -26,7 +26,9 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.controller.ProductsController;
+import com.moels.farmconnect.model.command.CommandListener;
 import com.moels.farmconnect.utils.models.Product;
+import com.moels.farmconnect.utils.preferences.Globals;
 import com.moels.farmconnect.view.dialogs.ChangeProductStatusDialog;
 import com.moels.farmconnect.view.dialogs.DeleteProductConfirmationDialog;
 import com.moels.farmconnect.easypay.Request;
@@ -36,9 +38,7 @@ import com.moels.farmconnect.model.database.ProductsTable;
 import com.moels.farmconnect.model.database.ProductsTableUtil;
 import com.moels.farmconnect.utils.UI;
 
-import java.util.List;
-
-public class ProductDetailsActivity extends AppCompatActivity {
+public class ProductDetailsActivity extends AppCompatActivity implements CommandListener {
     private final String postUrl = "https://www.easypay.co.ug/api/";
     private final String APIClientID = "b462d01c06404cb0";
     private final String APIClientSecret = "527b39bd50e77706";
@@ -184,6 +184,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
         if (id == R.id.change_status){
             ChangeProductStatusDialog changeProductStatusDialog = new ChangeProductStatusDialog();
+            changeProductStatusDialog.setCommandListener(this);
             changeProductStatusDialog.show(getSupportFragmentManager(), "sample");
         }
 
@@ -238,5 +239,16 @@ public class ProductDetailsActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    @Override
+    public void onFailure() {
+
+    }
+
+    @Override
+    public void onSuccess() {
+        View parentView = findViewById(R.id.product_details_layout);
+        UI.displaySnackBar(getApplicationContext(), parentView, Globals.PRODUCT_STATUS_UPDATE_MSG);
     }
 }

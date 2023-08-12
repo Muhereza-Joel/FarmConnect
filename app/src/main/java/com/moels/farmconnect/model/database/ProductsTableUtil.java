@@ -7,6 +7,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
+import com.moels.farmconnect.model.observers.Observable;
+import com.moels.farmconnect.model.observers.Observer;
 import com.moels.farmconnect.utils.models.Card;
 import com.moels.farmconnect.utils.models.Product;
 import com.moels.farmconnect.utils.models.ProductCard;
@@ -14,11 +16,13 @@ import com.moels.farmconnect.utils.models.ProductCard;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ProductsTableUtil extends FarmConnectDatabaseHelper implements ProductsTable {
+public final class ProductsTableUtil extends FarmConnectDatabaseHelper implements ProductsTable, Observable {
     private static ProductsTableUtil uniqueInstance;
 
+    private ArrayList<Observer> observers;
     private ProductsTableUtil(Context context){
         super(context);
+        observers = new ArrayList<>();
     }
 
     public static ProductsTableUtil getInstance(Context context){
@@ -254,6 +258,14 @@ public final class ProductsTableUtil extends FarmConnectDatabaseHelper implement
     }
 
     @Override
+    public void updateProductStockStatus(String productId, String status) {
+        ContentValues values = new ContentValues();
+        values.put("status", status);
+        sqLiteDatabase.update("products", values, "productRemoteId = ?", new String[]{productId});
+        notifyObservers();
+    }
+
+    @Override
     public boolean deleteProductFromDatabase(String _id){
         boolean productDeleted = false;
         int rowsDeleted = sqLiteDatabase.delete("products", "productRemoteId = ?", new String[] {_id});
@@ -263,4 +275,21 @@ public final class ProductsTableUtil extends FarmConnectDatabaseHelper implement
         return productDeleted;
     }
 
+    @Override
+    public void registerObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        int index = observers.indexOf(observer);
+        if (index >= 0) observers.remove(index);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Observer observer : observers){
+            observer.update("");
+        }
+    }
 }
