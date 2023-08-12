@@ -16,8 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class ZonesTableUtil extends FarmConnectDatabaseHelper implements ZonesTable, Observable {
-
-    private static ZonesTableUtil uniqueInstance;
+    static ZonesTable uniqueInstance = null;
     private ArrayList<Observer> observers;
 
     private ZonesTableUtil(Context context){
@@ -25,13 +24,12 @@ public final class ZonesTableUtil extends FarmConnectDatabaseHelper implements Z
         observers = new ArrayList<>();
     }
 
-    public static ZonesTableUtil getInstance(Context context){
-        if (uniqueInstance == null){
+    public static ZonesTable getInstance(Context context) {
+        if (uniqueInstance == null) {
             uniqueInstance = new ZonesTableUtil(context);
         }
         return uniqueInstance;
     }
-
     @Override
     public List<ZoneCardItem> getZonesFromDatabase() {
         List<ZoneCardItem> listOfZoneCardItems = new ArrayList<>();

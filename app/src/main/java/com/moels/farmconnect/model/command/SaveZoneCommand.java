@@ -10,21 +10,21 @@ import java.util.List;
 
 public class SaveZoneCommand implements Command{
 
-    private ZonesTable zonesDatabase;
+    private ZonesTable zonesTable;
     private Observer observer;
     private List<String> zoneDetails;
 
     public SaveZoneCommand(Context context, List<String> zoneDetails, Observer observer){
         this.zoneDetails = zoneDetails;
         this.observer = observer;
-        zonesDatabase = ZonesTableUtil.getInstance(context);
+        zonesTable = ZonesTable.getInstance(context);
     }
 
     @Override
     public void execute() {
-        zonesDatabase.registerObserver(observer);
-        boolean zoneIsSaved =  zonesDatabase.addZoneToDatabase(zoneDetails);
-        if (zoneIsSaved) zonesDatabase.removeObserver(observer);
+        zonesTable.registerObserver(observer);
+        boolean zoneIsSaved =  zonesTable.addZoneToDatabase(zoneDetails);
+        if (zoneIsSaved) zonesTable.removeObserver(observer);
     }
 
 }
