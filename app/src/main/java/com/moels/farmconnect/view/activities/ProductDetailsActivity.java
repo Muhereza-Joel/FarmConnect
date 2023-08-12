@@ -27,6 +27,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.controller.ProductsController;
 import com.moels.farmconnect.utils.models.Product;
+import com.moels.farmconnect.view.dialogs.ChangeProductStatusDialog;
 import com.moels.farmconnect.view.dialogs.DeleteProductConfirmationDialog;
 import com.moels.farmconnect.easypay.Request;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
@@ -181,8 +182,14 @@ public class ProductDetailsActivity extends AppCompatActivity {
             deleteProductConfirmationDialog.show(getSupportFragmentManager(), "deleteProduct");
         }
 
+        if (id == R.id.change_status){
+            ChangeProductStatusDialog changeProductStatusDialog = new ChangeProductStatusDialog();
+            changeProductStatusDialog.show(getSupportFragmentManager(), "sample");
+        }
+
         return super.onOptionsItemSelected(item);
     }
+
 
     private void setUpStatusBar() {
         Window window = null;

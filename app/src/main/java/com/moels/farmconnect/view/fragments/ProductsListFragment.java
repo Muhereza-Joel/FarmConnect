@@ -20,6 +20,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.utils.preferences.Globals;
 import com.moels.farmconnect.view.activities.ProductDetailsActivity;
 import com.moels.farmconnect.controller.adapters.ProductsRecyclerViewAdapter;
 import com.moels.farmconnect.utils.models.Card;
@@ -52,7 +53,7 @@ public class ProductsListFragment extends Fragment {
 
         productsDatabase = ProductsTableUtil.getInstance(getContext());
         preferences = FarmConnectAppPreferences.getInstance(getContext());
-        authenticatedPhoneNumber = preferences.getString("authenticatedPhoneNumber");
+        authenticatedPhoneNumber = preferences.getString(Globals.AUTHENTICATED_PHONE_NUMBER);
 
         if (preferences.isFarmerAccount()){
             cardList = productsDatabase.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), authenticatedPhoneNumber);
