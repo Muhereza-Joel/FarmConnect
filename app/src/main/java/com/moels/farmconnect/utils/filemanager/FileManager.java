@@ -16,10 +16,22 @@ public class FileManager {
         File imagesSubfolder = new File(mediaSubfolder, Globals.IMAGES_FOLDER);
         if (!imagesSubfolder.exists()) imagesSubfolder.mkdirs();
 
+        File audioSubFolder = new File(mediaSubfolder, Globals.AUDIO_FOLDER);
+        if (!audioSubFolder.exists()) audioSubFolder.mkdirs();
+
+        File videoSubfolder = new File(mediaSubfolder, Globals.VIDEO_FOLDER);
+        if (!videoSubfolder.exists()) videoSubfolder.mkdirs();
+
+        File profilePhotosSubfolder = new File(imagesSubfolder, Globals.PROFILE_PHOTOS);
+        if (!profilePhotosSubfolder.exists()) profilePhotosSubfolder.mkdirs();
+
+        File profilePhotosThumbnailsFolder = new File(profilePhotosSubfolder, Globals.THUMBNAILS_SUBFOLDER);
+        if (!profilePhotosThumbnailsFolder.exists()) profilePhotosThumbnailsFolder.mkdirs();
+
         File productImagesFolder = new File(imagesSubfolder, Globals.PRODUCT_IMAGES_SUBFOLDER);
         if (!productImagesFolder.exists()) productImagesFolder.mkdirs();
 
-        File productImagesThumbnailsFolder = new File(imagesSubfolder, Globals.PRODUCT_IMAGES_THUMBNAILS_SUBFOLDER);
+        File productImagesThumbnailsFolder = new File(productImagesFolder, Globals.THUMBNAILS_SUBFOLDER);
         if (!productImagesThumbnailsFolder.exists()) productImagesThumbnailsFolder.mkdirs();
 
 

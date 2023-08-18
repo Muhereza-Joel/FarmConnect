@@ -15,8 +15,9 @@ public final class Globals {
     public static final String IMAGES_FOLDER = "Images";
     public static final String AUDIO_FOLDER = "Audio";
     public static final String VIDEO_FOLDER = "Video";
+    public static final String PROFILE_PHOTOS = "Profile Photos";
     public static final String PRODUCT_IMAGES_SUBFOLDER = "Product Images";
-    public static final String PRODUCT_IMAGES_THUMBNAILS_SUBFOLDER = "Thumbnails";
+    public static final String THUMBNAILS_SUBFOLDER = "Thumbnails";
     public static final String PRODUCT_STATUS_UPDATE_MSG = "Product Status Updated..";
 
     public enum UploadStatus{
