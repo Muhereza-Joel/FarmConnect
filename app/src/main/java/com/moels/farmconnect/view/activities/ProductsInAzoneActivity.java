@@ -22,6 +22,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.model.command.CommandListener;
+import com.moels.farmconnect.view.dialogs.ChangeZoneStatusDialog;
 import com.moels.farmconnect.view.dialogs.DeleteZoneConfirmationDialog;
 import com.moels.farmconnect.view.fragments.ProductsListFragment;
 import com.moels.farmconnect.utils.UI;
@@ -116,6 +117,11 @@ public class ProductsInAzoneActivity extends AppCompatActivity implements Comman
             Intent intent = new Intent(ProductsInAzoneActivity.this, EditZoneActivity.class);
             intent.putExtra("zoneID", getIntent().getStringExtra("zoneID"));
             startActivityForResult(intent, EDIT_ZONE_REQUEST_CODE);
+        }
+
+        if (id == R.id.change_zone_status){
+            ChangeZoneStatusDialog changeZoneStatusDialog = new ChangeZoneStatusDialog();
+            changeZoneStatusDialog.show(getSupportFragmentManager(), "change zone status");
         }
 
         if (id == R.id.delete_zone){
