@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.controller.adapters.ChatMessageAdapter;
+import com.moels.farmconnect.view.adapters.ChatMessageAdapter;
 import com.moels.farmconnect.utils.models.Message;
 
 import java.util.ArrayList;

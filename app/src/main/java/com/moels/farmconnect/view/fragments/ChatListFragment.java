@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.view.activities.ChatActivity;
-import com.moels.farmconnect.controller.adapters.ChatListRecyclerViewAdapter;
+import com.moels.farmconnect.view.adapters.ChatListRecyclerViewAdapter;
 import com.moels.farmconnect.utils.models.ChatCardItem;
 
 import java.util.ArrayList;

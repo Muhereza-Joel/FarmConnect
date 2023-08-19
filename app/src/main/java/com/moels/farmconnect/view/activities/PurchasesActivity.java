@@ -17,7 +17,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.controller.adapters.PurchasesListRecyclerViewAdapter;
+import com.moels.farmconnect.view.adapters.PurchasesListRecyclerViewAdapter;
 import com.moels.farmconnect.utils.models.PurchasesCard;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;

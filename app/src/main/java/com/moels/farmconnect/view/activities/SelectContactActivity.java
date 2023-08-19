@@ -33,7 +33,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.controller.adapters.ContactListRecyclerViewAdapter;
+import com.moels.farmconnect.view.adapters.ContactListRecyclerViewAdapter;
 import com.moels.farmconnect.utils.models.ContactCardItem;
 import com.moels.farmconnect.model.database.services.BuyerAccountZoneFetchService;
 import com.moels.farmconnect.model.database.services.FarmerAccountZonesFetchService;

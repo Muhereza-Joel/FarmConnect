@@ -17,7 +17,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.controller.adapters.PaymentsListRecyclerViewAdapter;
+import com.moels.farmconnect.view.adapters.PaymentsListRecyclerViewAdapter;
 import com.moels.farmconnect.utils.models.PaymentCard;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.model.database.PaymentsTable;

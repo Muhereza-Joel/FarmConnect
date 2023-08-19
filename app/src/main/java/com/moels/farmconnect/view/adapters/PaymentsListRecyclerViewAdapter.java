@@ -1,4 +1,4 @@
-package com.moels.farmconnect.controller.adapters;
+package com.moels.farmconnect.view.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;

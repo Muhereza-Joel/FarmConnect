@@ -24,7 +24,7 @@ import com.moels.farmconnect.utils.preferences.Globals;
 import com.moels.farmconnect.view.activities.AddProductToZoneActivity;
 import com.moels.farmconnect.view.activities.MainActivity;
 import com.moels.farmconnect.view.activities.ProductsInAzoneActivity;
-import com.moels.farmconnect.controller.adapters.ZoneListRecyclerViewAdapter;
+import com.moels.farmconnect.view.adapters.ZoneListRecyclerViewAdapter;
 import com.moels.farmconnect.utils.models.Zone;
 import com.moels.farmconnect.utils.models.ZoneCardItem;
 import com.moels.farmconnect.model.database.ContactsTable;
@@ -36,7 +36,6 @@ import com.moels.farmconnect.model.database.ZonesTable;
 import com.moels.farmconnect.model.database.ZonesTableUtil;
 import com.moels.farmconnect.model.observers.ZonesObserver;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ZonesListFragment extends Fragment {

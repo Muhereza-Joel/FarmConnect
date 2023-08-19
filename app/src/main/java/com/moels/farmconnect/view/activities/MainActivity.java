@@ -31,7 +31,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.controller.adapters.ViewPagerAdapter;
+import com.moels.farmconnect.view.adapters.ViewPagerAdapter;
 import com.moels.farmconnect.view.fragments.ChatListFragment;
 import com.moels.farmconnect.view.fragments.ZonesListFragment;
 import com.moels.farmconnect.model.database.services.ProductsDataSyncService;

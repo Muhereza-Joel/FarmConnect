@@ -22,7 +22,7 @@ import android.widget.TextView;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.utils.preferences.Globals;
 import com.moels.farmconnect.view.activities.ProductDetailsActivity;
-import com.moels.farmconnect.controller.adapters.ProductsRecyclerViewAdapter;
+import com.moels.farmconnect.view.adapters.ProductsRecyclerViewAdapter;
 import com.moels.farmconnect.utils.models.Card;
 import com.moels.farmconnect.utils.models.Product;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
