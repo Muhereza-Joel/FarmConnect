@@ -22,5 +22,6 @@ public interface ZonesTable extends  Observable {
     boolean updateZone(String zoneID, Zone zone);
     boolean updateZoneUploadStatus(String zoneID, boolean uploadedStatus);
     void deleteZoneFromDatabase(String _id);
+    void changeZoneStatus(String zoneID, String status);
 
 }

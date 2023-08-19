@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.SearchView;
@@ -22,6 +23,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.model.command.CommandListener;
+import com.moels.farmconnect.utils.preferences.Globals;
 import com.moels.farmconnect.view.dialogs.ChangeZoneStatusDialog;
 import com.moels.farmconnect.view.dialogs.DeleteZoneConfirmationDialog;
 import com.moels.farmconnect.view.fragments.ProductsListFragment;
@@ -121,6 +123,7 @@ public class ProductsInAzoneActivity extends AppCompatActivity implements Comman
 
         if (id == R.id.change_zone_status){
             ChangeZoneStatusDialog changeZoneStatusDialog = new ChangeZoneStatusDialog();
+            changeZoneStatusDialog.setCommandListener(this);
             changeZoneStatusDialog.show(getSupportFragmentManager(), "change zone status");
         }
 
@@ -170,6 +173,7 @@ public class ProductsInAzoneActivity extends AppCompatActivity implements Comman
 
     @Override
     public void onSuccess() {
-
+        View parentView = findViewById(R.id.products_in_a_zone_layout);
+        UI.displaySnackBar(getApplicationContext(), parentView, Globals.ZONE_STATUS_UPDATE_MSG);
     }
 }

@@ -3,6 +3,8 @@ package com.moels.farmconnect.controller;
 
 import android.annotation.SuppressLint;
 
+import com.moels.farmconnect.model.command.ChangeProductStatusCommand;
+import com.moels.farmconnect.model.command.ChangeZoneStatusCommand;
 import com.moels.farmconnect.model.command.Command;
 import com.moels.farmconnect.model.command.DeleteZoneCommand;
 import com.moels.farmconnect.model.command.EditZoneCommand;
@@ -41,6 +43,11 @@ public final class ZonesController extends Controller implements Observer {
         ZonesTable zonesDatabase = ZonesTable.getInstance(context);
         return zonesDatabase.getZoneDetails(id);
 
+    }
+
+    public void changeZoneStatus(String zoneID, String status){
+        Command changeZoneStatusCommand = new ChangeZoneStatusCommand(context, zoneID, status, this);
+        changeZoneStatusCommand.execute();
     }
 
     public boolean updateZone(String id, Zone zone) {

@@ -13,10 +13,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.moels.farmconnect.R;
-import com.moels.farmconnect.utils.UI;
+import com.moels.farmconnect.controller.ZonesController;
+import com.moels.farmconnect.model.command.CommandListener;
 
-public class ChangeZoneStatusDialog extends DialogFragment implements DialogInterface.OnClickListener, DialogInterface.OnCancelListener {
+public class ChangeZoneStatusDialog extends DialogFragment implements DialogInterface.OnClickListener {
 
+    private CommandListener commandListener;
     private RadioGroup radioGroup;
 
     @NonNull
@@ -38,9 +40,19 @@ public class ChangeZoneStatusDialog extends DialogFragment implements DialogInte
         RadioButton selectedRadioButton = radioGroup.findViewById(selectedRadioButtonId);
         if (selectedRadioButton != null){
             String selectedZoneStatus = selectedRadioButton.getText().toString().toLowerCase();
+
+            ZonesController zonesController = ZonesController.getInstance();
+            zonesController.setContext(getContext());
+            zonesController.setListener(commandListener);
+            zonesController.changeZoneStatus(getActivity().getIntent().getStringExtra("zoneID"), selectedZoneStatus);
+
             Log.d("FarmConnect", "onClick: " + selectedZoneStatus);
         }
 
+    }
+
+    public void setCommandListener(CommandListener listener){
+        this.commandListener = listener;
     }
 
 }

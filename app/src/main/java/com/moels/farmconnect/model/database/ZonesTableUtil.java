@@ -195,6 +195,15 @@ public final class ZonesTableUtil extends FarmConnectDatabaseHelper implements Z
     }
 
     @Override
+    public void changeZoneStatus(String zoneID, String status) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("status", status);
+
+        int rowsUpdated = sqLiteDatabase.update("zones", contentValues, "remote_id = ?", new String[]{zoneID});
+        if (rowsUpdated > 0) notifyObservers();
+    }
+
+    @Override
     public void registerObserver(Observer observer) {
         observers.add(observer);
 

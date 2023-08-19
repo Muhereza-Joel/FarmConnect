@@ -20,6 +20,7 @@ public final class Globals {
     public static final String PRODUCT_IMAGES_SUBFOLDER = "Product Images";
     public static final String THUMBNAILS_SUBFOLDER = "Thumbnails";
     public static final String PRODUCT_STATUS_UPDATE_MSG = "Product Status Updated..";
+    public static final String ZONE_STATUS_UPDATE_MSG = "Zone Status Updated..";
 
     public enum UploadStatus{
         FALSE, TRUE;
