@@ -37,6 +37,7 @@ import com.moels.farmconnect.utils.preferences.Preferences;
 import com.moels.farmconnect.model.database.ProductsTable;
 import com.moels.farmconnect.model.database.ProductsTableUtil;
 import com.moels.farmconnect.utils.UI;
+import com.moels.farmconnect.view.dialogs.ListZonesDialog;
 
 public class ProductDetailsActivity extends AppCompatActivity implements CommandListener {
     private final String postUrl = "https://www.easypay.co.ug/api/";
@@ -186,6 +187,12 @@ public class ProductDetailsActivity extends AppCompatActivity implements Command
             ChangeProductStatusDialog changeProductStatusDialog = new ChangeProductStatusDialog();
             changeProductStatusDialog.setCommandListener(this);
             changeProductStatusDialog.show(getSupportFragmentManager(), "sample");
+        }
+
+        if (id == R.id.change_to_another_zone){
+            ListZonesDialog listZonesDialog = new ListZonesDialog();
+            listZonesDialog.setCancelable(false);
+            listZonesDialog.show(getSupportFragmentManager(), "list zones dialog");
         }
 
         return super.onOptionsItemSelected(item);
