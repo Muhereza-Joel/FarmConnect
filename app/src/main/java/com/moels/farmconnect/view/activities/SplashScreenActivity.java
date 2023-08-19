@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.utils.filemanager.FileManager;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
 
@@ -39,10 +40,12 @@ public class SplashScreenActivity extends AppCompatActivity {
                     if (preferences.userProfileIsCreated()) {
                         Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
                         startActivity(intent);
+                        FileManager.createMediaStorageFolders(getApplicationContext());
                         finish();
                     } else {
                         Intent intent = new Intent(SplashScreenActivity.this, CreateProfileActivity.class);
                         intent.putExtra("phoneNumber", preferences.getAuthenticatedPhoneNumber());
+                        FileManager.createMediaStorageFolders(getApplicationContext());
                         startActivity(intent);
                         finish();
                     }
@@ -53,6 +56,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 if (!preferences.userIsAuthenticated()){
                     Intent intent = new Intent(SplashScreenActivity.this, WelcomeActivity.class);
                     startActivity(intent);
+                    FileManager.createMediaStorageFolders(getApplicationContext());
                     finish();
                 }
 

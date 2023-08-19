@@ -1,13 +1,19 @@
 package com.moels.farmconnect.utils.filemanager;
 
+import android.content.Context;
+import android.os.Environment;
+import android.util.Log;
+
 import com.moels.farmconnect.utils.preferences.Globals;
 
 import java.io.File;
 
 public class FileManager {
-    public static void createMediaStorageFolders(){
+    public static void createMediaStorageFolders(Context context){
 
-        File farmConnectFolder = new File(android.os.Environment.getExternalStorageDirectory(), Globals.EXTERNAL_STORAGE_FOLDER);
+        File internalStorage = context.getExternalFilesDir(Environment.MEDIA_SHARED);
+
+        File farmConnectFolder = new File(internalStorage, Globals.EXTERNAL_STORAGE_FOLDER);
         if (!farmConnectFolder.exists()) farmConnectFolder.mkdirs();
 
         File mediaSubfolder = new File(farmConnectFolder, Globals.MEDIA_SUBFOLDER);
@@ -34,6 +40,7 @@ public class FileManager {
         File productImagesThumbnailsFolder = new File(productImagesFolder, Globals.THUMBNAILS_SUBFOLDER);
         if (!productImagesThumbnailsFolder.exists()) productImagesThumbnailsFolder.mkdirs();
 
+        Log.d("FarmConnect", "createMediaStorageFolders: Folders Created" );
 
     }
 }
