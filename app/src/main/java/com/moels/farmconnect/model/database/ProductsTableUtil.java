@@ -176,12 +176,13 @@ public final class ProductsTableUtil extends FarmConnectDatabaseHelper implement
             return null;
         }
 
-        String[] columnsToPick = {"imageUrl", "productName", "quantity", "unitPrice", "price"};
+        String[] columnsToPick = {"zoneID","imageUrl", "productName", "quantity", "unitPrice", "price"};
         Cursor cursor = sqLiteDatabase.query("products",
                 columnsToPick,
                 "productRemoteId = ?", new String[]{productID}, null, null, null);
 
         if (cursor.moveToNext()) {
+            product.setZoneID(cursor.getString(cursor.getColumnIndex("zoneID")));
             product.setImageUrl(cursor.getString(cursor.getColumnIndex("imageUrl")));
             product.setProductName(cursor.getString(cursor.getColumnIndex("productName")));
             product.setQuantity(cursor.getString(cursor.getColumnIndex("quantity")));

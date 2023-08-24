@@ -33,7 +33,7 @@ public final class ZonesTableUtil extends FarmConnectDatabaseHelper implements Z
         return uniqueInstance;
     }
     @Override
-    public List<ZoneCardItem> getZonesFromDatabase() {
+    public List<ZoneCardItem> getAllZonesFormatedInCards() {
         List<ZoneCardItem> listOfZoneCardItems = new ArrayList<>();
         String [] columnsToPick = {"remote_id","zoneName", "location", "createTime", "status", "owner"};
         Cursor cursor = sqLiteDatabase.query("zones", columnsToPick, null, null, null, null, null);
@@ -55,6 +55,31 @@ public final class ZonesTableUtil extends FarmConnectDatabaseHelper implements Z
         }
         cursor.close();
         return listOfZoneCardItems;
+    }
+
+    @Override
+    @SuppressLint("Range")
+    public List<Zone> getAllZones() {
+        List<Zone> zoneList = new ArrayList<>();
+        String [] columnsToPick = {"remote_id","zoneName", "location", "createTime", "status", "owner"};
+        Cursor cursor = sqLiteDatabase.query("zones", columnsToPick, null, null, null, null, null);
+
+        if (cursor.moveToNext()) {
+            do {
+                Zone zone = new Zone();
+                zone.setZoneID(cursor.getString(cursor.getColumnIndex("remote_id")));
+                zone.setZoneName(cursor.getString(cursor.getColumnIndex("zoneName")));
+                zone.setZoneLocation(cursor.getString(cursor.getColumnIndex("location")));
+                zone.setTime(cursor.getString(cursor.getColumnIndex("createTime")));
+                zone.setStatus(cursor.getString(cursor.getColumnIndex("status")));
+                zone.setOwner(cursor.getString(cursor.getColumnIndex("owner")));
+
+                zoneList.add(zone);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        return zoneList;
     }
 
     @Override

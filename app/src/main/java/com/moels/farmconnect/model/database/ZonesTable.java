@@ -13,7 +13,8 @@ public interface ZonesTable extends  Observable {
         return ZonesTableUtil.getInstance(context);
     }
 
-    List<ZoneCardItem> getZonesFromDatabase();
+    List<ZoneCardItem> getAllZonesFormatedInCards();
+    List<Zone> getAllZones();
     String getZoneOwner(String zoneID);
     List<String> getZoneIds(String phoneNumber);
     Zone getZoneDetails(String zoneID);

@@ -11,6 +11,9 @@ public final class Globals {
     public static final String PRODUCT_AVAILABLE = "available";
     public static final String PRODUCT_SOLD = "sold";
     public static final String PRODUCT_OUT_STOCK = "out of stock";
+
+    public static final String PRODUCT_ID = "productID";
+    public static final String ZONE_ID = "zoneID";
     public static final String EXTERNAL_STORAGE_FOLDER = "FarmConnect";
     public static final String MEDIA_SUBFOLDER = "Media";
     public static final String IMAGES_FOLDER = "Images";

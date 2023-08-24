@@ -57,7 +57,7 @@ public class ZonesListFragment extends Fragment {
         zonesDatabase = ZonesTableUtil.getInstance(getContext());
         contactsDatabase = ContactsTableUtil.getInstance(getContext());
         preferences = FarmConnectAppPreferences.getInstance(getContext());
-        zoneCardItems = zonesDatabase.getZonesFromDatabase();
+        zoneCardItems = zonesDatabase.getAllZonesFormatedInCards();
 
         if (preferences.isFarmerAccount()){
             observeZonesInFirebase();
@@ -77,7 +77,7 @@ public class ZonesListFragment extends Fragment {
 
                     zonesDatabase.addZoneToDatabase(zone);
 
-                    zoneCardItems = zonesDatabase.getZonesFromDatabase();
+                    zoneCardItems = zonesDatabase.getAllZonesFormatedInCards();
                     zoneListRecyclerViewAdapter = new ZoneListRecyclerViewAdapter(zoneCardItems, getContext());
                     zonesListRecyclerView.setAdapter(zoneListRecyclerViewAdapter);
 
@@ -103,7 +103,7 @@ public class ZonesListFragment extends Fragment {
                     String zoneID = zone.getZoneID();
 
                     zonesDatabase.updateZone(zoneID, zone);
-                    zoneCardItems = zonesDatabase.getZonesFromDatabase();
+                    zoneCardItems = zonesDatabase.getAllZonesFormatedInCards();
                     zoneListRecyclerViewAdapter = new ZoneListRecyclerViewAdapter(zoneCardItems, getContext());
                     zonesListRecyclerView.setAdapter(zoneListRecyclerViewAdapter);
 
@@ -127,7 +127,7 @@ public class ZonesListFragment extends Fragment {
             public void onZoneRemoved(String zoneID) {
                 Log.d("farmconnect", "onZoneRemoved: " + zoneID);
                 zonesDatabase.deleteZoneFromDatabase(zoneID);
-                zoneCardItems = zonesDatabase.getZonesFromDatabase();
+                zoneCardItems = zonesDatabase.getAllZonesFormatedInCards();
                 zoneListRecyclerViewAdapter = new ZoneListRecyclerViewAdapter(zoneCardItems, getContext());
                 zonesListRecyclerView.setAdapter(zoneListRecyclerViewAdapter);
 
@@ -184,7 +184,7 @@ public class ZonesListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        zoneCardItems = zonesDatabase.getZonesFromDatabase();
+        zoneCardItems = zonesDatabase.getAllZonesFormatedInCards();
         zoneListRecyclerViewAdapter = new ZoneListRecyclerViewAdapter(zoneCardItems, getContext());
         zonesListRecyclerView.setAdapter(zoneListRecyclerViewAdapter);
 //        scrollRecycleViewToBottom(zonesListRecyclerView);

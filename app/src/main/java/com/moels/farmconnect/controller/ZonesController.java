@@ -15,6 +15,7 @@ import com.moels.farmconnect.model.observers.Observer;
 import com.moels.farmconnect.utils.Validator;
 import com.moels.farmconnect.utils.models.Zone;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class ZonesController extends Controller implements Observer {
@@ -43,6 +44,10 @@ public final class ZonesController extends Controller implements Observer {
         ZonesTable zonesDatabase = ZonesTable.getInstance(context);
         return zonesDatabase.getZoneDetails(id);
 
+    }
+
+    public List<Zone> getAllZones(){
+        return ZonesTable.getInstance(context).getAllZones();
     }
 
     public void changeZoneStatus(String zoneID, String status){
