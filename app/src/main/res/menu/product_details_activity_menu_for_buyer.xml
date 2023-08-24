@@ -8,11 +8,5 @@
         android:tooltipText="Rate Product"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/change_to_another_zone"
-        android:orderInCategory="300"
-        android:title="Change Zone"
-        android:tooltipText="Change Zone"
-        app:showAsAction="never" />
 
 </menu>

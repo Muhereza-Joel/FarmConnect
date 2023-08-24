@@ -25,7 +25,7 @@ public class ChangeZoneStatusDialog extends DialogFragment implements DialogInte
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        return (builder.setTitle("Make This Zone"))
+        return (builder.setTitle("Migrate Status To"))
                 .setView(getActivity().getLayoutInflater().inflate(R.layout.zone_status_change_dialog, null))
                 .setPositiveButton("Ok", this)
                 .setNegativeButton("Cancel", null)

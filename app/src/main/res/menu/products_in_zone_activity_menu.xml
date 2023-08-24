@@ -48,29 +48,36 @@
         android:tooltipText="Change Status"
         app:showAsAction="never" />
 
-
     <item
-        android:id="@+id/zone_participants"
         android:orderInCategory="107"
-        android:title="Zone Participants"
-        android:tooltipText="Zone Participants"
+        android:title="More"
+        android:tooltipText="More"
         app:showAsAction="never">
 
+        <menu>
+            <item
+                android:id="@+id/zone_participants"
+                android:orderInCategory="108"
+                android:title="Zone Participants"
+                android:tooltipText="Zone Participants"
+                app:showAsAction="never">
+
+            </item>
+
+            <item
+                android:id="@+id/invite_seller"
+                android:orderInCategory="109"
+                android:title="Invite People"
+                android:tooltipText="Invite People"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/delete_zone"
+                android:orderInCategory="110"
+                android:title="Delete Zone"
+                android:tooltipText="Delete Zone"
+                app:showAsAction="never" />
+        </menu>
     </item>
-
-    <item
-        android:id="@+id/invite_seller"
-        android:orderInCategory="108"
-        android:title="Invite People"
-        android:tooltipText="Invite People"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/delete_zone"
-        android:orderInCategory="109"
-        android:title="Delete Zone"
-        android:tooltipText="Delete Zone"
-        app:showAsAction="never" />
-
 
 </menu>
