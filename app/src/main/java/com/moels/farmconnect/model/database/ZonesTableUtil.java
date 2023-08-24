@@ -243,7 +243,7 @@ public final class ZonesTableUtil extends FarmConnectDatabaseHelper implements Z
     @Override
     public void notifyObservers() {
         for (Observer observer : observers){
-            observer.update("");
+            observer.update();
         }
     }
 }

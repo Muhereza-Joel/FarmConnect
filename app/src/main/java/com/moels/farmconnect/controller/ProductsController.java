@@ -1,5 +1,7 @@
 package com.moels.farmconnect.controller;
 
+import android.text.TextUtils;
+
 import com.moels.farmconnect.model.command.ChangeProductStatusCommand;
 import com.moels.farmconnect.model.command.Command;
 import com.moels.farmconnect.model.database.ProductsTable;
@@ -10,7 +12,7 @@ import com.moels.farmconnect.utils.models.Product;
 import com.moels.farmconnect.utils.preferences.Globals;
 
 public final class ProductsController extends Controller implements Observer {
-
+    private final ProductsTable productsTable = ProductsTable.getInstance(context);
     private ProductsController(){};
 
     private static ProductsController uniqueInstance;
@@ -22,7 +24,6 @@ public final class ProductsController extends Controller implements Observer {
     }
 
     public Product getProductDetails(String productID){
-        ProductsTable productsTable = ProductsTable.getInstance(context);
         return productsTable.getProductDetails(productID);
     }
 
@@ -32,8 +33,14 @@ public final class ProductsController extends Controller implements Observer {
 
     }
 
+    public void moveProduct(String targetZoneID, String productIdToMove){
+            productsTable.moveProductToZone(targetZoneID, productIdToMove);
+            UI.displayToast(context, "Product Moved");
+
+    }
+
     @Override
-    public void update(Object object) {
+    public void update() {
         listener.onSuccess();
     }
 }

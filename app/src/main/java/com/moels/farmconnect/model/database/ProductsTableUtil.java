@@ -176,12 +176,13 @@ public final class ProductsTableUtil extends FarmConnectDatabaseHelper implement
             return null;
         }
 
-        String[] columnsToPick = {"zoneID","imageUrl", "productName", "quantity", "unitPrice", "price"};
+        String[] columnsToPick = {"zoneID", "productRemoteId", "imageUrl", "productName", "quantity", "unitPrice", "price"};
         Cursor cursor = sqLiteDatabase.query("products",
                 columnsToPick,
                 "productRemoteId = ?", new String[]{productID}, null, null, null);
 
         if (cursor.moveToNext()) {
+            product.setProductID(cursor.getString(cursor.getColumnIndex("productRemoteId")));
             product.setZoneID(cursor.getString(cursor.getColumnIndex("zoneID")));
             product.setImageUrl(cursor.getString(cursor.getColumnIndex("imageUrl")));
             product.setProductName(cursor.getString(cursor.getColumnIndex("productName")));
@@ -235,9 +236,26 @@ public final class ProductsTableUtil extends FarmConnectDatabaseHelper implement
     }
 
     @Override
+    public boolean moveProductToZone(String targetZoneID, String productIdToMove) {
+        boolean productMoved = false;
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("zoneID", targetZoneID);
+
+        int rowsUpdated = sqLiteDatabase.update("products", contentValues, "productRemoteId = ?", new String[]{productIdToMove});
+
+        if (rowsUpdated > 0){
+            productMoved = true;
+        }
+
+        return productMoved;
+    }
+
+    @Override
     public boolean updateProduct(String productID, ContentValues contentValues){
         boolean productUpdated = false;
         int rowsUpdated = sqLiteDatabase.update("products", contentValues, "productRemoteId = ?", new String[]{productID});
+
         if (rowsUpdated > 0){
             productUpdated = true;
         }
@@ -290,7 +308,7 @@ public final class ProductsTableUtil extends FarmConnectDatabaseHelper implement
     @Override
     public void notifyObservers() {
         for (Observer observer : observers){
-            observer.update("");
+            observer.update();
         }
     }
 }

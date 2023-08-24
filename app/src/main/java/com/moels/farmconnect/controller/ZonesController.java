@@ -32,8 +32,9 @@ public final class ZonesController extends Controller implements Observer {
 
     public void saveZone(Zone zone){
         boolean dataIsValid = Validator.getInstance().validateZoneDetails(zone);
+        Command saveZoneCommand = null;
         if (dataIsValid){
-            Command saveZoneCommand = new SaveZoneCommand(context, zone, this);
+            saveZoneCommand = new SaveZoneCommand(context, zone, this);
             saveZoneCommand.execute();
         }else {
             listener.onFailure();
@@ -56,10 +57,11 @@ public final class ZonesController extends Controller implements Observer {
     }
 
     public boolean updateZone(String id, Zone zone) {
+        Command command = null;
         boolean zoneUpdated = false;
         boolean dataIsValid = Validator.getInstance().validateZoneDetails(zone);
         if (dataIsValid){
-            Command command = new EditZoneCommand(context, id, zone, this);
+            command = new EditZoneCommand(context, id, zone, this);
             command.execute();
         } else {
             listener.onFailure();
@@ -75,7 +77,7 @@ public final class ZonesController extends Controller implements Observer {
     }
 
     @Override
-    public void update(Object object) {
+    public void update() {
         listener.onSuccess();
     }
 

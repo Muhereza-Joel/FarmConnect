@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.controller.ProductsController;
+import com.moels.farmconnect.model.command.Command;
 import com.moels.farmconnect.model.command.CommandListener;
 import com.moels.farmconnect.utils.models.Product;
 import com.moels.farmconnect.utils.preferences.Globals;

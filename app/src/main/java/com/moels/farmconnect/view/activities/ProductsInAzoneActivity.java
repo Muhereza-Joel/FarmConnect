@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.model.command.Command;
 import com.moels.farmconnect.model.command.CommandListener;
 import com.moels.farmconnect.utils.preferences.Globals;
 import com.moels.farmconnect.view.dialogs.ChangeZoneStatusDialog;

@@ -13,10 +13,7 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="b4887cba-bade-4162-8b5b-33515bcb6b2f">
-      <console name="Connection" type="STANDARD" schema="main" session="Main"><![CDATA[SELECT products.*
-FROM products
-LEFT JOIN purchases ON products.productRemoteId = purchases.productRemoteId
-WHERE purchases.productRemoteId IS NULL;]]></console>
+      <console name="Connection" type="STANDARD" schema="main" session="Main"><![CDATA[select * from zones]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">

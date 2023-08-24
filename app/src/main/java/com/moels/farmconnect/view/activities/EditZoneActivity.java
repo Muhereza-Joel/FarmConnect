@@ -22,6 +22,7 @@ import android.widget.EditText;
 
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.controller.ZonesController;
+import com.moels.farmconnect.model.command.Command;
 import com.moels.farmconnect.model.command.CommandListener;
 import com.moels.farmconnect.model.database.services.UpdateZoneService;
 import com.moels.farmconnect.utils.UI;

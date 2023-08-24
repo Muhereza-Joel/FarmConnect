@@ -3,6 +3,7 @@ package com.moels.farmconnect.view.dialogs;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -31,6 +32,10 @@ public class ListZonesDialog extends DialogFragment implements DialogInterface.O
     private List<Zone> listOfAllZones;
     private List<Zone> filteredZonesList = new ArrayList<>();
     private List<String> zoneNames = new ArrayList<>();
+    private Product product;
+    private String selectedZoneID;
+    private final ZonesController zonesController = ZonesController.getInstance();
+    private final ProductsController productsController = ProductsController.getInstance();
 
     @NonNull
     @Override
@@ -41,13 +46,11 @@ public class ListZonesDialog extends DialogFragment implements DialogInterface.O
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.list_zones_dialog_layout, null);
 
-        ZonesController zonesController = ZonesController.getInstance();
         zonesController.setContext(getContext());
         listOfAllZones = zonesController.getAllZones();
 
-        ProductsController productsController = ProductsController.getInstance();
         productsController.setContext(getContext());
-        Product product = productsController.getProductDetails(getActivity().getIntent().getStringExtra(Globals.PRODUCT_ID));
+        product = productsController.getProductDetails(getActivity().getIntent().getStringExtra(Globals.PRODUCT_ID));
 
         for (Zone zone : listOfAllZones){
             if (!product.getZoneID().equals(zone.getZoneID())){
@@ -65,18 +68,23 @@ public class ListZonesDialog extends DialogFragment implements DialogInterface.O
         listView.setOnItemClickListener((parent, view, position, id) -> {
             if (filteredZonesList.size() > 0){
                 Zone zone  = filteredZonesList.get(position);
-                UI.displayToast(getContext(), zone.getZoneID());
+                selectedZoneID = zone.getZoneID();
             }
         });
 
         return (builder.setTitle("Select Zone"))
                 .setView(dialogView)
                 .setPositiveButton("Ok", this)
+                .setNegativeButton("Cancel", null)
                 .create();
     }
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-
+        if (!TextUtils.isEmpty(selectedZoneID) && !TextUtils.isEmpty(product.getProductID())) {
+            productsController.moveProduct(selectedZoneID, product.getProductID());
+        } else {
+            UI.displayToast(getContext(), "Please Select a zone");
+        }
     }
 }
