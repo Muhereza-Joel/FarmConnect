@@ -53,8 +53,7 @@ public class ListZonesDialog extends DialogFragment implements DialogInterface.O
         product = productsController.getProductDetails(getActivity().getIntent().getStringExtra(Globals.PRODUCT_ID));
 
         for (Zone zone : listOfAllZones){
-            if (!product.getZoneID().equals(zone.getZoneID())){
-                 System.out.println(product.getZoneID());
+            if (!getActivity().getIntent().getStringExtra(Globals.ZONE_ID).equals(zone.getZoneID())){
                  zoneNames.add(zone.getZoneName());
                  filteredZonesList.add(zone);
             }
@@ -81,8 +80,8 @@ public class ListZonesDialog extends DialogFragment implements DialogInterface.O
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-        if (!TextUtils.isEmpty(selectedZoneID) && !TextUtils.isEmpty(product.getProductID())) {
-            productsController.moveProduct(selectedZoneID, product.getProductID());
+        if (!TextUtils.isEmpty(selectedZoneID) && !TextUtils.isEmpty(getActivity().getIntent().getStringExtra(Globals.ZONE_ID))) {
+            productsController.moveProduct(getActivity().getIntent().getStringExtra(Globals.ZONE_ID),selectedZoneID, product.getProductID());
         } else {
             UI.displayToast(getContext(), "Please Select a zone");
         }

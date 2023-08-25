@@ -33,8 +33,8 @@ public final class ProductsController extends Controller implements Observer {
 
     }
 
-    public void moveProduct(String targetZoneID, String productIdToMove){
-            productsTable.moveProductToZone(targetZoneID, productIdToMove);
+    public void moveProduct(String currentZineID, String targetZoneID, String productIdToMove){
+            productsTable.moveProductToZone(currentZineID,targetZoneID, productIdToMove);
             UI.displayToast(context, "Product Moved");
 
     }

@@ -131,19 +131,14 @@ public final class ProductsTableUtil extends FarmConnectDatabaseHelper implement
         List<Card> items = new ArrayList<>();
         Cursor cursor;
 
-        if (owner.equals("")){
-            cursor = sqLiteDatabase.rawQuery("SELECT products.*" +
-                    " FROM products" +
-                    " LEFT JOIN purchases ON products.productRemoteId = purchases.productRemoteId " +
-                    " WHERE purchases.productRemoteId IS NULL AND products.zoneID = " + zoneID, null);
+        String query = "SELECT products.*" +
+                " FROM products" +
+                " LEFT JOIN product_zone_mapping ON products.productRemoteId = product_zone_mapping.product_id " +
+                " WHERE product_zone_mapping.zone_id = ? AND products.owner = ?";
 
-        }else {
-            cursor = sqLiteDatabase.rawQuery("SELECT products.*" +
-                    " FROM products" +
-                    " LEFT JOIN purchases ON products.productRemoteId = purchases.productRemoteId " +
-                    " WHERE purchases.productRemoteId IS NULL AND products.zoneID = " + zoneID + " AND owner = " + "'" + owner + "'", null);
-        }
+        String [] selectionArguments = new String[]{zoneID, owner};
 
+        cursor = sqLiteDatabase.rawQuery(query, selectionArguments);
 
         if (cursor.moveToNext()) {
             do {
@@ -176,14 +171,13 @@ public final class ProductsTableUtil extends FarmConnectDatabaseHelper implement
             return null;
         }
 
-        String[] columnsToPick = {"zoneID", "productRemoteId", "imageUrl", "productName", "quantity", "unitPrice", "price"};
+        String[] columnsToPick = {"productRemoteId", "imageUrl", "productName", "quantity", "unitPrice", "price"};
         Cursor cursor = sqLiteDatabase.query("products",
                 columnsToPick,
                 "productRemoteId = ?", new String[]{productID}, null, null, null);
 
         if (cursor.moveToNext()) {
             product.setProductID(cursor.getString(cursor.getColumnIndex("productRemoteId")));
-            product.setZoneID(cursor.getString(cursor.getColumnIndex("zoneID")));
             product.setImageUrl(cursor.getString(cursor.getColumnIndex("imageUrl")));
             product.setProductName(cursor.getString(cursor.getColumnIndex("productName")));
             product.setQuantity(cursor.getString(cursor.getColumnIndex("quantity")));
@@ -236,13 +230,15 @@ public final class ProductsTableUtil extends FarmConnectDatabaseHelper implement
     }
 
     @Override
-    public boolean moveProductToZone(String targetZoneID, String productIdToMove) {
+    public boolean moveProductToZone(String currentZoneID, String targetZoneID, String productIdToMove) {
         boolean productMoved = false;
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put("zoneID", targetZoneID);
+        contentValues.put("zone_id", targetZoneID);
 
-        int rowsUpdated = sqLiteDatabase.update("products", contentValues, "productRemoteId = ?", new String[]{productIdToMove});
+        int rowsUpdated = sqLiteDatabase
+                .update("product_zone_mapping", contentValues, "zone_id = ? AND product_id = ?",
+                        new String[]{currentZoneID, productIdToMove});
 
         if (rowsUpdated > 0){
             productMoved = true;

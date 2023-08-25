@@ -22,7 +22,7 @@ public interface ProductsTable extends Observable {
     String getProductImageUrl(String productID);
     String getProductOwner(String productID);
     String getProductZoneID(String productID);
-    boolean moveProductToZone(String targetZoneID, String productIdToMove);
+    boolean moveProductToZone(String currentZoneID, String targetZoneID, String productIdToMove);
     boolean updateProduct(String productID, ContentValues contentValues);
     void updateProductUploadStatus(String productID, boolean uploaded);
     void updateProductUpdateStatus(String productID, boolean uploaded);

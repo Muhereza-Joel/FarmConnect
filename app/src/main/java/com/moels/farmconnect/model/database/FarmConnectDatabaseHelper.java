@@ -6,8 +6,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public abstract class FarmConnectDatabaseHelper extends SQLiteOpenHelper {
 
-    //Upgraded from version 1
-    private static final int DATABASE_VERSION = 2;
+    //Upgraded from version 5
+    private static final int DATABASE_VERSION = 6;
     private static final String DATABASE_NAME = "FarmConnectDatabase";
     public SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
@@ -20,6 +20,7 @@ public abstract class FarmConnectDatabaseHelper extends SQLiteOpenHelper {
         createContactsTable(db);
         createZonesTable(db);
         createProductsTable(db);
+        createProductZoneMappingTable(db);
         createPaymentsTable(db);
         createPurchasesTable(db);
     }
@@ -49,8 +50,7 @@ public abstract class FarmConnectDatabaseHelper extends SQLiteOpenHelper {
                 "owner TEXT, " +
                 "date TEXT, " +
                 "time TEXT, " +
-                "status TEXT, " +
-                "zoneID TEXT)");
+                "status TEXT)");
     }
 
     private void createZonesTable(SQLiteDatabase db) {
@@ -68,6 +68,16 @@ public abstract class FarmConnectDatabaseHelper extends SQLiteOpenHelper {
                 "status TEXT, " +
                 "updated TEXT" +
                 ")");
+    }
+
+    private void createProductZoneMappingTable(SQLiteDatabase db){
+        db.execSQL("CREATE TABLE product_zone_mapping ( " +
+                "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                " product_id INTEGER, " +
+                " zone_id INTEGER, " +
+                " FOREIGN KEY (product_id) REFERENCES products (productRemoteId), " +
+                " FOREIGN KEY (zone_id) REFERENCES zones (remote_id))");
+
     }
 
     private void createPaymentsTable(SQLiteDatabase db) {
@@ -107,6 +117,7 @@ public abstract class FarmConnectDatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         upgradeContactsTable(db, oldVersion, newVersion);
         upgradeProductsTable(db, oldVersion, newVersion);
+        upgradeProductZoneMappingsTable(db, oldVersion, newVersion);
         upgradeZonesTable(db, oldVersion, newVersion);
         upgradePurchasesTable(db, oldVersion, newVersion);
     }
@@ -156,23 +167,40 @@ public abstract class FarmConnectDatabaseHelper extends SQLiteOpenHelper {
                     "owner TEXT, " +
                     "date TEXT, " +
                     "time TEXT, " +
-                    "status TEXT, " +
-                    "zoneID TEXT)");
+                    "status TEXT)");
 
 
             //Copy data back to the table
             db.execSQL("INSERT INTO products(" +
                     "productRemoteId, productName, quantity, unitPrice, " +
                     "price, imageUrl, uploaded, updated, owner, " +
-                    "date, time, status, zoneID) " +
+                    "date, time, status) " +
                     "SELECT productRemoteId, productName, quantity, unitPrice, " +
                     "price, imageUrl, uploaded, updated, owner, " +
-                    "date, time, status, zoneID FROM products_temp");
+                    "date, time, status FROM products_temp");
 
             //Delete the temporary table
             db.execSQL("DROP TABLE IF EXISTS products_temp");
     }
 }
+    private void upgradeProductZoneMappingsTable(SQLiteDatabase db, int oldVersion, int newVersion){
+        if (oldVersion < newVersion){
+            db.execSQL("CREATE TABLE product_zone_mapping_temp AS SELECT * FROM product_zone_mapping");
+
+            db.execSQL("DROP TABLE IF EXISTS product_zone_mapping");
+
+            db.execSQL("CREATE TABLE product_zone_mapping ( " +
+                    "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    " product_id INTEGER, " +
+                    " zone_id INTEGER, " +
+                    " FOREIGN KEY (product_id) REFERENCES products (productRemoteId), " +
+                    " FOREIGN KEY (zone_id) REFERENCES zones (remote_id))");
+
+             db.execSQL("INSERT INTO product_zone_mapping (product_id, zone_id) SELECT product_id, zone_id FROM product_zone_mapping_temp");
+
+             db.execSQL("DROP TABLE IF EXISTS product_zone_mapping_temp");
+        }
+    }
     private void upgradeZonesTable(SQLiteDatabase db,int oldVersion, int newVersion){
         if (oldVersion < newVersion) {
 
