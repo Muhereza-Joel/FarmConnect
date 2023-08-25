@@ -30,9 +30,28 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/delete_product"
+        android:id="@+id/remove_product_from_zone"
         android:orderInCategory="500"
-        android:title="Delete Product"
-        android:tooltipText="Zone Details"
+        android:title="Remove Product"
+        android:tooltipText="Remove product from this zone"
         app:showAsAction="never" />
+
+    <item
+        android:orderInCategory="600"
+        app:showAsAction="never"
+        android:title="More"
+        android:tooltipText="More options">
+
+        <menu>
+            <item
+                android:id="@+id/delete_product"
+                android:orderInCategory="700"
+                android:title="Delete Product Permanently"
+                android:tooltipText="Zone Details"
+                app:showAsAction="never" />
+
+        </menu>
+
+    </item>
+
 </menu>

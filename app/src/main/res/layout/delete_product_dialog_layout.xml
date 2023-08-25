@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="normal"
+        android:textSize="@dimen/text_size_16"
+        android:layout_marginTop="@dimen/layout_margin_top_10"
+        android:layout_marginStart="@dimen/layout_margin_end_20"
+        android:layout_marginEnd="@dimen/layout_margin_end_20"
+        android:text="By clicking Ok, you will delete this product permanently from all Zones associated with it. Click OK to continue or Cancel to abort"/>
+
+</LinearLayout>

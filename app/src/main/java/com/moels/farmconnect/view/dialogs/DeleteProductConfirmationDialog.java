@@ -27,8 +27,9 @@ public class DeleteProductConfirmationDialog extends DialogFragment implements D
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         return (builder.setTitle("Continue To Delete Product")
+                .setView(getActivity().getLayoutInflater().inflate(R.layout.delete_product_dialog_layout, null))
                 .setPositiveButton(android.R.string.ok, this)
-                .setIcon(R.drawable.baseline_question_mark_24).setNegativeButton(android.R.string.cancel, null)
+                .setNegativeButton("Cancel", null)
                 .create());
     }
 

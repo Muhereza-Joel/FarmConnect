@@ -96,8 +96,9 @@ public class CopyZoneListDialog extends DialogFragment implements DialogInterfac
             productsController.copyProduct(product.getProductID(), selectedZoneIDs);
         }
         else {
-            if (zoneNames.size() > 0)
-            UI.displayToast(getContext(), "No zones Selected");
+            if (zoneNames.size() > 0) {
+                UI.displayToast(getContext(), "No zones Selected");
+            }
         }
     }
 }

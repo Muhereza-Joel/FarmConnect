@@ -26,9 +26,10 @@ public class ChangeProductStatusDialog extends DialogFragment implements DialogI
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        return (builder.setTitle("Change Product Status"))
+        return (builder.setTitle("Change product status to"))
                 .setView(getActivity().getLayoutInflater().inflate(R.layout.product_status_change_dialog, null))
-                .setPositiveButton("Change Status", this)
+                .setPositiveButton("Ok", this)
+                .setNegativeButton("Cancel", null)
                 .create();
     }
 

@@ -21,8 +21,8 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/layout_margin_end_20"
         android:layout_marginStart="@dimen/layout_margin_end_20"
-        android:textSize="@dimen/text_size_20"
-        android:textStyle="bold"
+        android:textSize="@dimen/text_size_16"
+        android:textStyle="normal"
         android:text="You can not move this product because it already exists in all zones..."/>
 
 </LinearLayout>

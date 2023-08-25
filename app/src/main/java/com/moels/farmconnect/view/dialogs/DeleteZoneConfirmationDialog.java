@@ -24,7 +24,6 @@ public class DeleteZoneConfirmationDialog extends DialogFragment implements Dial
         return(builder.setTitle("Confirm Delete")
                 .setView(getActivity().getLayoutInflater().inflate(R.layout.delete_zone_dialog, null))
                 .setPositiveButton(android.R.string.ok, this)
-                .setIcon(R.drawable.baseline_question_mark_24)
                 .setNegativeButton(android.R.string.cancel, null)
                 .create());
 
