@@ -21,6 +21,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.utils.preferences.Globals;
 import com.moels.farmconnect.view.fragments.ProductsListFragment;
 import com.moels.farmconnect.utils.UI;
 
@@ -51,7 +52,7 @@ public class AddProductToZoneActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(AddProductToZoneActivity.this, CreateProductActivity.class);
-                intent.putExtra("zoneID", getIntent().getStringExtra("zoneID"));
+                intent.putExtra(Globals.ZONE_ID, getIntent().getStringExtra(Globals.ZONE_ID));
                 intent.putExtra("zoneName", getIntent().getStringExtra("zoneName"));
                 startActivity(intent);
             }
@@ -117,7 +118,7 @@ public class AddProductToZoneActivity extends AppCompatActivity {
 
         if (id == R.id.zone_details){
             Intent intent = new Intent(AddProductToZoneActivity.this, ZoneDetailsActivity.class);
-            intent.putExtra("zoneID", getIntent().getStringExtra("zoneID"));
+            intent.putExtra(Globals.ZONE_ID, getIntent().getStringExtra(Globals.ZONE_ID));
             startActivity(intent);
         }
 

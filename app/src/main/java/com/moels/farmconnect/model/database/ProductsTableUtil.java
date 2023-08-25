@@ -48,25 +48,38 @@ public final class ProductsTableUtil extends FarmConnectDatabaseHelper implement
     }
 
     @Override
-    public boolean addProduct(List<String> productDetails){
+    public boolean addProduct(Product product, String zoneID){
         boolean rowCreated = false;
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("productRemoteId", productDetails.get(0));
-        contentValues.put("productName", productDetails.get(1));
-        contentValues.put("quantity", productDetails.get(2));
-        contentValues.put("unitPrice", productDetails.get(3));
-        contentValues.put("price", productDetails.get(4));
-        contentValues.put("imageUrl", productDetails.get(5));
-        contentValues.put("uploaded", productDetails.get(6));
-        contentValues.put("updated", productDetails.get(7));
-        contentValues.put("owner", productDetails.get(8));
-        contentValues.put("date", productDetails.get(9));
-        contentValues.put("time", productDetails.get(10));
-        contentValues.put("status", productDetails.get(11));
-        contentValues.put("zoneID", productDetails.get(12));
+        ContentValues productZoneMapping = new ContentValues();
+        productZoneMapping.put("product_id", product.getProductID());
+        productZoneMapping.put("zone_id", zoneID);
 
-        long rowsInserted = sqLiteDatabase.insertWithOnConflict("products", null, contentValues, SQLiteDatabase.CONFLICT_IGNORE);
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("productRemoteId", product.getProductID());
+        contentValues.put("productName", product.getProductName());
+        contentValues.put("quantity", product.getQuantity());
+        contentValues.put("unitPrice", product.getUnitPrice());
+        contentValues.put("price", product.getPrice());
+        contentValues.put("imageUrl", product.getImageUrl());
+        contentValues.put("uploaded", product.getUploadStatus());
+        contentValues.put("updated", product.getUpdateStatus());
+        contentValues.put("owner", product.getOwner());
+        contentValues.put("date", product.getCreateDate());
+        contentValues.put("time", product.getCreateTime());
+        contentValues.put("status", product.getStatus());
+
+        long rowsInserted = 0;
+        sqLiteDatabase.beginTransaction();
+        try {
+        rowsInserted = sqLiteDatabase.insertWithOnConflict("products", null, contentValues, SQLiteDatabase.CONFLICT_IGNORE);
+        sqLiteDatabase.insert("product_zone_mapping", null, productZoneMapping);
+        sqLiteDatabase.setTransactionSuccessful();
+
+        } finally {
+        sqLiteDatabase.endTransaction();
+        }
+
         if (rowsInserted != -1) {
             rowCreated = true;
         }
@@ -115,9 +128,8 @@ public final class ProductsTableUtil extends FarmConnectDatabaseHelper implement
                 @SuppressLint("Range") String date = cursor.getString(cursor.getColumnIndex("date"));
                 @SuppressLint("Range") String time = cursor.getString(cursor.getColumnIndex("time"));
                 @SuppressLint("Range") String status = cursor.getString(cursor.getColumnIndex("status"));
-                @SuppressLint("Range") String zoneID = cursor.getString(cursor.getColumnIndex("zoneID"));
 
-                Product product = new Product(productRemoteId, productName, quantity, unitPrice, price, imageUrl, owner, date, time, status, zoneID);
+                Product product = new Product(productRemoteId, productName, quantity, unitPrice, price, imageUrl, owner, date, time, status);
                 products.add(product);
             }
             while (cursor.moveToNext());

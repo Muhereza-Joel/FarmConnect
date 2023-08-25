@@ -14,7 +14,7 @@ public interface ProductsTable extends Observable {
         return ProductsTableUtil.getInstance(context);
     }
     List<String> getProductRemoteIds();
-    boolean addProduct(List<String> productDetails);
+    boolean addProduct(Product product, String zoneID);
     List<String> getUpdatedProduct(String updatedProductID);
     List<Product> getAllProductsToUpload(String zoneID);
     List<Card> getAllProducts(String zoneID, String owner);

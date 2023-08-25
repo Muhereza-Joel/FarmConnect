@@ -42,7 +42,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.model.database.services.ProductsUploadService;
+import com.moels.farmconnect.utils.models.Product;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
+import com.moels.farmconnect.utils.preferences.Globals;
 import com.moels.farmconnect.utils.preferences.Preferences;
 import com.moels.farmconnect.model.database.ProductsTable;
 import com.moels.farmconnect.model.database.ProductsTableUtil;
@@ -256,13 +258,13 @@ public class CreateProductActivity extends AppCompatActivity {
                         String url = uri.toString();
                         progressDialog.dismiss();
 
-                        boolean productIsCreated = productsDatabase.addProduct(getValuesFromUI(url));
+                        boolean productIsCreated = productsDatabase.addProduct(getValuesFromUI(url), getIntent().getStringExtra(Globals.ZONE_ID));
                         if (productIsCreated){
                             resetUI();
                             View parentView = findViewById(R.id.parent);
                             UI.displaySnackBar(getApplicationContext(), parentView, "Product Added Successfully!!");
-                            if (getIntent().getStringExtra("zoneID") != null){
-                                startProductsUploadService(getIntent().getStringExtra("zoneID"));
+                            if (getIntent().getStringExtra(Globals.ZONE_ID) != null){
+                                startProductsUploadService(getIntent().getStringExtra(Globals.ZONE_ID));
                             }
 
 
@@ -333,27 +335,22 @@ public class CreateProductActivity extends AppCompatActivity {
         return data;
     }
 
-    private List<String> getValuesFromUI(String imageUrl){
-        List<String> values = new ArrayList<>();
-        String uploaded = "false";
-        String updated = "false";
-        String status = "available";
+    private Product getValuesFromUI(String imageUrl){
 
-        values.add(generateUniqueID());
-        values.add(productNameEditText.getText().toString());
-        values.add(combineQuantityWithUnit());
-        values.add(productUnitPriceEditText.getText().toString());
-        values.add(productPriceTextView.getText().toString());
-        values.add(imageUrl);
-        values.add(uploaded);
-        values.add(updated);
-        values.add(preferences.getString("authenticatedPhoneNumber"));
-        values.add(getCurrentDate());
-        values.add(getCurrentTime());
-        values.add(status);
-        values.add(getIntent().getStringExtra("zoneID"));
+        return new Product()
+                .setProductID(generateUniqueID())
+                .setProductName(productNameEditText.getText().toString())
+                .setQuantity(combineQuantityWithUnit())
+                .setUnitPrice(productUnitPriceEditText.getText().toString())
+                .setPrice(productPriceTextView.getText().toString())
+                .setImageUrl(imageUrl)
+                .setUploadStatus(Globals.UploadStatus.FALSE.toString())
+                .setUpdatedStatus(Globals.UpdateStatus.FALSE.toString())
+                .setOwner(preferences.getString(Globals.AUTHENTICATED_PHONE_NUMBER))
+                .setCreateDate(getCurrentDate())
+                .setCreateTime(getCurrentTime())
+                .setStatus(Globals.PRODUCT_AVAILABLE);
 
-        return values;
     }
 
     private String combineQuantityWithUnit(){
@@ -389,7 +386,7 @@ public class CreateProductActivity extends AppCompatActivity {
     private void startProductsUploadService(String zoneID) {
         if (zoneID != null && !zoneID.isEmpty()) {
             Intent serviceIntent = new Intent(getApplicationContext(), ProductsUploadService.class);
-            serviceIntent.putExtra("zoneID", zoneID);
+            serviceIntent.putExtra(Globals.ZONE_ID, zoneID);
             startService(serviceIntent);
         }
     }
@@ -405,7 +402,7 @@ public class CreateProductActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(CreateProductActivity.this, AddProductToZoneActivity.class);
-        intent.putExtra("zoneID", getIntent().getStringExtra("zoneID"));
+        intent.putExtra(Globals.ZONE_ID, getIntent().getStringExtra(Globals.ZONE_ID));
         intent.putExtra("zoneName", getIntent().getStringExtra("zoneName"));
         startActivity(intent);
         finish();

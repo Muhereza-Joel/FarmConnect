@@ -29,6 +29,7 @@ import com.moels.farmconnect.model.database.ProductsTableUtil;
 import com.moels.farmconnect.model.database.ZonesTable;
 import com.moels.farmconnect.model.database.ZonesTableUtil;
 import com.moels.farmconnect.utils.models.Product;
+import com.moels.farmconnect.utils.preferences.Globals;
 import com.moels.farmconnect.view.activities.MainActivity;
 import com.moels.farmconnect.utils.preferences.FarmConnectAppPreferences;
 import com.moels.farmconnect.utils.preferences.Preferences;
@@ -164,24 +165,23 @@ public class ProductsDataSyncService extends Service{
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot productSnapshot : snapshot.getChildren()) {
-                            List<String> productDetails = new ArrayList<>();
+                           Product product = new Product()
+                                            .setProductID(productSnapshot.child("productID").getValue(String.class))
+                                            .setProductName(productSnapshot.child("productName").getValue(String.class))
+                                            .setQuantity(productSnapshot.child("quantity").getValue(String.class))
+                                            .setUnitPrice(productSnapshot.child("unitPrice").getValue(String.class))
+                                            .setPrice(productSnapshot.child("price").getValue(String.class))
+                                            .setImageUrl(productSnapshot.child("imageUrl").getValue(String.class))
+                                            .setUploadStatus(Globals.UploadStatus.TRUE.toString())
+                                            .setUpdatedStatus(Globals.UpdateStatus.FALSE.toString())
+                                            .setOwner(productSnapshot.child("owner").getValue(String.class))
+                                            .setCreateDate(productSnapshot.child("createDate").getValue(String.class))
+                                            .setCreateTime(productSnapshot.child("createTime").getValue(String.class))
+                                            .setStatus(productSnapshot.child("status").getValue(String.class));
 
-                            productDetails.add(productSnapshot.child("productID").getValue(String.class));
-                            productDetails.add(productSnapshot.child("productName").getValue(String.class));
-                            productDetails.add(productSnapshot.child("quantity").getValue(String.class));
-                            productDetails.add(productSnapshot.child("unitPrice").getValue(String.class));
-                            productDetails.add(productSnapshot.child("price").getValue(String.class));
-                            productDetails.add(productSnapshot.child("imageUrl").getValue(String.class));
-                            productDetails.add("true");
-                            productDetails.add("false");
-                            productDetails.add(productSnapshot.child("owner").getValue(String.class));
-                            productDetails.add(productSnapshot.child("createDate").getValue(String.class));
-                            productDetails.add(productSnapshot.child("createTime").getValue(String.class));
-                            productDetails.add(productSnapshot.child("status").getValue(String.class));
-                            productDetails.add(productSnapshot.child("zoneID").getValue(String.class));
-
-                            productsDatabase.addProduct(productDetails);
-                            Log.d("FarmConnect", "onDataChange: Product id " + productDetails.get(0) + " Added to database");
+                           //TODO change the hard coded zone to match the table;
+                            productsDatabase.addProduct(product, "202307121049247397");
+                            Log.d("FarmConnect", "onDataChange: Product id " + product.getProductID() + " Added to database");
 
                         }
                     }
@@ -218,24 +218,24 @@ public class ProductsDataSyncService extends Service{
                             String owner = productSnapshot.child("owner").getValue(String.class);
                             Log.d("FarmConnect", "onDataChange: " + phoneNumber);
                             if (owner != null && owner.equals(phoneNumber)) {
-                                List<String> productDetails = new ArrayList<>();
+                                Product product = new Product()
+                                        .setProductID(productSnapshot.child("productID").getValue(String.class))
+                                        .setProductName(productSnapshot.child("productName").getValue(String.class))
+                                        .setQuantity(productSnapshot.child("quantity").getValue(String.class))
+                                        .setUnitPrice(productSnapshot.child("unitPrice").getValue(String.class))
+                                        .setPrice(productSnapshot.child("price").getValue(String.class))
+                                        .setImageUrl(productSnapshot.child("imageUrl").getValue(String.class))
+                                        .setUploadStatus(Globals.UploadStatus.TRUE.toString())
+                                        .setUpdatedStatus(Globals.UpdateStatus.FALSE.toString())
+                                        .setOwner(owner)
+                                        .setCreateDate(productSnapshot.child("createDate").getValue(String.class))
+                                        .setCreateTime(productSnapshot.child("createTime").getValue(String.class))
+                                        .setStatus(productSnapshot.child("status").getValue(String.class));
 
-                                productDetails.add(productSnapshot.child("productID").getValue(String.class));
-                                productDetails.add(productSnapshot.child("productName").getValue(String.class));
-                                productDetails.add(productSnapshot.child("quantity").getValue(String.class));
-                                productDetails.add(productSnapshot.child("unitPrice").getValue(String.class));
-                                productDetails.add(productSnapshot.child("price").getValue(String.class));
-                                productDetails.add(productSnapshot.child("imageUrl").getValue(String.class));
-                                productDetails.add("true");
-                                productDetails.add("false");
-                                productDetails.add(owner);
-                                productDetails.add(productSnapshot.child("createDate").getValue(String.class));
-                                productDetails.add(productSnapshot.child("createTime").getValue(String.class));
-                                productDetails.add(productSnapshot.child("status").getValue(String.class));
-                                productDetails.add(productSnapshot.child("zoneID").getValue(String.class));
+                                //TODO change zone id
 
-                                productsDatabase.addProduct(productDetails);
-                                Log.d("FarmConnect", "onDataChange: Product id " + productDetails.get(0) + " Added to database");
+                                productsDatabase.addProduct(product, "202307121049247397");
+                                Log.d("FarmConnect", "onDataChange: Product id " + product.getProductID() + " Added to database");
                             }
                         }
                     }
@@ -271,23 +271,22 @@ public class ProductsDataSyncService extends Service{
                                 String productRemoteId = productSnapshot.child("productID").getValue(String.class);
 
                                 if (!syncedData.contains(productRemoteId)) {
-                                    List<String> productDetails = new ArrayList<>();
+                                    Product product = new Product()
+                                            .setProductID(productRemoteId)
+                                            .setProductName(productSnapshot.child("productName").getValue(String.class))
+                                            .setQuantity(productSnapshot.child("quantity").getValue(String.class))
+                                            .setUnitPrice(productSnapshot.child("unitPrice").getValue(String.class))
+                                            .setPrice(productSnapshot.child("price").getValue(String.class))
+                                            .setImageUrl(productSnapshot.child("imageUrl").getValue(String.class))
+                                            .setUploadStatus(Globals.UploadStatus.TRUE.toString())
+                                            .setUpdatedStatus(Globals.UpdateStatus.FALSE.toString())
+                                            .setOwner(productSnapshot.child("owner").getValue(String.class))
+                                            .setCreateDate(productSnapshot.child("createDate").getValue(String.class))
+                                            .setCreateTime(productSnapshot.child("createTime").getValue(String.class))
+                                            .setStatus(productSnapshot.child("status").getValue(String.class));
 
-                                    productDetails.add(productRemoteId);
-                                    productDetails.add(productSnapshot.child("productName").getValue(String.class));
-                                    productDetails.add(productSnapshot.child("quantity").getValue(String.class));
-                                    productDetails.add(productSnapshot.child("unitPrice").getValue(String.class));
-                                    productDetails.add(productSnapshot.child("price").getValue(String.class));
-                                    productDetails.add(productSnapshot.child("imageUrl").getValue(String.class));
-                                    productDetails.add("true");
-                                    productDetails.add("false");
-                                    productDetails.add(productSnapshot.child("owner").getValue(String.class));
-                                    productDetails.add(productSnapshot.child("createDate").getValue(String.class));
-                                    productDetails.add(productSnapshot.child("createTime").getValue(String.class));
-                                    productDetails.add(productSnapshot.child("status").getValue(String.class));
-                                    productDetails.add(productSnapshot.child("zoneID").getValue(String.class));
-
-                                    boolean productAdded = productsDatabase.addProduct(productDetails);
+                                    //TODO replace zoneID
+                                    boolean productAdded = productsDatabase.addProduct(product, "202307121049247397");
                                     if (productAdded){
                                         syncedData.add(productRemoteId); // Add the productRemoteId to the HashSet
                                         Log.d("FarmConnect", "onDataChange: New product with  Product id " + productRemoteId + " added to database");

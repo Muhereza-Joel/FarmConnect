@@ -72,25 +72,12 @@ public class ProductsListFragment extends Fragment {
         productsObserver.startListening(new RealTimeProductsObserver.OnProductUpdateListener() {
             @Override
             public void onProductAdded(Product product) {
-                List<String> productDetails = new ArrayList<>();
-                String uploaded = "true";
-                String updated = "false";
+                product.setUploadStatus(Globals.UploadStatus.TRUE.toString());
+                product.setUpdatedStatus(Globals.UpdateStatus.FALSE.toString());
+//                productDetails.add(product.getZoneID());
+                //TODO add table to track services from services with ids
 
-                productDetails.add(product.getProductID());
-                productDetails.add(product.getProductName());
-                productDetails.add(product.getQuantity());
-                productDetails.add(product.getUnitPrice());
-                productDetails.add(product.getPrice());
-                productDetails.add(product.getImageUrl());
-                productDetails.add(uploaded);
-                productDetails.add(updated);
-                productDetails.add(product.getOwner());
-                productDetails.add(product.getCreateDate());
-                productDetails.add(product.getCreateTime());
-                productDetails.add(product.getStatus());
-                productDetails.add(product.getZoneID());
-
-                boolean rowCreated = productsDatabase.addProduct(productDetails);
+                boolean rowCreated = productsDatabase.addProduct(product, "202307121049247397");
                 if (rowCreated){
                     if (getActivity().getIntent().getStringExtra("zoneID") != null){
                         cardList = productsDatabase.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
