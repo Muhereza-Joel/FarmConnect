@@ -18,11 +18,13 @@ import java.util.List;
 
 public final class ProductsTableUtil extends FarmConnectDatabaseHelper implements ProductsTable, Observable {
     private static ProductsTableUtil uniqueInstance;
+    private ProductZoneMappingTable productZoneMappingTable;
 
     private ArrayList<Observer> observers;
     private ProductsTableUtil(Context context){
         super(context);
         observers = new ArrayList<>();
+        productZoneMappingTable = ProductZoneMappingTable.getInstance(context);
     }
 
     public static ProductsTableUtil getInstance(Context context){
@@ -51,10 +53,6 @@ public final class ProductsTableUtil extends FarmConnectDatabaseHelper implement
     public boolean addProduct(Product product, String zoneID){
         boolean rowCreated = false;
 
-        ContentValues productZoneMapping = new ContentValues();
-        productZoneMapping.put("product_id", product.getProductID());
-        productZoneMapping.put("zone_id", zoneID);
-
         ContentValues contentValues = new ContentValues();
         contentValues.put("productRemoteId", product.getProductID());
         contentValues.put("productName", product.getProductName());
@@ -73,7 +71,7 @@ public final class ProductsTableUtil extends FarmConnectDatabaseHelper implement
         sqLiteDatabase.beginTransaction();
         try {
         rowsInserted = sqLiteDatabase.insertWithOnConflict("products", null, contentValues, SQLiteDatabase.CONFLICT_IGNORE);
-        sqLiteDatabase.insert("product_zone_mapping", null, productZoneMapping);
+        productZoneMappingTable.addNewMapping(product.getProductID(), zoneID);
         sqLiteDatabase.setTransactionSuccessful();
 
         } finally {

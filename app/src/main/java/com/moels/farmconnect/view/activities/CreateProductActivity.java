@@ -296,6 +296,7 @@ public class CreateProductActivity extends AppCompatActivity {
     }
 
     private boolean validateEditTexts(){
+        //TODO change data validation to do through the Validator
         boolean validated = true;
         if (TextUtils.isEmpty(productNameEditText.getText().toString())
                 || TextUtils.isEmpty(productQuantityEditText.getText().toString())
