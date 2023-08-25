@@ -64,6 +64,11 @@ public class CopyZoneListDialog extends DialogFragment implements DialogInterfac
 
         listView = dialogView.findViewById(R.id.zones_list_view_2);
 
+        if (zoneNames.size() > 0){
+            TextView textView = dialogView.findViewById(R.id.no_zones_to_pick);
+            textView.setVisibility(View.GONE);
+        }
+
         listView.setOnItemClickListener((parent, view, position, id) -> {
             if (filteredZonesList.size() > 0){
                 Zone zone  = filteredZonesList.get(position);
@@ -78,7 +83,7 @@ public class CopyZoneListDialog extends DialogFragment implements DialogInterfac
 
         listView.setAdapter(adapter);
 
-        return (builder.setTitle("Copy product To"))
+        return (builder.setTitle("Copy Product To"))
                 .setView(dialogView)
                 .setPositiveButton("Ok", this)
                 .setNegativeButton("Cancel", null)
@@ -87,8 +92,12 @@ public class CopyZoneListDialog extends DialogFragment implements DialogInterfac
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-        if (!TextUtils.isEmpty(product.getProductID()) && selectedZoneIDs.size() > 0)
+        if (!TextUtils.isEmpty(product.getProductID()) && selectedZoneIDs.size() > 0) {
             productsController.copyProduct(product.getProductID(), selectedZoneIDs);
-        else UI.displayToast(getContext(), "No zones Selected");
+        }
+        else {
+            if (zoneNames.size() > 0)
+            UI.displayToast(getContext(), "No zones Selected");
+        }
     }
 }

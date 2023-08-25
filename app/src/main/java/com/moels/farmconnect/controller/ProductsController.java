@@ -51,7 +51,7 @@ public final class ProductsController extends Controller implements Observer {
         }
 
         if (count == 1) UI.displayToast(context, "Product Copied");
-        else UI.displayToast(context, "Products Copied " + count + " zones");
+        else UI.displayToast(context, "Products Copied to " + count + " zones");
     }
 
     public List<String> getProductMappings(String productID){

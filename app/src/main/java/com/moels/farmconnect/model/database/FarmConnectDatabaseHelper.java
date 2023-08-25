@@ -189,7 +189,7 @@ public abstract class FarmConnectDatabaseHelper extends SQLiteOpenHelper {
 
             db.execSQL("DROP TABLE IF EXISTS product_zone_mapping");
 
-            db.execSQL("CREATE TABLE product_zone_mapping ( " +
+            db.execSQL("CREATE TABLE IF NOT EXISTS product_zone_mapping ( " +
                     "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     " product_id INTEGER, " +
                     " zone_id INTEGER, " +

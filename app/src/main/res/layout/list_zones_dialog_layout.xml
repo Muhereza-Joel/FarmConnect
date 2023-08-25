@@ -1,9 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/zones_list_view"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/zone_list_view_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:maxHeight="400dp"
-    android:drawSelectorOnTop="false"
-    android:choiceMode="singleChoice"
-    android:padding="@dimen/layout_padding_10"/>
+    android:orientation="vertical">
+
+    <ListView
+        android:id="@+id/zones_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="400dp"
+        android:drawSelectorOnTop="false"
+        android:choiceMode="singleChoice"
+        android:padding="@dimen/layout_padding_10"/>
+
+    <TextView
+        android:id="@+id/no_zones_to_pick"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/layout_margin_end_20"
+        android:layout_marginStart="@dimen/layout_margin_end_20"
+        android:textSize="@dimen/text_size_20"
+        android:textStyle="bold"
+        android:text="You can not move this product because it already exists in all zones..."/>
+
+</LinearLayout>

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -52,13 +53,20 @@ public class MoveZoneListDialog extends DialogFragment implements DialogInterfac
         product = productsController.getProductDetails(getActivity().getIntent().getStringExtra(Globals.PRODUCT_ID));
 
         for (Zone zone : listOfAllZones){
-            if (!getActivity().getIntent().getStringExtra(Globals.ZONE_ID).equals(zone.getZoneID())){
-                 zoneNames.add(zone.getZoneName());
-                 filteredZonesList.add(zone);
+            List<String> mappedIds = productsController.getProductMappings(product.getProductID());
+
+            if (!mappedIds.contains(zone.getZoneID())){
+                zoneNames.add(zone.getZoneName());
+                filteredZonesList.add(zone);
             }
         }
 
         listView = dialogView.findViewById(R.id.zones_list_view);
+
+        if (zoneNames.size() > 0){
+            TextView textView = dialogView.findViewById(R.id.no_zones_to_pick);
+            textView.setVisibility(View.GONE);
+        }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_single_choice, zoneNames);
 
@@ -82,6 +90,7 @@ public class MoveZoneListDialog extends DialogFragment implements DialogInterfac
         if (!TextUtils.isEmpty(selectedZoneID) && !TextUtils.isEmpty(getActivity().getIntent().getStringExtra(Globals.ZONE_ID))) {
             productsController.moveProduct(getActivity().getIntent().getStringExtra(Globals.ZONE_ID),selectedZoneID, product.getProductID());
         } else {
+            if (zoneNames.size() > 0)
             UI.displayToast(getContext(), "Please Select a zone");
         }
     }
