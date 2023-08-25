@@ -19,9 +19,7 @@
 --FOREIGN KEY (product_id) REFERENCES products (productRemoteId), 
 --FOREIGN KEY (zone_id) REFERENCES zones (remote_id))"
 
-insert into product_zone_mapping (product_id, zone_id) select productRemoteId, remote_id from products join zones on products._pid = zones._id
-select * from product_zone_mapping
-delete  from product_zone_mapping]]></console>
+delete from product_zone_mapping]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">

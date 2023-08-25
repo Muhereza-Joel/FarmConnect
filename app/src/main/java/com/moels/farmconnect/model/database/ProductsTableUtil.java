@@ -241,20 +241,7 @@ public final class ProductsTableUtil extends FarmConnectDatabaseHelper implement
 
     @Override
     public boolean moveProductToZone(String currentZoneID, String targetZoneID, String productIdToMove) {
-        boolean productMoved = false;
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("zone_id", targetZoneID);
-
-        int rowsUpdated = sqLiteDatabase
-                .update("product_zone_mapping", contentValues, "zone_id = ? AND product_id = ?",
-                        new String[]{currentZoneID, productIdToMove});
-
-        if (rowsUpdated > 0){
-            productMoved = true;
-        }
-
-        return productMoved;
+        return productZoneMappingTable.updateProductMapping(currentZoneID, targetZoneID, productIdToMove);
     }
 
     @Override

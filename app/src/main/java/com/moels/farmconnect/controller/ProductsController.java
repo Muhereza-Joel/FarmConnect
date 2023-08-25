@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.moels.farmconnect.model.command.ChangeProductStatusCommand;
 import com.moels.farmconnect.model.command.Command;
+import com.moels.farmconnect.model.database.ProductZoneMappingTable;
 import com.moels.farmconnect.model.database.ProductsTable;
 import com.moels.farmconnect.model.database.ProductsTableUtil;
 import com.moels.farmconnect.model.observers.Observer;
@@ -11,8 +12,11 @@ import com.moels.farmconnect.utils.UI;
 import com.moels.farmconnect.utils.models.Product;
 import com.moels.farmconnect.utils.preferences.Globals;
 
+import java.util.List;
+
 public final class ProductsController extends Controller implements Observer {
     private final ProductsTable productsTable = ProductsTable.getInstance(context);
+    private final ProductZoneMappingTable productZoneMappingTable = ProductZoneMappingTable.getInstance(context);
     private ProductsController(){};
 
     private static ProductsController uniqueInstance;
@@ -37,6 +41,21 @@ public final class ProductsController extends Controller implements Observer {
             productsTable.moveProductToZone(currentZineID,targetZoneID, productIdToMove);
             UI.displayToast(context, "Product Moved");
 
+    }
+
+    public void copyProduct(String productId, List<String> zoneIds){
+        int count = 0;
+        for (String id : zoneIds){
+            productZoneMappingTable.addNewMapping(productId, id);
+            count ++;
+        }
+
+        if (count == 1) UI.displayToast(context, "Product Copied");
+        else UI.displayToast(context, "Products Copied " + count + " zones");
+    }
+
+    public List<String> getProductMappings(String productID){
+        return productZoneMappingTable.getProductMappings(productID);
     }
 
     @Override

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/zones_list_view_2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:maxHeight="400dp"
+    android:drawSelectorOnTop="false"
+    android:choiceMode="multipleChoice"
+    android:padding="@dimen/layout_padding_10"/>

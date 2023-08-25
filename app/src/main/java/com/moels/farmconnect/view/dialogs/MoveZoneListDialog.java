@@ -17,7 +17,6 @@ import androidx.fragment.app.DialogFragment;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.controller.ProductsController;
 import com.moels.farmconnect.controller.ZonesController;
-import com.moels.farmconnect.model.database.ProductsTable;
 import com.moels.farmconnect.utils.UI;
 import com.moels.farmconnect.utils.models.Product;
 import com.moels.farmconnect.utils.models.Zone;
@@ -26,7 +25,7 @@ import com.moels.farmconnect.utils.preferences.Globals;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListZonesDialog extends DialogFragment implements DialogInterface.OnClickListener {
+public class MoveZoneListDialog extends DialogFragment implements DialogInterface.OnClickListener {
 
     private ListView listView;
     private List<Zone> listOfAllZones;
@@ -71,7 +70,7 @@ public class ListZonesDialog extends DialogFragment implements DialogInterface.O
             }
         });
 
-        return (builder.setTitle("Select Zone"))
+        return (builder.setTitle("Move Product To"))
                 .setView(dialogView)
                 .setPositiveButton("Ok", this)
                 .setNegativeButton("Cancel", null)

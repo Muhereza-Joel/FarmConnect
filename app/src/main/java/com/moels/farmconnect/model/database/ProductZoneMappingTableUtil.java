@@ -17,7 +17,7 @@ public final class ProductZoneMappingTableUtil extends FarmConnectDatabaseHelper
     }
 
     public static ProductZoneMappingTableUtil getInstance(Context context){
-        if (uniqueInstance != null){
+        if (uniqueInstance == null){
             uniqueInstance = new ProductZoneMappingTableUtil(context);
         }
         return uniqueInstance;

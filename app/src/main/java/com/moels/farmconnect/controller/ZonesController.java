@@ -71,6 +71,7 @@ public final class ZonesController extends Controller implements Observer {
     }
 
     public boolean deleteZone(String id) {
+        //TODO Create Macro command to delete zone mappings also
         Command command = new DeleteZoneCommand(context, id);
         command.execute();
         return true;
