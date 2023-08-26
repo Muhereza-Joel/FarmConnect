@@ -4,6 +4,7 @@
     android:id="@+id/products_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/grayWhite"
     android:layout_below="@+id/products_in_a_zone_activity_toolbar"
     tools:context=".view.fragments.ProductsListFragment">
 
@@ -14,6 +15,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/products_list_recycler_view"
+            android:focusable="false"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 

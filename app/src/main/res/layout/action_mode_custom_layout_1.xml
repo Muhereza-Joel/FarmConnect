@@ -1,0 +1,54 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="?attr/colorPrimary">
+
+    <TextView
+        android:id="@+id/product_count_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_20"
+        android:text=""/>
+
+    <!-- Add your icons or items here -->
+    <ImageView
+        android:id="@+id/action_item_1"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:src="@drawable/baseline_copy_all_24" />
+
+    <ImageView
+        android:id="@+id/action_item_2"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:src="@drawable/baseline_move_up_24" />
+
+    <ImageView
+        android:id="@+id/action_item_3"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:src="@drawable/baseline_remove_circle_outline_24" />
+
+    <ImageView
+        android:id="@+id/action_item_4"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:src="@drawable/baseline_delete_24" />
+
+    <!-- Add more items as needed -->
+
+</LinearLayout>

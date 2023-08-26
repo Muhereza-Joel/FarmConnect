@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/copy_action_mode_btn"
+        android:title="Copy"
+        android:icon="@drawable/baseline_copy_all_24"
+        android:tooltipText="Copy Product"
+        app:showAsAction="always"
+        android:orderInCategory="100"/>
+
+    <item
+        android:id="@+id/remove_action_mode_btn"
+        android:title="Remove"
+        android:icon="@drawable/baseline_remove_circle_outline_24"
+        android:tooltipText="Remove Product"
+        app:showAsAction="always"
+        android:orderInCategory="200"/>
+
+    <item
+        android:id="@+id/move_action_mode_btn"
+        android:title="Move"
+        android:icon="@drawable/baseline_move_up_24"
+        android:tooltipText="Move Product"
+        app:showAsAction="always"
+        android:orderInCategory="300"/>
+
+    <item
+        android:id="@+id/delete_action_mode_btn"
+        android:title="Delete"
+        android:icon="@drawable/baseline_delete_24"
+        android:tooltipText="Delete Product"
+        app:showAsAction="always"
+        android:orderInCategory="400"/>
+
+</menu>

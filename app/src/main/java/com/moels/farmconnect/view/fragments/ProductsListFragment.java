@@ -13,7 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
@@ -21,6 +24,7 @@ import android.widget.TextView;
 
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.utils.preferences.Globals;
+import com.moels.farmconnect.view.ToolbarManager;
 import com.moels.farmconnect.view.activities.ProductDetailsActivity;
 import com.moels.farmconnect.view.adapters.ProductsRecyclerViewAdapter;
 import com.moels.farmconnect.utils.models.Card;
@@ -46,6 +50,10 @@ public class ProductsListFragment extends Fragment {
     private TextView emptyProductsMessageTextView;
     private View view;
     private ProductsObserver productsObserver;
+    private ActionMode actionMode;
+    private boolean isActionModeActive = false;
+    private TextView productCountSelectionTextView;
+    private List<Integer> selectedItems = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,6 +69,11 @@ public class ProductsListFragment extends Fragment {
         else if(preferences.isBuyerAccount()){
             cardList = productsDatabase.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
             observeFireBase();
+        }
+
+        //Initialise isSelected flag for each card
+        for (Card card : cardList){
+            card.setSelected(false);
         }
 
     }
@@ -150,16 +163,83 @@ public class ProductsListFragment extends Fragment {
         productsRecyclerViewAdapter.setListener(new ProductsRecyclerViewAdapter.Listener() {
             @Override
             public void onClick(int position) {
+                if (!isActionModeActive){
+
                 Intent intent = new Intent(getContext(), ProductDetailsActivity.class);
+                    Log.d("ClickTest", "Card clicked at position: " + position);
 
                 //This id will be used together with product id to delete product from firebase
                 intent.putExtra("zoneID", getActivity().getIntent().getStringExtra("zoneID"));
                 intent.putExtra("zoneName", getActivity().getIntent().getStringExtra("zoneName"));
                 intent.putExtra("productID", cardList.get(position).getId());
                 startActivityForResult(intent, PRODUCT_DELETE_REQUEST_CODE);
+                } else {
+                    productsRecyclerViewAdapter.toggleItemSelection(position);
+                    toggleSelection(position);
+                }
+
+            }
+
+            @Override
+            public void onLongClick(int position) {
+                startActionMode();
+
 
             }
         });
+    }
+
+    private void startActionMode(){
+        if (actionMode == null){
+            actionMode = requireActivity().startActionMode(actionModeCallBack);
+            isActionModeActive = true;
+
+            if (getActivity() instanceof ToolbarManager){
+                ((ToolbarManager) getActivity()).setToolbarVisibility(false);
+            }
+        }
+    }
+
+    private void toggleSelection(int position){
+
+        if (selectedItems.contains(position)){
+            selectedItems.remove(Integer.valueOf(position));
+        } else {
+            selectedItems.add(position);
+        }
+
+        if (selectedItems.isEmpty()){
+            finishActionMode();
+        } else {
+            actionMode.invalidate();
+        }
+
+        if (actionMode != null) {
+            productCountSelectionTextView.setText(new StringBuilder().append(selectedItems.size()).append(" selected").toString());
+        }
+
+        productsRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    private void finishActionMode(){
+        if (actionMode != null) {
+            // Clear selection state in data source
+            for (int position : selectedItems) {
+                cardList.get(position).setSelected(false);
+            }
+
+            // Notify adapter of data changes
+            productsRecyclerViewAdapter.notifyDataSetChanged();
+
+            actionMode.finish();
+            actionMode = null;
+            isActionModeActive = false;
+            selectedItems.clear();
+
+            if (getActivity() instanceof ToolbarManager) {
+                ((ToolbarManager) getActivity()).setToolbarVisibility(true);
+            }
+        }
     }
 
     @Override
@@ -177,6 +257,7 @@ public class ProductsListFragment extends Fragment {
             ScrollView scrollView = view.findViewById(R.id.products_scroll_view);
             scrollView.setBackgroundColor(getResources().getColor(R.color.colorBlack));
         }
+
         return view;
     }
 
@@ -241,8 +322,8 @@ public class ProductsListFragment extends Fragment {
                 cardList = productsDatabase.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
             }
 
-            productsRecyclerViewAdapter = new ProductsRecyclerViewAdapter(cardList, getContext());
-            productListRecyclerView.setAdapter(productsRecyclerViewAdapter);
+            productsRecyclerViewAdapter.updateData(cardList);
+            productsRecyclerViewAdapter.notifyDataSetChanged();
         }
     }
 
@@ -255,4 +336,35 @@ public class ProductsListFragment extends Fragment {
         }
 
     }
+
+    private ActionMode.Callback actionModeCallBack = new ActionMode.Callback() {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+//            MenuInflater inflater = mode.getMenuInflater();
+//            inflater.inflate(R.menu.products_action_mode_many_seller_menu, menu);
+
+            View customView = LayoutInflater.from(getContext()).inflate(R.layout.action_mode_custom_layout_1, null);
+            mode.setCustomView(customView);
+            
+            productCountSelectionTextView = customView.findViewById(R.id.product_count_text_view);
+
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            finishActionMode();
+        }
+    };
 }

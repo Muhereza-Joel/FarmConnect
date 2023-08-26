@@ -22,10 +22,11 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.utils.preferences.Globals;
+import com.moels.farmconnect.view.ToolbarManager;
 import com.moels.farmconnect.view.fragments.ProductsListFragment;
 import com.moels.farmconnect.utils.UI;
 
-public class AddProductToZoneActivity extends AppCompatActivity {
+public class AddProductToZoneActivity extends AppCompatActivity implements ToolbarManager {
     private Toolbar toolbar;
     private FloatingActionButton addNewProductFAB;
     @Override
@@ -36,7 +37,6 @@ public class AddProductToZoneActivity extends AppCompatActivity {
         setUpStatusBar();
         UI.setUpToolbarInDarkMode(getApplicationContext(), toolbar);
 
-        setSupportActionBar(toolbar);
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, getIntent().getStringExtra("zoneName"), true);
 
         Drawable icon = toolbar.getOverflowIcon();
@@ -125,9 +125,11 @@ public class AddProductToZoneActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void initUI(){
+    public void initUI(){
         toolbar = findViewById(R.id.products_in_a_zone_activity_toolbar);
         addNewProductFAB = findViewById(R.id.add_new_product_fab);
+        setSupportActionBar(toolbar);
+//        getSupportActionBar().hide();
     }
 
     private void setUpStatusBar() {
@@ -144,5 +146,16 @@ public class AddProductToZoneActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    @Override
+    public void setToolbarVisibility(boolean visible) {
+        if (visible){
+            getSupportActionBar().show();
+            addNewProductFAB.setVisibility(View.VISIBLE);
+        } else {
+            getSupportActionBar().hide();
+            addNewProductFAB.setVisibility(View.GONE);
+        }
     }
 }

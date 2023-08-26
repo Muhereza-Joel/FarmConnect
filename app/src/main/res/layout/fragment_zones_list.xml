@@ -4,6 +4,7 @@
     android:id="@+id/zone_list_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/grayWhite"
     tools:context=".view.fragments.ZonesListFragment">
 
     <LinearLayout
