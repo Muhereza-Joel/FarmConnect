@@ -39,6 +39,7 @@ import com.moels.farmconnect.model.database.ProductsTable;
 import com.moels.farmconnect.model.database.ProductsTableUtil;
 import com.moels.farmconnect.utils.UI;
 import com.moels.farmconnect.view.dialogs.MoveZoneListDialog;
+import com.moels.farmconnect.view.dialogs.RemoveProductDialog;
 
 public class ProductDetailsActivity extends AppCompatActivity implements CommandListener {
     private final String postUrl = "https://www.easypay.co.ug/api/";
@@ -179,10 +180,6 @@ public class ProductDetailsActivity extends AppCompatActivity implements Command
             startActivity(intent);
         }
 
-        if (id == R.id.delete_product){
-            DeleteProductConfirmationDialog deleteProductConfirmationDialog = new DeleteProductConfirmationDialog();
-            deleteProductConfirmationDialog.show(getSupportFragmentManager(), "deleteProduct");
-        }
 
         if (id == R.id.change_status){
             ChangeProductStatusDialog changeProductStatusDialog = new ChangeProductStatusDialog();
@@ -200,6 +197,16 @@ public class ProductDetailsActivity extends AppCompatActivity implements Command
             CopyZoneListDialog copyZoneListDialog = new CopyZoneListDialog();
             copyZoneListDialog.setCancelable(false);
             copyZoneListDialog.show(getSupportFragmentManager(), "list zones dialog 2");
+        }
+
+        if (id == R.id.remove_product_from_zone){
+            RemoveProductDialog removeProductDialog = new RemoveProductDialog();
+            removeProductDialog.show(getSupportFragmentManager(), "remove product dialog");
+        }
+
+        if (id == R.id.delete_product){
+            DeleteProductConfirmationDialog deleteProductConfirmationDialog = new DeleteProductConfirmationDialog();
+            deleteProductConfirmationDialog.show(getSupportFragmentManager(), "deleteProduct");
         }
 
         return super.onOptionsItemSelected(item);

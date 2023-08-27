@@ -58,6 +58,16 @@ public final class ProductsController extends Controller implements Observer {
         return productZoneMappingTable.getProductMappings(productID);
     }
 
+    public boolean deleteProductMapping(String productID, String zoneID){
+        boolean productMappedRemoved = productZoneMappingTable.deleteProductMapping(productID, zoneID);
+
+        if (productMappedRemoved){
+            UI.displayToast(context, "Product Removed");
+        }
+
+        return productMappedRemoved;
+    }
+
     @Override
     public void update() {
         listener.onSuccess();

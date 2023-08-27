@@ -4,6 +4,7 @@
 
     <dimen name="layout_padding_top_20">20dp</dimen>
     <dimen name="layout_padding_start_20">20dp</dimen>
+    <dimen name="layout_padding_start_10">10dp</dimen>
     <dimen name="layout_padding_end_20">20dp</dimen>
     <dimen name="layout_padding_bottom_20">20dp</dimen>
     <dimen name="layout_padding_20">20dp</dimen>

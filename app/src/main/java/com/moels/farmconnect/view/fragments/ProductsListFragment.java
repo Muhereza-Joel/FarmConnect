@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -47,13 +48,13 @@ public class ProductsListFragment extends Fragment {
     public List<Card> cardList;
     private Preferences preferences;
     private String authenticatedPhoneNumber;
-    private TextView emptyProductsMessageTextView;
+    private TextView emptyProductsMessageTextView, productCountSelectionTextView;
     private View view;
     private ProductsObserver productsObserver;
     private ActionMode actionMode;
     private boolean isActionModeActive = false;
-    private TextView productCountSelectionTextView;
     private List<Integer> selectedItems = new ArrayList<>();
+    ImageView copyToAllIcon, moveIcon, removeIcon, deleteIcon;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -159,89 +160,6 @@ public class ProductsListFragment extends Fragment {
 
     }
 
-    public void addClickListenerOnCards(){
-        productsRecyclerViewAdapter.setListener(new ProductsRecyclerViewAdapter.Listener() {
-            @Override
-            public void onClick(int position) {
-                if (!isActionModeActive){
-
-                Intent intent = new Intent(getContext(), ProductDetailsActivity.class);
-                    Log.d("ClickTest", "Card clicked at position: " + position);
-
-                //This id will be used together with product id to delete product from firebase
-                intent.putExtra("zoneID", getActivity().getIntent().getStringExtra("zoneID"));
-                intent.putExtra("zoneName", getActivity().getIntent().getStringExtra("zoneName"));
-                intent.putExtra("productID", cardList.get(position).getId());
-                startActivityForResult(intent, PRODUCT_DELETE_REQUEST_CODE);
-                } else {
-                    productsRecyclerViewAdapter.toggleItemSelection(position);
-                    toggleSelection(position);
-                }
-
-            }
-
-            @Override
-            public void onLongClick(int position) {
-                startActionMode();
-
-
-            }
-        });
-    }
-
-    private void startActionMode(){
-        if (actionMode == null){
-            actionMode = requireActivity().startActionMode(actionModeCallBack);
-            isActionModeActive = true;
-
-            if (getActivity() instanceof ToolbarManager){
-                ((ToolbarManager) getActivity()).setToolbarVisibility(false);
-            }
-        }
-    }
-
-    private void toggleSelection(int position){
-
-        if (selectedItems.contains(position)){
-            selectedItems.remove(Integer.valueOf(position));
-        } else {
-            selectedItems.add(position);
-        }
-
-        if (selectedItems.isEmpty()){
-            finishActionMode();
-        } else {
-            actionMode.invalidate();
-        }
-
-        if (actionMode != null) {
-            productCountSelectionTextView.setText(new StringBuilder().append(selectedItems.size()).append(" selected").toString());
-        }
-
-        productsRecyclerViewAdapter.notifyDataSetChanged();
-    }
-
-    private void finishActionMode(){
-        if (actionMode != null) {
-            // Clear selection state in data source
-            for (int position : selectedItems) {
-                cardList.get(position).setSelected(false);
-            }
-
-            // Notify adapter of data changes
-            productsRecyclerViewAdapter.notifyDataSetChanged();
-
-            actionMode.finish();
-            actionMode = null;
-            isActionModeActive = false;
-            selectedItems.clear();
-
-            if (getActivity() instanceof ToolbarManager) {
-                ((ToolbarManager) getActivity()).setToolbarVisibility(true);
-            }
-        }
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_products_list, container, false);
@@ -276,6 +194,7 @@ public class ProductsListFragment extends Fragment {
 
         if (preferences.isFarmerAccount()){
             cardList = productsDatabase.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), authenticatedPhoneNumber);
+
         }
         else if(preferences.isBuyerAccount()){
             cardList = productsDatabase.getAllProducts(getActivity().getIntent().getStringExtra("zoneID"), "");
@@ -297,16 +216,6 @@ public class ProductsListFragment extends Fragment {
         }
 
         addClickListenerOnCards();
-    }
-
-    private void scrollRecycleViewToBottom(RecyclerView recyclerView){
-        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-        int lastVisibleItemPosition = layoutManager != null ? layoutManager.findLastVisibleItemPosition() : 0;
-        int itemCount = layoutManager != null ? layoutManager.getItemCount() : 0;
-
-        if (lastVisibleItemPosition != (itemCount - 1) || recyclerView.getChildAt(recyclerView.getChildCount() - 1).getBottom() > recyclerView.getHeight()) {
-            recyclerView.scrollToPosition(itemCount - 1);
-        }
     }
 
     @Override
@@ -337,16 +246,62 @@ public class ProductsListFragment extends Fragment {
 
     }
 
+    private void addClickListenerOnCards(){
+        productsRecyclerViewAdapter.setListener(new ProductsRecyclerViewAdapter.Listener() {
+            @Override
+            public void onClick(int position) {
+                if (!isActionModeActive){
+
+                Intent intent = new Intent(getContext(), ProductDetailsActivity.class);
+
+                //This id will be used together with product id to delete product from firebase
+                intent.putExtra("zoneID", getActivity().getIntent().getStringExtra("zoneID"));
+                intent.putExtra("zoneName", getActivity().getIntent().getStringExtra("zoneName"));
+                intent.putExtra("productID", cardList.get(position).getId());
+
+                startActivityForResult(intent, PRODUCT_DELETE_REQUEST_CODE);
+
+                }
+
+                else {
+                    productsRecyclerViewAdapter.toggleItemSelection(position);
+                    toggleSelection(position);
+                }
+
+            }
+
+            @Override
+            public void onLongClick(int position) {
+                startActionMode();
+                productsRecyclerViewAdapter.toggleItemSelection(position);
+                toggleSelection(position);
+            }
+        });
+    }
+
+    private void startActionMode(){
+        if (actionMode == null){
+            actionMode = requireActivity().startActionMode(actionModeCallBack);
+            isActionModeActive = true;
+
+            if (getActivity() instanceof ToolbarManager){
+                ((ToolbarManager) getActivity()).setToolbarVisibility(false);
+            }
+        }
+    }
+
     private ActionMode.Callback actionModeCallBack = new ActionMode.Callback() {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-//            MenuInflater inflater = mode.getMenuInflater();
-//            inflater.inflate(R.menu.products_action_mode_many_seller_menu, menu);
 
             View customView = LayoutInflater.from(getContext()).inflate(R.layout.action_mode_custom_layout_1, null);
             mode.setCustomView(customView);
-            
+
             productCountSelectionTextView = customView.findViewById(R.id.product_count_text_view);
+            copyToAllIcon = customView.findViewById(R.id.action_item_1);
+            moveIcon = customView.findViewById(R.id.action_item_2);
+            removeIcon = customView.findViewById(R.id.action_item_3);
+            deleteIcon = customView.findViewById(R.id.action_item_4);
 
             return true;
         }
@@ -367,4 +322,54 @@ public class ProductsListFragment extends Fragment {
             finishActionMode();
         }
     };
+
+    private void toggleSelection(int position){
+
+        if (selectedItems.contains(position)) selectedItems.remove(Integer.valueOf(position));
+        else selectedItems.add(position);
+
+        if (selectedItems.isEmpty()) finishActionMode();
+        else actionMode.invalidate();
+
+        if (actionMode != null)
+            productCountSelectionTextView.setText(new StringBuilder().append(selectedItems.size()).append(" selected").toString());
+
+        if (selectedItems.size() == 1) deleteIcon.setVisibility(View.VISIBLE);
+        else deleteIcon.setVisibility(View.GONE);
+
+        productsRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    private void finishActionMode(){
+        if (actionMode != null) {
+            // Clear selection state in data source
+            for (int position : selectedItems) {
+                cardList.get(position).setSelected(false);
+            }
+
+            // Notify adapter of data changes
+            productsRecyclerViewAdapter.notifyDataSetChanged();
+
+            actionMode.finish();
+            actionMode = null;
+            isActionModeActive = false;
+            selectedItems.clear();
+
+            if (getActivity() instanceof ToolbarManager) {
+                ((ToolbarManager) getActivity()).setToolbarVisibility(true);
+            }
+        }
+    }
+
+
+    private void scrollRecycleViewToBottom(RecyclerView recyclerView){
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        int lastVisibleItemPosition = layoutManager != null ? layoutManager.findLastVisibleItemPosition() : 0;
+        int itemCount = layoutManager != null ? layoutManager.getItemCount() : 0;
+
+        if (lastVisibleItemPosition != (itemCount - 1) || recyclerView.getChildAt(recyclerView.getChildCount() - 1).getBottom() > recyclerView.getHeight()) {
+            recyclerView.scrollToPosition(itemCount - 1);
+        }
+    }
+
 }

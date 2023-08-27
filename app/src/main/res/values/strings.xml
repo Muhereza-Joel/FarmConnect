@@ -43,4 +43,6 @@
     <string name="zone_location">Location such district,village</string>
     <string name="zone_name">Zone Name</string>
     <string name="purchases_icon_title">Purchases</string>
+    <string name="remove_product_warning">You can\'t remove this product because, removing it would delete it permanently.</string>
+    <string name="remove_product_info">By Clicking Ok, you will remove this product from this zone</string>
 </resources>
