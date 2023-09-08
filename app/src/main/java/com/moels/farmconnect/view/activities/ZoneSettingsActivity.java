@@ -1,55 +1,47 @@
 package com.moels.farmconnect.view.activities;
 
-import android.app.FragmentTransaction;
-import android.app.UiModeManager;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceFragment;
-import android.view.Window;
-import android.view.WindowManager;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
-import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+
+import android.app.UiModeManager;
+import android.content.Context;
+import android.os.Build;
+import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.utils.UI;
+import com.moels.farmconnect.utils.preferences.Preferences;
 
-import java.util.List;
-
-public class SettingsActivity extends AppCompatActivity{
+public class ZoneSettingsActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.settings_activity);
+        setContentView(R.layout.activity_zone_settings);
         init();
         setUpStatusBar();
         setSupportActionBar(toolbar);
+
         UI.setUpToolbarInDarkMode(getApplicationContext(), toolbar);
-        UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Settings", true);
+        UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Zones", true);
 
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.settings, new SettingsFragment())
+                    .replace(R.id.zone_settings_fragment_container, new ZoneSettings())
                     .commit();
         }
-
     }
 
-
     private void init(){
-        toolbar = findViewById(R.id.settings_toolbar);
+        toolbar = findViewById(R.id.zone_settings_toolbar);
     }
 
     private void setUpStatusBar() {
@@ -68,25 +60,15 @@ public class SettingsActivity extends AppCompatActivity{
 
     }
 
-
-    public static class SettingsFragment extends PreferenceFragmentCompat {
+    public static class ZoneSettings extends PreferenceFragmentCompat{
 
         @Override
         public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
-            addPreferencesFromResource(R.xml.root_preferences);
-        }
+            if (Preferences.getInstance(getContext()).isBuyerAccount())
+                addPreferencesFromResource(R.xml.zone_preferences_for_buyer);
 
-        @Override
-        public boolean onPreferenceTreeClick(@NonNull Preference preference) {
-
-            switch (preference.getKey()){
-                case "zones" :
-                    Intent intent = new Intent(getContext(), ZoneSettingsActivity.class);
-                    startActivity(intent);
-                    break;
-            }
-
-            return super.onPreferenceTreeClick(preference);
+            if (Preferences.getInstance(getContext()).isFarmerAccount())
+                addPreferencesFromResource(R.xml.zone_preferences_for_seller);
         }
     }
 }

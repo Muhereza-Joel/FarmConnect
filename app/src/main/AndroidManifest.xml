@@ -35,10 +35,14 @@
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
         tools:targetApi="31">
         <activity
+            android:name=".view.activities.ZoneSettingsActivity"
+            android:exported="false"
+            android:parentActivityName=".view.activities.ZoneSettingsActivity"/>
+        <activity
             android:name=".view.activities.SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".view.activities.MainActivity"/>
+            android:parentActivityName=".view.activities.MainActivity" />
         <activity
             android:name=".view.activities.PaymentsActivity"
             android:exported="false"

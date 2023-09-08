@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:id="@+id/chat_list_scroll_view"
+    android:background="@color/grayWhite"
     android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout

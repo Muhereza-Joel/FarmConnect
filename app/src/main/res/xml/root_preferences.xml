@@ -2,8 +2,9 @@
 
     <Preference
         android:icon="@drawable/baseline_account_circle_24"
+        android:key="account"
         android:title="Account"
-        android:summary="Change account, change number"/>
+        android:summary="Profile, change number"/>
 
     <Preference
         android:icon="@drawable/baseline_playlist_add_24_green"

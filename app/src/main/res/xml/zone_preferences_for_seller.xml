@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+
+        android:title="Zone Visibility">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:disableDependentsState="true"
+            android:key="display_all_zones"
+            android:summary="All Zones including those which are active and those which are closed will show up"
+            android:title="Show all zones" />
+
+        <SwitchPreference
+            android:dependency="display_all_zones"
+            android:defaultValue="false"
+            android:key="display_only_active"
+            android:title="Show only active zones"
+            android:summary="Only zones with an active status will show up in the list"/>
+
+        <SwitchPreference
+            android:dependency="display_all_zones"
+            android:defaultValue="false"
+            android:key="display_only_closed"
+            android:title="Show only closed zones"
+            android:summary="Only zones with a status of closed will show up in the list"/>
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Appearance">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="show_zone_owners"
+            android:title="Show zone owners"
+            android:summary="Show a small badge, having the name and profile pic of zone creator"/>
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="show_zone_status"
+            android:title="Show zone status"
+            android:summary="Always show the state of a zone, whether its active or closed"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
