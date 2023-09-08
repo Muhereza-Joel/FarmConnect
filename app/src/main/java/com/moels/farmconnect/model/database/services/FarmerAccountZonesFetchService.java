@@ -52,7 +52,7 @@ public class FarmerAccountZonesFetchService extends Service {
         runnable = new Runnable() {
             @Override
             public void run() {
-                retrieveZonesByPhoneNumbers(contactsDatabase.getAllRegisteredContacts());
+                retrieveZonesByPhoneNumbers(contactsDatabase.getAllPhoneNumbers());
             }
         };
         handler.postDelayed(runnable, POLL_INTERVAL);

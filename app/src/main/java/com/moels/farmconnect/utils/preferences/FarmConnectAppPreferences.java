@@ -40,6 +40,11 @@ public class FarmConnectAppPreferences implements Preferences{
     }
 
     @Override
+    public boolean contactListIsBuilt() {
+        return sharedPreferences.getBoolean("contactListFetched", false);
+    }
+
+    @Override
     public String getAuthenticatedPhoneNumber() {
         return sharedPreferences.getString("authenticatedPhoneNumber", "123456789");
     }

@@ -153,7 +153,7 @@ public class ProductsDataSyncService extends Service{
     }
 
     private void getAllProductsFromDatabase(){
-        List<String> registeredContactList = contactsDatabase.getAllRegisteredContacts();
+        List<String> registeredContactList = contactsDatabase.getAllPhoneNumbers();
         for (String phoneNumber : registeredContactList){
             List<String> zoneIDs = zonesDatabase.getZoneIds(phoneNumber);
 
@@ -204,7 +204,7 @@ public class ProductsDataSyncService extends Service{
     }
 
     private void getAllProductsForTheFarmer(String phoneNumber) {
-        List<String> registeredContactList = contactsDatabase.getAllRegisteredContacts();
+        List<String> registeredContactList = contactsDatabase.getAllPhoneNumbers();
         for (String registeredContact : registeredContactList) {
             List<String> zoneIDs = zonesDatabase.getZoneIds(registeredContact);
             for (String zoneID : zoneIDs) {
@@ -257,7 +257,7 @@ public class ProductsDataSyncService extends Service{
     }
 
     private boolean getNewProductsFromFirebaseDatabase(){
-            List<String> registeredContactList = contactsDatabase.getAllRegisteredContacts();
+            List<String> registeredContactList = contactsDatabase.getAllPhoneNumbers();
             for (String phoneNumber : registeredContactList) {
                 List<String> zoneIDs = zonesDatabase.getZoneIds(phoneNumber);
 
@@ -310,7 +310,7 @@ public class ProductsDataSyncService extends Service{
     }
 
     private boolean updateProductDetails() {
-        List<String> registeredContactList = contactsDatabase.getAllRegisteredContacts();
+        List<String> registeredContactList = contactsDatabase.getAllPhoneNumbers();
         for (String phoneNumber : registeredContactList) {
             List<String> zoneIDs = zonesDatabase.getZoneIds(phoneNumber);
 
@@ -376,7 +376,7 @@ public class ProductsDataSyncService extends Service{
     }
 
     private void removeObsoleteProductsFromSyncedData() {
-        List<String> registeredContactList = contactsDatabase.getAllRegisteredContacts();
+        List<String> registeredContactList = contactsDatabase.getAllPhoneNumbers();
         for (String phoneNumber : registeredContactList) {
             List<String> zoneIDs = zonesDatabase.getZoneIds(phoneNumber);
             for (String zoneID : zoneIDs) {

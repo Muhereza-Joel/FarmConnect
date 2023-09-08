@@ -7,6 +7,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
+import com.moels.farmconnect.utils.models.ContactCardItem;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,45 @@ public final class ContactsTableUtil extends FarmConnectDatabaseHelper implement
             uniqueInstance = new ContactsTableUtil(context);
         }
         return uniqueInstance;
+    }
+
+    @Override
+    public List<ContactCardItem> getAllContacts() {
+        List<ContactCardItem> contactCardItems= new ArrayList<>();
+
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM contacts", null);
+        if (cursor.moveToNext()){
+            do {
+                @SuppressLint("Range") String username = cursor.getString(cursor.getColumnIndex("username"));
+                @SuppressLint("Range") String phoneNumber = cursor.getString(cursor.getColumnIndex("phoneNumber"));
+                @SuppressLint("Range") String imageUrl = cursor.getString(cursor.getColumnIndex("imageUrl"));
+                @SuppressLint("Range") String accountType = cursor.getString(cursor.getColumnIndex("accountType"));
+
+                String accountBudge = "";
+
+                if (accountType != null){
+                    if (accountType.equals("Buyer account")){
+                        accountBudge = "Buyer";
+                    } else {
+                        accountBudge = "Seller";
+                    }
+
+                }
+
+                ContactCardItem contactCardItem = new ContactCardItem()
+                        .setUsername(username)
+                        .setPhoneNumber(phoneNumber)
+                        .setProfilePicUrl(imageUrl)
+                        .setAccountType(accountBudge);
+
+                if (!contactCardItems.contains(contactCardItem)){
+                    contactCardItems.add(contactCardItem);
+                }
+
+            } while (cursor.moveToNext());
+        }
+
+        return contactCardItems;
     }
 
 
@@ -58,7 +99,7 @@ public final class ContactsTableUtil extends FarmConnectDatabaseHelper implement
     }
 
     @Override
-    public List<String> getAllRegisteredContacts(){
+    public List<String> getAllPhoneNumbers(){
         List<String> phoneNumbers = new ArrayList<>();
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT phoneNumber FROM contacts", null);
         if (cursor.moveToNext()){

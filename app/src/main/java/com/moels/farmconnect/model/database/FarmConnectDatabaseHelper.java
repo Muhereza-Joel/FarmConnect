@@ -6,8 +6,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public abstract class FarmConnectDatabaseHelper extends SQLiteOpenHelper {
 
-    //Upgraded from version 5
-    private static final int DATABASE_VERSION = 6;
+    //Upgraded from version 6
+    private static final int DATABASE_VERSION = 7;
     private static final String DATABASE_NAME = "FarmConnectDatabase";
     public SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
 
@@ -116,9 +116,10 @@ public abstract class FarmConnectDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         upgradeContactsTable(db, oldVersion, newVersion);
+        upgradeZonesTable(db, oldVersion, newVersion);
         upgradeProductsTable(db, oldVersion, newVersion);
         upgradeProductZoneMappingsTable(db, oldVersion, newVersion);
-        upgradeZonesTable(db, oldVersion, newVersion);
+
         upgradePurchasesTable(db, oldVersion, newVersion);
     }
 
@@ -259,6 +260,41 @@ public abstract class FarmConnectDatabaseHelper extends SQLiteOpenHelper {
                     "updated, status, zoneID FROM temp_purchases");
 
             db.execSQL("DROP TABLE IF EXISTS temp_purchases");
+        }
+    }
+    private void upgradePaymentsTable(SQLiteDatabase db, int oldVersion, int newVersion){
+        if (oldVersion < newVersion) {
+            db.execSQL("CREATE TABLE temp_payments AS SELECT * FROM payments");
+
+            db.execSQL("DROP TABLE IF EXISTS payments");
+
+            db.execSQL("CREATE TABLE payments(" +
+                    "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "payment_remote_id TEXT UNIQUE, " +
+                    "productRemoteId TEXT, " +
+                    "paymentMethod TEXT, " +
+                    "totalAmount TEXT, " +
+                    "amountPayed TEXT, " +
+                    "balance TEXT, " +
+                    "reason TEXT, " +
+                    "referenceNumber TEXT, " +
+                    "productOwner TEXT, " +
+                    "createDate TEXT, " +
+                    "createTime TEXT, " +
+                    "uploaded TEXT, " +
+                    "updated TEXT, " +
+                    "zoneID TEXT" +
+                    ")");
+
+            db.execSQL("INSERT INTO payments (" +
+                    "_id, payment_remote_id, productRemoteId, paymentMethod, " +
+                    "totalAmount, amountPayed, balance, reason, referenceNumber, productOwner, createDate, createTime," +
+                    "uploaded, updated, zoneID) " +
+                    "SELECT _id, payment_remote_id, productRemoteId, paymentMethod, " +
+                    "totalAmount, amountPayed, balance, reason, referenceNumber, productOwner, createDate, createTime," +
+                    "uploaded, updated, zoneID FROM temp_payments");
+
+            db.execSQL("DROP TABLE IF EXISTS temp_payments");
         }
     }
 }

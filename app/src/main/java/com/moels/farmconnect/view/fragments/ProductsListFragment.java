@@ -24,6 +24,10 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.controller.ProductsController;
+import com.moels.farmconnect.controller.ZonesController;
+import com.moels.farmconnect.utils.UI;
+import com.moels.farmconnect.utils.models.Zone;
 import com.moels.farmconnect.utils.preferences.Globals;
 import com.moels.farmconnect.view.ToolbarManager;
 import com.moels.farmconnect.view.activities.ProductDetailsActivity;
@@ -36,25 +40,31 @@ import com.moels.farmconnect.model.database.ProductsTable;
 import com.moels.farmconnect.model.database.ProductsTableUtil;
 import com.moels.farmconnect.model.observers.ProductsObserver;
 import com.moels.farmconnect.model.observers.RealTimeProductsObserver;
+import com.moels.farmconnect.view.dialogs.MultiSelectCopyDialog;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProductsListFragment extends Fragment {
     private static final int PRODUCT_DELETE_REQUEST_CODE = 3;
+    private String authenticatedPhoneNumber;
+    private boolean isActionModeActive = false;
     private RecyclerView productListRecyclerView;
     private ProductsRecyclerViewAdapter productsRecyclerViewAdapter;
-    private ProductsTable productsDatabase;
-    public List<Card> cardList;
-    private Preferences preferences;
-    private String authenticatedPhoneNumber;
-    private TextView emptyProductsMessageTextView, productCountSelectionTextView;
+    private ImageView copyToAllIcon, moveIcon, removeIcon, deleteIcon;
     private View view;
-    private ProductsObserver productsObserver;
+    private TextView emptyProductsMessageTextView, productCountSelectionTextView;
     private ActionMode actionMode;
-    private boolean isActionModeActive = false;
+    private ProductsTable productsDatabase;
+    private List<Card> cardList;
+    private List<String> selectedProductIDsList = new ArrayList<>();
+    private List<String> filteredProductIDs = new ArrayList<>();
+    private List<String> filteredZoneIDs = new ArrayList<>();
+    private ProductsObserver productsObserver;
     private List<Integer> selectedItems = new ArrayList<>();
-    ImageView copyToAllIcon, moveIcon, removeIcon, deleteIcon;
+    private Preferences preferences;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -266,6 +276,8 @@ public class ProductsListFragment extends Fragment {
                 else {
                     productsRecyclerViewAdapter.toggleItemSelection(position);
                     toggleSelection(position);
+                    getProductIDsFromCards(position);
+
                 }
 
             }
@@ -275,6 +287,7 @@ public class ProductsListFragment extends Fragment {
                 startActionMode();
                 productsRecyclerViewAdapter.toggleItemSelection(position);
                 toggleSelection(position);
+                getProductIDsFromCards(position);
             }
         });
     }
@@ -302,6 +315,42 @@ public class ProductsListFragment extends Fragment {
             moveIcon = customView.findViewById(R.id.action_item_2);
             removeIcon = customView.findViewById(R.id.action_item_3);
             deleteIcon = customView.findViewById(R.id.action_item_4);
+
+            copyToAllIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ProductsController productsController = ProductsController.getInstance();
+                    productsController.setContext(getContext());
+
+                    ZonesController zonesController = ZonesController.getInstance();
+                    zonesController.setContext(getContext());
+
+                    List<Zone> listOfAllZones = zonesController.getAllZones();
+
+                    List<String> listOfZoneIds = new ArrayList<>();
+                    for (Zone zone : listOfAllZones) listOfZoneIds.add(zone.getZoneID());
+
+
+                    for (String productID : selectedProductIDsList) {
+                        List<String> productMappings = productsController.getProductMappings(productID);
+
+                        for (String zoneId : listOfZoneIds) {
+                            if (!productMappings.contains(zoneId)) {
+                                filteredProductIDs.add(productID);
+                                filteredZoneIDs.add(zoneId);
+//                                productsController.copyProduct(productID, zoneId);
+
+                            }
+                        }
+                    }
+
+                    MultiSelectCopyDialog multiSelectCopyDialog = new MultiSelectCopyDialog();
+                    multiSelectCopyDialog.setProductIDs(filteredProductIDs);
+                    multiSelectCopyDialog.setListOfAllZonesIDs(filteredZoneIDs);
+                    multiSelectCopyDialog.show(getActivity().getSupportFragmentManager(), "mu");
+
+                }
+            });
 
             return true;
         }
@@ -339,6 +388,14 @@ public class ProductsListFragment extends Fragment {
 
         productsRecyclerViewAdapter.notifyDataSetChanged();
     }
+    private void getProductIDsFromCards(int position){
+        if (!selectedProductIDsList.contains(cardList.get(position).getId())){
+            selectedProductIDsList.add(cardList.get(position).getId());
+        } else {
+            selectedProductIDsList.remove(cardList.get(position).getId());
+        }
+
+    }
 
     private void finishActionMode(){
         if (actionMode != null) {
@@ -354,6 +411,8 @@ public class ProductsListFragment extends Fragment {
             actionMode = null;
             isActionModeActive = false;
             selectedItems.clear();
+            filteredProductIDs.clear();
+            filteredZoneIDs.clear();
 
             if (getActivity() instanceof ToolbarManager) {
                 ((ToolbarManager) getActivity()).setToolbarVisibility(true);

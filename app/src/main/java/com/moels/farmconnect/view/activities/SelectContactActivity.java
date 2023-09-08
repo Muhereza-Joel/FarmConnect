@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.moels.farmconnect.R;
+import com.moels.farmconnect.model.database.ContactsTable;
 import com.moels.farmconnect.view.adapters.ContactListRecyclerViewAdapter;
 import com.moels.farmconnect.utils.models.ContactCardItem;
 import com.moels.farmconnect.model.database.services.BuyerAccountZoneFetchService;
@@ -56,12 +57,9 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
     private Toolbar callActivityToolBar;
     private RecyclerView contactListRecyclerView;
     private ContactListRecyclerViewAdapter contactListRecyclerViewAdapter;
-    private List<ContactCardItem> contactsList;
     private Button createNewContactButton;
-    private ContactsTableUtil contactsDatabaseHelper;
-    private SQLiteDatabase sqLiteDatabase;
-    private Preferences preferences;
     private TextView emptyContactListTextView;
+    private List<ContactCardItem> contactCardItems;
 
     private ServiceConnection farmerServiceConnection = new ServiceConnection() {
         @Override
@@ -118,19 +116,23 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
         setSupportActionBar(callActivityToolBar);
         UI.setUpToolbarInDarkMode(getApplicationContext(), callActivityToolBar);
         UI.setUpActionBar(getSupportActionBar(), R.drawable.ic_back_arrow, "Select Contact", true);
-
-        contactsDatabaseHelper = ContactsTableUtil.getInstance(getApplicationContext());
-        sqLiteDatabase  = contactsDatabaseHelper.getWritableDatabase();
-        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
+        contactListRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
         if (checkRequiredPermissions() == false){
             requestPermissions();
             return;
         }
 
+        if (Preferences.getInstance(getApplicationContext()).contactListIsBuilt()){
+            contactCardItems = ContactsTable.getInstance(getApplicationContext()).getAllContacts();
 
-        if (preferences.getBoolean("contactListFetched")){
-            getContactsFromDatabase();
+            contactListRecyclerViewAdapter = new ContactListRecyclerViewAdapter(contactCardItems, getApplicationContext());
+
+            contactListRecyclerView.setAdapter(contactListRecyclerViewAdapter);
+            contactListRecyclerViewAdapter.notifyDataSetChanged();
+
+        } else {
+            emptyContactListTextView.setVisibility(View.VISIBLE);
         }
 
 
@@ -189,49 +191,6 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
         }, REQUEST_PERMISSION_CODE);
     }
 
-    private void getContactsFromDatabase(){
-        //TODO remove database functionality from this activity
-        ContactCardItem contactCardItem;
-        contactsList = new ArrayList<>();
-        String [] columnsToPick = {"_id","username", "phoneNumber", "imageUrl","accountType"};
-        Cursor cursor = sqLiteDatabase.query("contacts", columnsToPick,
-                null, null, null, null, null);
-
-        if (cursor.moveToFirst()){
-            do {
-                @SuppressLint("Range") String username = cursor.getString(cursor.getColumnIndex("username"));
-                @SuppressLint("Range") String phoneNumber = cursor.getString(cursor.getColumnIndex("phoneNumber"));
-                @SuppressLint("Range") String imageUrl = cursor.getString(cursor.getColumnIndex("imageUrl"));
-                @SuppressLint("Range") String accountType = cursor.getString(cursor.getColumnIndex("accountType"));
-
-                String accountBudge = "";
-
-                if (accountType.equals("Buyer account")){
-                    accountBudge = "Buyer";
-                } else {
-                    accountBudge = "Seller";
-                }
-
-
-                if (!(TextUtils.isEmpty(username) || TextUtils.isEmpty(phoneNumber) || TextUtils.isEmpty(imageUrl) || TextUtils.isEmpty(accountType))){
-                    contactCardItem = new ContactCardItem();
-                    contactCardItem.setCardItem(username,imageUrl, phoneNumber, accountBudge);
-                    contactsList.add(contactCardItem);
-                }
-
-            } while (cursor.moveToNext());
-            cursor.close();
-        }
-            else {
-            emptyContactListTextView.setVisibility(View.VISIBLE);
-        }
-            contactListRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-            contactListRecyclerViewAdapter = new ContactListRecyclerViewAdapter(contactsList, getApplicationContext());
-            contactListRecyclerView.setAdapter(contactListRecyclerViewAdapter);
-            contactListRecyclerViewAdapter.notifyDataSetChanged();
-
-    }
-
 
     @Override
     public void onContactsFetchComplete() {
@@ -240,17 +199,21 @@ public class SelectContactActivity extends AppCompatActivity implements FetchCon
             bound = false;
         }
         UI.hide(progressBar);
-        getContactsFromDatabase();
+
+        contactCardItems = ContactsTable.getInstance(getApplicationContext()).getAllContacts();
+        contactListRecyclerViewAdapter.notifyDataSetChanged();
+
         UI.displayToast(getApplicationContext(), "Contact List Updated");
+        
         stopService(new Intent(SelectContactActivity.this, FetchContactsService.class));
 
-        if (preferences.isBuyerAccount()){
+        if (Preferences.getInstance(getApplicationContext()).isBuyerAccount()){
             Intent intent = new Intent(this, BuyerAccountZoneFetchService.class);
             startService(intent);
             bindService(intent, buyerServiceConnection, Context.BIND_AUTO_CREATE);
         }
 
-        if (preferences.isFarmerAccount()){
+        if (Preferences.getInstance(getApplicationContext()).isFarmerAccount()){
             Intent serviceIntent = new Intent(getApplicationContext(), FarmerAccountZonesFetchService.class);
             startService(serviceIntent);
             bindService(serviceIntent, farmerServiceConnection, Context.BIND_AUTO_CREATE);

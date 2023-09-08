@@ -67,7 +67,7 @@ public class ZonesListFragment extends Fragment {
 
     public void observeZonesInFirebase(){
         Log.d("FarmConnect", "ZonesFireBaseObserver: Observer is running");
-        zonesObserver = RealTimeZonesObserver.getInstance(contactsDatabase.getAllRegisteredContacts());
+        zonesObserver = RealTimeZonesObserver.getInstance(contactsDatabase.getAllPhoneNumbers());
         zonesObserver.startListening(new RealTimeZonesObserver.OnZoneUpdateListener() {
             @Override
             public void onZoneAdded(Zone zone) {

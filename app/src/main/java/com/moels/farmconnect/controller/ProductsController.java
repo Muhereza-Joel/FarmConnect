@@ -54,8 +54,16 @@ public final class ProductsController extends Controller implements Observer {
         else UI.displayToast(context, "Products Copied to " + count + " zones");
     }
 
+    public void copyProduct(String productID, String zoneID){
+        productZoneMappingTable.addNewMapping(productID, zoneID);
+    }
+
     public List<String> getProductMappings(String productID){
         return productZoneMappingTable.getProductMappings(productID);
+    }
+
+    public List<String> getZoneMappings(String zoneID){
+        return productZoneMappingTable.getZoneMappings(zoneID);
     }
 
     public boolean deleteProductMapping(String productID, String zoneID){

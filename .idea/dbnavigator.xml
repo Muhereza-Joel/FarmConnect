@@ -13,13 +13,7 @@
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="b4887cba-bade-4162-8b5b-33515bcb6b2f">
-      <console name="Connection" type="STANDARD" schema="main" session="Main"><![CDATA[--CREATE TABLE product_zone_mapping ( id INTEGER PRIMARY KEY AUTOINCREMENT, 
---product_id INTEGER, 
---zone_id INTEGER, 
---FOREIGN KEY (product_id) REFERENCES products (productRemoteId), 
---FOREIGN KEY (zone_id) REFERENCES zones (remote_id))"
-
-delete from product_zone_mapping]]></console>
+      <console name="Connection" type="STANDARD" schema="main" session="Main"><![CDATA[select * from contacts]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">

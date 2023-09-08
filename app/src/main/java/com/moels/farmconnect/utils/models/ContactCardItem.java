@@ -6,16 +6,24 @@ public class ContactCardItem {
     private String profilePicUrl;
     private String accountType;
 
-    public void setCardItem(String username, String phoneNumber) {
+    public ContactCardItem setUsername(String username) {
         this.username = username;
-        this.phoneNumber = phoneNumber;
+        return this;
     }
 
-    public void setCardItem(String username, String profilePicUrl, String phoneNumber, String accountType) {
-        this.username = username;
-        this.profilePicUrl = profilePicUrl;
+    public ContactCardItem setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+        return this;
+    }
+
+    public ContactCardItem setProfilePicUrl(String profilePicUrl) {
+        this.profilePicUrl = profilePicUrl;
+        return this;
+    }
+
+    public ContactCardItem setAccountType(String accountType) {
         this.accountType = accountType;
+        return this;
     }
 
     public String getUsername() {

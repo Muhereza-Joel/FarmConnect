@@ -1,0 +1,44 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:icon="@drawable/baseline_account_circle_24"
+        android:title="Account"
+        android:summary="Change account, change number"/>
+
+    <Preference
+        android:icon="@drawable/baseline_playlist_add_24_green"
+        android:key="chats"
+        android:title="Chats"
+        android:summary="Theme, History"/>
+
+    <Preference
+        android:icon="@drawable/baseline_location_on_24"
+        android:key="zones"
+        android:title="Zones"
+        android:summary="Show active zones, hide closed zones"/>
+
+    <Preference
+        android:icon="@drawable/baseline_add_ic_call_24_green"
+        android:key="calls"
+        android:title="Calls"
+        android:summary="Mute calls , change number"/>
+
+    <Preference
+        android:icon="@drawable/baseline_payment_24_green"
+        android:key="payments"
+        android:title="Payments"
+        android:summary="Set up account, choose method of payment"/>
+
+    <Preference
+        android:icon="@drawable/baseline_privacy_tip_24"
+        android:key="privacy"
+        android:title="Privacy"
+        android:summary="Choose who sees what"/>
+
+    <Preference
+        android:icon="@drawable/baseline_language_24"
+        android:key="language"
+        android:title="App language"
+        android:summary="Change app language"/>
+
+</PreferenceScreen>
