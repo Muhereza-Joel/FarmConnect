@@ -58,7 +58,7 @@
             <item
                 android:id="@+id/zone_participants"
                 android:orderInCategory="108"
-                android:title="Zone Participants"
+                android:title="Collection team"
                 android:tooltipText="Zone Participants"
                 app:showAsAction="never">
 
