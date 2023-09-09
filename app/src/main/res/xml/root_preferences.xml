@@ -1,10 +1,17 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
         android:icon="@drawable/baseline_account_circle_24"
         android:key="account"
         android:title="Account"
         android:summary="Profile, change number"/>
+
+    <Preference
+        android:icon="@drawable/baseline_notifications_24"
+        android:key="notifications"
+        android:title="Notifications"
+        android:summary="Block notifications, change sound"/>
 
     <Preference
         android:icon="@drawable/baseline_playlist_add_24_green"
@@ -23,6 +30,12 @@
         android:key="calls"
         android:title="Calls"
         android:summary="Mute calls , change number"/>
+
+    <Preference
+        android:icon="@drawable/baseline_shopping_bag_24"
+        app:key="products"
+        android:title="Products"
+        android:summary="Show available, hide out of stock products"/>
 
     <Preference
         android:icon="@drawable/baseline_payment_24_green"

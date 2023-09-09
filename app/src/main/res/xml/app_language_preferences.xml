@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:disableDependentsState="true"
+        android:icon="@drawable/baseline_language_24"
+        android:key="choose_language_using_profile"
+        android:title="Choose Language according to profile"
+        app:singleLineTitle="true"
+        android:summary="Set the app language according to my profile data"/>
+
+    <SwitchPreference
+        android:dependency="choose_language_using_profile"
+        android:defaultValue="false"
+        android:key="use_language_my_choice"
+        android:title="Use language of my choice"
+        android:summary="Set the app language depending on the language of my choice"/>
+    <ListPreference
+        app:dependency="use_language_my_choice"
+        android:defaultValue="English"
+        android:dependency="use_language_my_choice"
+        android:entries="@array/app_languages"
+        android:entryValues="@array/app_languages"
+        android:key="app_language"
+        android:title="Choose your own language" />
+
+
+</PreferenceScreen>

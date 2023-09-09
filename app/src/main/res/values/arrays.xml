@@ -9,6 +9,19 @@
         <item>Bag(s)</item>
         <item>Piece(s)</item>
     </string-array>
+
+    <string-array name="zone_sounds">
+        <item>Solo</item>
+        <item>Hello</item>
+        <item>Breaker</item>
+    </string-array>
+
+    <string-array name="app_languages">
+        <item>English</item>
+        <item>Kiswahili</item>
+        <item>French</item>
+        <item>German</item>
+    </string-array>
     <!-- Reply Preference -->
     <string-array name="reply_entries">
         <item>Reply</item>

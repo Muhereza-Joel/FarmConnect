@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:icon="@drawable/baseline_notifications_24"
+            android:key="all_notifications"
+            android:title="Allow notifications"
+            android:summary="Allow the app to notify you when not in use, or when using another app"/>
+
+    <PreferenceCategory android:title="Zones">
+
+        <SwitchPreference
+            android:icon="@drawable/baseline_music_note_24"
+            android:defaultValue="true"
+            android:key="play_zone_sound"
+            android:title="Play notification sound"
+            android:summary="Play a sound when an event happens in any zone"/>
+
+        <ListPreference
+            android:defaultValue="Solo"
+            android:selectable="true"
+            android:dependency="play_zone_sound"
+            android:entries="@array/zone_sounds"
+            android:entryValues="@array/zone_sounds"
+            android:key="zone_sound_list"
+            android:title="Choose notification sound" />
+
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Chats">
+
+        <SwitchPreference
+            android:icon="@drawable/baseline_music_note_24"
+            android:defaultValue="true"
+            android:key="play_chat_sound"
+            android:title="Play notification sound"
+            android:summary="Play a sound when a message is received"/>
+        <ListPreference
+            android:defaultValue="Solo"
+            android:dependency="play_chat_sound"
+            android:entries="@array/zone_sounds"
+            android:entryValues="@array/zone_sounds"
+            android:key="chat_sound_list"
+            android:title="Choose notification sound" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Payments">
+
+        <SwitchPreference
+            android:icon="@drawable/baseline_music_note_24"
+            android:defaultValue="true"
+            android:key="play_payment_sound"
+            android:title="Play notification sound"
+            android:summary="Play a sound when a new payment is made"/>
+        <ListPreference
+            android:defaultValue="Solo"
+            android:dependency="play_payment_sound"
+            android:entries="@array/zone_sounds"
+            android:entryValues="@array/zone_sounds"
+            android:key="payment_sound_list"
+            android:title="Choose notification sound" />
+    </PreferenceCategory>
+</PreferenceScreen>

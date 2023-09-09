@@ -7,6 +7,7 @@
         android:title="Zone Visibility">
 
     <SwitchPreference
+        android:icon="@drawable/baseline_location_on_24"
         android:defaultValue="true"
         android:disableDependentsState="true"
         android:key="display_all_zones"
@@ -31,6 +32,7 @@
     <PreferenceCategory android:title="Appearance">
 
         <SwitchPreference
+            android:icon="@drawable/baseline_nature_people_24"
             android:defaultValue="true"
             android:key="show_zone_owners"
             android:title="Show zone owners"

@@ -80,9 +80,19 @@ public class SettingsActivity extends AppCompatActivity{
         public boolean onPreferenceTreeClick(@NonNull Preference preference) {
 
             switch (preference.getKey()){
+                case "notifications" :
+                    Intent notificationSettingsActivity = new Intent(getContext(), NotificationSettingsActivity.class);
+                    startActivity(notificationSettingsActivity);
+                    break;
+
                 case "zones" :
-                    Intent intent = new Intent(getContext(), ZoneSettingsActivity.class);
-                    startActivity(intent);
+                    Intent zoneSettingsActivity = new Intent(getContext(), ZoneSettingsActivity.class);
+                    startActivity(zoneSettingsActivity);
+                    break;
+
+                case "language" :
+                    Intent languageSettingsActivity = new Intent(getContext(), AppLanguageSettingsActivity.class);
+                    startActivity(languageSettingsActivity);
                     break;
             }
 
