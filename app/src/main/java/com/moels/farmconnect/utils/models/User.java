@@ -13,13 +13,34 @@ public class User implements Serializable {
 
     public User(){}
 
-    public User(String name, String gender, String phoneNumber, String dateOfBirth, String accountType, String profilePicUrl) {
+    public User setName(String name) {
         this.name = name;
-        this.gender = gender;
+        return this;
+    }
+
+    public User setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+        return this;
+    }
+
+    public User setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+        return this;
+    }
+
+    public User setAccountType(String accountType) {
         this.accountType = accountType;
+        return this;
+    }
+
+    public User setProfilePicUrl(String profilePicUrl) {
         this.profilePicUrl = profilePicUrl;
+        return this;
+    }
+
+    public User setGender(String gender) {
+        this.gender = gender;
+        return this;
     }
 
     public String getName() {

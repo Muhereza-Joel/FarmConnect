@@ -56,7 +56,7 @@ public class ZonesListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         zonesDatabase = ZonesTableUtil.getInstance(getContext());
         contactsDatabase = ContactsTableUtil.getInstance(getContext());
-        preferences = FarmConnectAppPreferences.getInstance(getContext());
+        preferences = Preferences.getInstance(getContext());
         zoneCardItems = zonesDatabase.getAllZonesFormatedInCards();
 
         if (preferences.isFarmerAccount()){
@@ -223,14 +223,15 @@ public class ZonesListFragment extends Fragment {
             @Override
             public void onClick(int position) {
 
-                SharedPreferences myAppPreferences = getActivity().getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
-                if (myAppPreferences.getBoolean("farmerAccountTypeChosen", false) == true){
+                if (preferences.isFarmerAccount()){
                     Intent intent = new Intent(getContext(), AddProductToZoneActivity.class);
                     intent.putExtra("zoneName", zoneCardItems.get(position).getZoneName());
                     intent.putExtra("zoneID", zoneCardItems.get(position).get_id());
                     startActivity(intent);
 
-                } else {
+                }
+
+                if (preferences.isBuyerAccount()){
                     Intent intent = new Intent(getContext(), ProductsInAzoneActivity.class);
                     intent.putExtra("zoneName", zoneCardItems.get(position).getZoneName());
                     intent.putExtra("zoneID", zoneCardItems.get(position).get_id());

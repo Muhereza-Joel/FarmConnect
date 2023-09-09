@@ -27,8 +27,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -69,8 +67,6 @@ public class CreateProfileActivity extends AppCompatActivity {
     private EditText phoneNumber, dateOfBirthEditText, username;
     private ImageView profilePicImageView;
     private Toolbar toolbar;
-    RadioGroup accountTypeRadioGroup;
-    private RadioButton buyerRadioButton, farmerRadioButton;
     private Spinner genderSpinner;
     private LinearLayout profilePicImageViewContainer;
     private ProgressDialog progressDialog;
@@ -195,9 +191,7 @@ public class CreateProfileActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_save){
-            int checkedRadioGroupButton = accountTypeRadioGroup.getCheckedRadioButtonId();
-            RadioButton checkedRadioButton = findViewById(checkedRadioGroupButton);
-            String selectedValue = checkedRadioButton.getText().toString();
+
             String fullName = username.getText().toString();
             String authenticatedPhoneNumber = phoneNumber.getText().toString();
             String birthDate  = dateOfBirthEditText.getText().toString();
@@ -237,7 +231,13 @@ public class CreateProfileActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Uri uri) {
                             String url = uri.toString();
-                            User user = new User(fullName,gender, authenticatedPhoneNumber, birthDate, selectedValue, url);
+                            User user = new User()
+                                    .setName(fullName)
+                                    .setGender(gender)
+                                    .setPhoneNumber(authenticatedPhoneNumber)
+                                    .setDateOfBirth(birthDate)
+                                    .setProfilePicUrl(url);
+                                    //TODO modify profile activity to use local database;
                             uploadProfileData(user);
                         }
                     });
@@ -265,23 +265,10 @@ public class CreateProfileActivity extends AppCompatActivity {
                     for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                         String phoneNumber = userSnapshot.child("phoneNumber").getValue(String.class);
                         if (phoneNumber != null && phoneNumber.equals(user.getPhoneNumber())) {
-                            String existingAccountType = userSnapshot.child("accountType").getValue(String.class);
-                            System.out.println(existingAccountType);
-                            if (existingAccountType != null) {
-                                if (existingAccountType.equals("Buyer account")) {
-                                    preferences.putBoolean("buyerAccountTypeChosen", true);
-                                    preferences.putBoolean("farmerAccountTypeChosen", false);
-                                } else if (existingAccountType.equals("Farmer account")) {
-                                    preferences.putBoolean("farmerAccountTypeChosen", true);
-                                    preferences.putBoolean("buyerAccountTypeChosen", false);
-                                }
-                            } else {
-                                // Handle the case where the "accountType" field is missing or null
-                                // You can set default values or handle it according to your requirements
-                            }
+
                             preferences.putBoolean("profileCreated", true);
                             progressDialog.dismiss();
-                            startFinishSetUpActivity();
+                            startAccountSetUpActivity();
                             break;
                         }
                     }
@@ -291,11 +278,10 @@ public class CreateProfileActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(Void unused) {
                             UI.displayToast(getApplicationContext(), "Profile Data Uploaded");
-                            Log.d("On Success", "Uploaded data to Firebase Realtime Database");
+
                             preferences.putBoolean("profileCreated", true);
                             progressDialog.dismiss();
-                            saveChosenAccount();
-                            startFinishSetUpActivity();
+                            startAccountSetUpActivity();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -316,20 +302,8 @@ public class CreateProfileActivity extends AppCompatActivity {
         });
     }
 
-
-    private void saveChosenAccount(){
-        if (buyerRadioButton.isChecked() == true){
-            preferences.putBoolean("buyerAccountTypeChosen", true);
-            preferences.putBoolean("farmerAccountTypeChosen", false);
-        }
-
-        if (farmerRadioButton.isChecked() == true){
-            preferences.putBoolean("farmerAccountTypeChosen", true);
-            preferences.putBoolean("buyerAccountTypeChosen", false);
-        }
-    }
-    private void startFinishSetUpActivity(){
-        Intent intent = new Intent(CreateProfileActivity.this, FinishSetUpActivity.class);
+    private void startAccountSetUpActivity(){
+        Intent intent = new Intent(CreateProfileActivity.this, AccountSetUpActivity.class);
         startActivity(intent);
         finish();
     }
@@ -341,10 +315,7 @@ public class CreateProfileActivity extends AppCompatActivity {
         profilePicImageView = findViewById(R.id.profile_pic_image_view);
         phoneNumber = findViewById(R.id.phone_number_edit_text);
         chooseProfilePicButton = findViewById(R.id.select_profile_pic_button);
-        buyerRadioButton = findViewById(R.id.buyer_user_type_radio_button);
-        farmerRadioButton = findViewById(R.id.farmer_user_type_radio_button);
         genderSpinner = findViewById(R.id.gender);
-        accountTypeRadioGroup = findViewById(R.id.use_type_radio_group);
         profilePicImageViewContainer = findViewById(R.id.profile_pic_image_view_container);
     }
 

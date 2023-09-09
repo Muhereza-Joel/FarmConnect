@@ -97,7 +97,7 @@ public class AuthenticateUserActivity extends AppCompatActivity {
                                             String verifiedPhoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
                                             DatabaseReference usersReference = FirebaseDatabase.getInstance().getReference("users");
                                             usersReference.child(userID).child(verifiedPhoneNumber).setValue(verifiedPhoneNumber);
-                                            preferences.putBoolean("phoneNumberAuthenticated", true);
+                                            preferences.putBoolean("phoneNumberAuthenticated", false);
                                             preferences.putString("authenticatedPhoneNumber", getIntent().getStringExtra("phoneNumber"));
 
                                             Intent createProfileActivity = new Intent(getApplicationContext(), CreateProfileActivity.class);

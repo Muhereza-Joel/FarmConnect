@@ -16,6 +16,7 @@ public interface Preferences {
     boolean isBuyerAccount();
     boolean userIsAuthenticated();
     boolean userProfileIsCreated();
+    boolean userAccountIsChosen();
     boolean contactListIsBuilt();
     String getAuthenticatedPhoneNumber();
     void putBoolean(String key, boolean value);

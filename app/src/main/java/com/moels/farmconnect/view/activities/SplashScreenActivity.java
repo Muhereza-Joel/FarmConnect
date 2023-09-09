@@ -13,8 +13,11 @@ import android.os.Handler;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 import com.moels.farmconnect.R;
 import com.moels.farmconnect.utils.filemanager.FileManager;
@@ -30,22 +33,30 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
         setUpStatusBar();
 
+
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 Preferences preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
+                FileManager.createMediaStorageFolders(getApplicationContext());
 
                 if (preferences.userIsAuthenticated()) {
 
                     if (preferences.userProfileIsCreated()) {
-                        Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        FileManager.createMediaStorageFolders(getApplicationContext());
-                        finish();
+
+                        if (preferences.userAccountIsChosen()){
+                            Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            finish();
+
+                        }else{
+                            Intent intent = new Intent(SplashScreenActivity.this, AccountSetUpActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
                     } else {
                         Intent intent = new Intent(SplashScreenActivity.this, CreateProfileActivity.class);
                         intent.putExtra("phoneNumber", preferences.getAuthenticatedPhoneNumber());
-                        FileManager.createMediaStorageFolders(getApplicationContext());
                         startActivity(intent);
                         finish();
                     }
@@ -56,7 +67,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                 if (!preferences.userIsAuthenticated()){
                     Intent intent = new Intent(SplashScreenActivity.this, WelcomeActivity.class);
                     startActivity(intent);
-                    FileManager.createMediaStorageFolders(getApplicationContext());
                     finish();
                 }
 
@@ -80,4 +90,5 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
 
     }
+
 }

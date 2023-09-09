@@ -3,13 +3,15 @@ package com.moels.farmconnect.utils.preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.preference.PreferenceManager;
+
 public class FarmConnectAppPreferences implements Preferences{
     private static FarmConnectAppPreferences uniqueInstance;
     private Context context;
     private final SharedPreferences sharedPreferences;
 
     private FarmConnectAppPreferences(Context context) {
-      sharedPreferences = context.getSharedPreferences("MyAppPreferences", Context.MODE_PRIVATE);
+      sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     public static FarmConnectAppPreferences getInstance(Context context){
@@ -31,12 +33,17 @@ public class FarmConnectAppPreferences implements Preferences{
 
     @Override
     public boolean userIsAuthenticated() {
-        return sharedPreferences.getBoolean("phoneNumberAuthenticated", false);
+        return sharedPreferences.getBoolean("phoneNumberAuthenticated", true);
     }
 
     @Override
     public boolean userProfileIsCreated() {
         return sharedPreferences.getBoolean("profileCreated", false);
+    }
+
+    @Override
+    public boolean userAccountIsChosen() {
+        return sharedPreferences.getBoolean("userAccountChosen", false);
     }
 
     @Override

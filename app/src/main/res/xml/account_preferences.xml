@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="buyerAccountTypeChosen"
+        android:title="Buyer Account"
+        android:summary="This type of account facilitates buying of goods from clients in your contact list."/>
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="farmerAccountTypeChosen"
+        android:title="Seller Account"
+        android:summary="This type of account facilitates selling of goods to buyers in your contact list."/>
+    <SwitchPreference
+        android:selectable="false"
+        android:defaultValue="false"
+        android:key="collectionAccountTypeChosen"
+        android:title="Collection Team Account"
+        android:summary="This type of account facilitates teams created by buyers to collect goods from clients"/>
+
+</PreferenceScreen>

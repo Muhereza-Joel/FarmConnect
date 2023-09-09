@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:defaultValue="123456789"
+        android:key="authenticatedPhoneNumber"/>
+
+    <Preference
+        android:defaultValue="false"
+        android:key="phoneNumberAuthenticated" />
+
+    <Preference
+        android:defaultValue="false"
+        android:key="profileCreated"/>
+
+    <Preference
+        android:defaultValue="false"
+        android:key="accountSaved"/>
+
+
+</PreferenceScreen>

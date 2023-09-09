@@ -103,7 +103,6 @@ public class MainActivity extends AppCompatActivity implements ProductsDataSyncS
         tabLayout.setupWithViewPager(viewPager); //Link Tab_layout and View_pager
         viewPagerAdapter.notifyDataSetChanged();
 
-        Log.d("On Create Called", "Selected Tab " +tabLayout.getSelectedTabPosition());
 
 
         startNewChatFloatingActionButton.setOnClickListener(new View.OnClickListener() {

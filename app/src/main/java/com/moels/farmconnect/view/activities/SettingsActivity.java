@@ -80,6 +80,11 @@ public class SettingsActivity extends AppCompatActivity{
         public boolean onPreferenceTreeClick(@NonNull Preference preference) {
 
             switch (preference.getKey()){
+                case "account" :
+                    Intent accountSettingsActivity = new Intent(getContext(), AccountSettingsActivity.class);
+                    startActivity(accountSettingsActivity);
+                    break;
+
                 case "notifications" :
                     Intent notificationSettingsActivity = new Intent(getContext(), NotificationSettingsActivity.class);
                     startActivity(notificationSettingsActivity);

@@ -24,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:layout_marginBottom="15dp"
-                android:background="@drawable/profile_layout_top_background"
+                android:background="@color/colorPrimary"
                 android:elevation="10dp"
                 android:gravity="center"
                 android:orientation="horizontal"
@@ -52,16 +52,6 @@
                     android:gravity="center_vertical|center_horizontal" />
 
             </LinearLayout>
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/personal_info_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:text="Personal Information"
-                android:textSize="20sp"
-                android:textStyle="bold|italic" />
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/name_edit_text"
@@ -130,43 +120,6 @@
                     android:padding="10dp" />
 
             </LinearLayout>
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/farm_info_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="10dp"
-                android:text="Preffered Account Type"
-                android:textSize="20sp"
-                android:textStyle="bold|italic" />
-
-            
-           <RadioGroup
-               android:id="@+id/use_type_radio_group"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:orientation="vertical">
-
-               <com.google.android.material.radiobutton.MaterialRadioButton
-                   android:id="@+id/buyer_user_type_radio_button"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_margin="10dp"
-                   android:checked="true"
-                   android:text="Buyer account"
-                   android:textSize="20sp" />
-
-               <com.google.android.material.radiobutton.MaterialRadioButton
-                   android:id="@+id/farmer_user_type_radio_button"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_margin="10dp"
-                   android:textSize="20sp"
-                   android:text="Farmer account"/>
-
-           </RadioGroup>
 
         </LinearLayout>
 
