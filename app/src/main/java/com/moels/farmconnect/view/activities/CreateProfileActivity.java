@@ -82,7 +82,7 @@ public class CreateProfileActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         UI.setUpToolbarInDarkMode(getApplicationContext(), toolbar);
         UI.setUpActionBar(getSupportActionBar(),"Create Profile");
-        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
+        preferences = Preferences.getInstance(getApplicationContext());
 
         GradientDrawable circleDrawable = new GradientDrawable();
         circleDrawable.setShape(GradientDrawable.OVAL);

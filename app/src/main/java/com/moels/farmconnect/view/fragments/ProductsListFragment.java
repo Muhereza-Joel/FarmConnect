@@ -71,7 +71,7 @@ public class ProductsListFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         productsDatabase = ProductsTableUtil.getInstance(getContext());
-        preferences = FarmConnectAppPreferences.getInstance(getContext());
+        preferences = Preferences.getInstance(getContext());
         authenticatedPhoneNumber = preferences.getString(Globals.AUTHENTICATED_PHONE_NUMBER);
 
         if (preferences.isFarmerAccount()){

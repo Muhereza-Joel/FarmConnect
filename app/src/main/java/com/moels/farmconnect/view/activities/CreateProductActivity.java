@@ -85,7 +85,7 @@ public class CreateProductActivity extends AppCompatActivity {
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Create New Product", true);
 
         productsDatabase = ProductsTableUtil.getInstance(getApplicationContext());
-        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
+        preferences = Preferences.getInstance(getApplicationContext());
 
         productImageView.setOnClickListener(new View.OnClickListener() {
             @Override

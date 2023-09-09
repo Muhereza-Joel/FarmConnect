@@ -63,7 +63,7 @@ public class PurchasesActivity extends AppCompatActivity {
 
     private void init(){
         toolbar = findViewById(R.id.purchases_activity_toolbar);
-        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
+        preferences = Preferences.getInstance(getApplicationContext());
         recyclerView = findViewById(R.id.purchases_recycler_view);
         emptyPurchasesTextView = findViewById(R.id.empty_purchases_text_view);
         purchasesCards = new ArrayList<>();

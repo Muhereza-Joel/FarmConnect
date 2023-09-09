@@ -56,7 +56,7 @@ public class AddNewZoneActivity extends AppCompatActivity implements CommandList
         productsToCollectEditText = findViewById(R.id.products_to_collect_edit_text);
         descriptionEditText = findViewById(R.id.description_edit_text);
         zoneHeaderTextView = findViewById(R.id.add_zone_header);
-        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
+        preferences = Preferences.getInstance(getApplicationContext());
 
     }
     private void setUpStatusBar() {

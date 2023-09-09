@@ -90,8 +90,9 @@ public class MoveZoneListDialog extends DialogFragment implements DialogInterfac
         if (!TextUtils.isEmpty(selectedZoneID) && !TextUtils.isEmpty(getActivity().getIntent().getStringExtra(Globals.ZONE_ID))) {
             productsController.moveProduct(getActivity().getIntent().getStringExtra(Globals.ZONE_ID),selectedZoneID, product.getProductID());
         } else {
-            if (zoneNames.size() > 0)
-            UI.displayToast(getContext(), "Please Select a zone");
+            if (zoneNames.size() > 0) {
+                UI.displayToast(getContext(), "Please Select a zone");
+            }
         }
     }
 }

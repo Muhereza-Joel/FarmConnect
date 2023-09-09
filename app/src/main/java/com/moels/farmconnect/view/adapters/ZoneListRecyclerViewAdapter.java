@@ -36,7 +36,7 @@ public class ZoneListRecyclerViewAdapter extends RecyclerView.Adapter<ZoneListRe
         this.itemList = itemList;
         this.context = context;
         contactsDatabase = ContactsTableUtil.getInstance(context);
-        preferences = FarmConnectAppPreferences.getInstance(context);
+        preferences = Preferences.getInstance(context);
     }
 
     @NonNull

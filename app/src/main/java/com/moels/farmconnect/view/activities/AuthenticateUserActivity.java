@@ -64,7 +64,7 @@ public class AuthenticateUserActivity extends AppCompatActivity {
         UI.setUpToolbarInDarkMode(getApplicationContext(), toolbar);
 
         UI.setUpActionBar(getSupportActionBar(),R.drawable.ic_back_arrow, "Phone Number Verification", true);
-        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
+        preferences = Preferences.getInstance(getApplicationContext());
 
         phoneNumberToAuthenticate.setText(getIntent().getStringExtra("phoneNumber"));
 

@@ -93,7 +93,7 @@ public class EditProductActivity extends AppCompatActivity {
         productUnitPriceEditText.addTextChangedListener(createTextWatcher());
 
         productsDatabase = ProductsTableUtil.getInstance(getApplicationContext());
-        preferences = FarmConnectAppPreferences.getInstance(getApplicationContext());
+        preferences = Preferences.getInstance(getApplicationContext());
 
 
         showProductDetails(productsDatabase.getProductDetails(getIntent().getStringExtra("productID")));
