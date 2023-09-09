@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:icon="@drawable/baseline_location_on_24"
+        android:defaultValue="true"
+        android:selectable="false"
+        android:key="restrict_access_to_zones"
+        android:title="Restrict access to zones"
+        android:summary="Only authenticated users have access to zones and post products in zones "/>
+    <SwitchPreference
+        android:icon="@drawable/baseline_shopping_bag_24"
+        android:defaultValue="true"
+        android:selectable="false"
+        android:key="restrict_access_to_products"
+        android:title="Restrict access to products"
+        android:summary="Only authenticated users have access to products in collection zones"/>
+    <SwitchPreference
+        android:icon="@drawable/baseline_playlist_add_24_green"
+        android:defaultValue="true"
+        android:selectable="false"
+        android:key="restrict_access_to_chats"
+        android:title="Restrict access to chats"
+        android:summary="Only authenticated users are able to send and receive messages through this app"/>
+    <SwitchPreference
+        android:icon="@drawable/baseline_payment_24_green"
+        android:defaultValue="true"
+        android:selectable="false"
+        android:key="restrict_access_to_payments"
+        android:title="Restrict access to payments"
+        android:summary="Only authenticated phone numbers and account numbers are allowed while processing transactions"/>
+    <SwitchPreference
+        android:icon="@drawable/baseline_add_ic_call_24_green"
+        android:defaultValue="true"
+        android:selectable="false"
+        android:key="restrict_access_to_calls"
+        android:title="Restrict access to calls"
+        android:summary="Only authenticated users are able to make calls using this app"/>
+    <SwitchPreference
+        android:icon="@drawable/baseline_nature_people_24"
+        android:defaultValue="true"
+        android:selectable="false"
+        android:key="restrict_team_access"
+        android:title="Restrict access by collection team"
+        android:summary="Only teams assigned a collection role have access to products and can complete transactions."/>
+
+</PreferenceScreen>

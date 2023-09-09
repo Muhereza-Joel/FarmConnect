@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements ProductsDataSyncS
         }
 
         setSupportActionBar(toolbar);
-        UI.setUpActionBar(getSupportActionBar(), "FarmConnect");
+        UI.setUpActionBar(getSupportActionBar(), "FamuConnect");
 
         //Create adapter for the view_pager
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());

@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">FarmConnect</string>
-    <string name="heading">FarmConnect</string>
+    <string name="app_name">FamuConnect</string>
+    <string name="heading">FamuConnect</string>
     <string name="create_account">Join our community of farmers\n and buyers and support \nlocal agriculture</string>
     <string name="otp_text">Add your phone number. We\'ll send you a verification code so we know you are real.</string>
     <string name="country_code">+256-</string>
@@ -61,4 +61,7 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="privacy_statement">As FamuConnect, we take full responsibility of ensuring that your chats, zones, products,
+        calls and payments remain only accessible to the people you choose mostly those in your contact list.
+    </string>
 </resources>

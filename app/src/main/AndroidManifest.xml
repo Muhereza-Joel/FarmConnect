@@ -35,9 +35,13 @@
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
         tools:targetApi="31">
         <activity
-            android:name=".view.activities.AppLanguageSettingsActivity"
+            android:name=".view.activities.PrivacySettingsActivity"
             android:exported="false"
             android:parentActivityName=".view.activities.SettingsActivity"/>
+        <activity
+            android:name=".view.activities.AppLanguageSettingsActivity"
+            android:exported="false"
+            android:parentActivityName=".view.activities.SettingsActivity" />
         <activity
             android:name=".view.activities.NotificationSettingsActivity"
             android:exported="false"

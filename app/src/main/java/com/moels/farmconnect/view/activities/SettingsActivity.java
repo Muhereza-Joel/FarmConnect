@@ -90,6 +90,11 @@ public class SettingsActivity extends AppCompatActivity{
                     startActivity(zoneSettingsActivity);
                     break;
 
+                case "privacy" :
+                    Intent privacySettingsActivity = new Intent(getContext(), PrivacySettingsActivity.class);
+                    startActivity(privacySettingsActivity);
+                    break;
+
                 case "language" :
                     Intent languageSettingsActivity = new Intent(getContext(), AppLanguageSettingsActivity.class);
                     startActivity(languageSettingsActivity);
